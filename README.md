@@ -16,8 +16,7 @@ npm run dev
 
   | Тип | Стиль | Примеры |
   |-----|-------|---------|
-  | **React компоненты** | `PascalCase` | `Button.tsx`, `UserProfile.tsx`,
-  `SkillCard.tsx` |
+  | **React компоненты** | `PascalCase` | `Button.tsx`, `UserProfile.tsx`, `SkillCard.tsx` |
   | **CSS файлы** | `kebab-case` | `button.css`, `user-profile.module.css` |
   | **Хуки** | `camelCase` | `useAuth.ts`, `useSkills.ts` |
   | **Утилиты/Хелперы** | `camelCase` | `formatDate.ts`, `apiClient.ts` |
