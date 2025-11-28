@@ -19,33 +19,31 @@
     },
     "ecmaVersion": "latest",
     "sourceType": "module",
-    "project": [
-      "./tsconfig.app.json",
-      "./tsconfig.node.json"
-    ],
-    "tsconfigRootDir": "."
+    "project": ["./tsconfig.app.json", "./tsconfig.node.json"]
   },
-  "plugins": [
-    "react",
-    "@typescript-eslint",
-    "prettier"
-  ],
+  "plugins": ["react", "@typescript-eslint", "prettier"],
   "rules": {
     "react/react-in-jsx-scope": "off",
     "prettier/prettier": "error"
   },
   "overrides": [
     {
-      "files": [
-        "vite.config.ts"
-      ],
+      "files": ["vite.config.ts"],
+      "parserOptions": {
+        "project": ["./tsconfig.node.json"]
+      },
       "rules": {
-        "import/no-extraneous-dependencies": [
-          "error",
-          {
-            "devDependencies": true
-          }
-        ]
+        "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
+      }
+    },
+    {
+      "files": ["src/stories/**/*.tsx"],
+      "rules": {
+        "react/require-default-props": "off",
+        "react/function-component-definition": "off",
+        "react/jsx-props-no-spreading": "off",
+        "import/prefer-default-export": "off",
+        "react/no-unescaped-entities": "off"
       }
     }
   ]
