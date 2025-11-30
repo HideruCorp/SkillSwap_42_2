@@ -1,0 +1,49 @@
+@import './variables';
+
+@mixin text-h1 {
+  font-family: $font-heading;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 40px;
+  letter-spacing: -0.011em;
+}
+
+@mixin text-h2 {
+  font-family: $font-heading;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 28px;
+  letter-spacing: -0.011em;
+}
+
+@mixin text-h3 {
+  font-family: $font-heading;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: -0.011em;
+}
+
+@mixin text-h4 {
+  font-family: $font-body;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.02em;
+}
+
+@mixin text-body {
+  font-family: $font-body;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.02em;
+}
+
+@mixin text-caption {
+  font-family: $font-body;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+}
