@@ -1,3 +1,38 @@
+:root {
+  --font-heading: 'Jost', sans-serif;
+  --font-body: 'Roboto', sans-serif;
+
+  /* Текст */
+  --color-text: #253017;
+  --color-text-caption: #69735D;
+  --color-text-disabled: #9CA197;
+  --color-text-link: #508826;
+
+  /* UI-элементы */
+  --color-accent: #ABD27A;
+  --color-button-hover: #DEEBC5;
+  --color-button-pressed: #508826;
+  --color-toggle: #B2B9A9;
+  --color-disabled: #E4E8DF;
+
+  /* Поверхности */
+  --color-bg: #F9FAF7;
+  --color-surface: #FFFFFF;
+
+  /* Статусы */
+  --color-alarm: #E0796E;
+  --color-error: #BF3920;
+
+  /* NOTE: Теги категорий - временно, планируется хранить в справочнике категорий */
+  --color-tag-business: #EEE7F7;
+  --color-tag-creative: #F7E7F2;
+  --color-tag-languages: #EBE5C5;
+  --color-tag-education: #E7F2F6;
+  --color-tag-home: #F7EBE5;
+  --color-tag-health: #E9F7E7;
+  --color-tag-other: #E8ECF7;
+}
+
 /* Отключаем браузерные дефолтные стили для всех элементов */
 html,
 div,
@@ -136,3 +171,52 @@ table {
 	border-spacing: 0;
 }
 
+/* Глобальные классы */
+
+.text-h1 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 40px;
+  letter-spacing: -0.011em;
+}
+
+.text-h2 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 28px;
+  letter-spacing: -0.011em;
+}
+
+.text-h3 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: -0.011em;
+}
+
+.text-h4 {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.02em;
+}
+
+.text-body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.02em;
+}
+
+.text-caption {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+}
