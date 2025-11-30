@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --fix",
-    "lint:styles": "stylelint \"**/*.css\"",
+    "lint:styles": "stylelint \"**/*.{css,scss}\"",
     "preview": "vite preview",
     "test": "echo \"Tests will be added later\" && exit 0",
     "format": "prettier ./src --write",
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@storybook/react-vite": "^10.1.0",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
@@ -37,12 +38,15 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.24",
+    "eslint-plugin-storybook": "^10.1.0",
     "globals": "^16.5.0",
+    "postcss-scss": "^4.0.9",
     "prettier": "^3.7.1",
-    "typescript": "~5.9.3",
-    "vite": "^7.2.4",
+    "sass": "^1.94.2",
     "storybook": "^10.1.0",
-    "@storybook/react-vite": "^10.1.0",
-    "eslint-plugin-storybook": "^10.1.0"
+    "stylelint-config-standard-scss": "^16.0.0",
+    "stylelint-scss": "^6.12.1",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4"
   }
 }
