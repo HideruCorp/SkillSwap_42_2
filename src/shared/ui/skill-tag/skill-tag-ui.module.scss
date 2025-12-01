@@ -1,0 +1,14 @@
+@use '@shared/styles/variables';
+@use '@shared/styles/mixins';
+
+.skill-tag {
+    @include mixins.text-body;
+    color: variables.$color-text;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+    user-select: none;
+}
