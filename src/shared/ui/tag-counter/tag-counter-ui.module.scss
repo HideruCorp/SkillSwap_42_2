@@ -1,0 +1,34 @@
+@use '@shared/styles/variables';
+@use '@shared/styles/mixins';
+@use 'sass:color';
+
+.tag-counter {
+  @include mixins.text-caption;
+  
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 20px;
+  background: variables.$color-tag-other;
+  color: variables.$color-text;
+  cursor: default;
+  white-space: nowrap;
+  user-select: none;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  transform-origin: center;
+
+  &--clickable {
+    cursor: pointer;
+
+    &:hover {
+      background: color.adjust(variables.$color-tag-other, $lightness: 2%);
+    }
+
+    &:active {
+      background: color.adjust(variables.$color-tag-other, $lightness: -2%);
+      transform: scale(0.99);
+    }
+  }
+}
