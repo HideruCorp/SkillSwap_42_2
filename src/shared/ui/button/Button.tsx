@@ -1,4 +1,4 @@
-import './button.scss';
+import styles from './button.module.scss';
 
 export type ButtonType = 'default' | 'primary';
 
@@ -13,11 +13,11 @@ function Button({ title, onClick, type = 'default', disabled = false }: ButtonPr
   return (
     <button
       type="button"
-      className={`button ${type === 'default' ? 'button-default' : 'button-primary'}`}
+      className={`${styles.button} ${type === 'default' ? styles.buttonDefault : styles.buttonPrimary}`}
       onClick={onClick}
       disabled={disabled}
     >
-      <span className="button-text">{title}</span>
+      <span className={`${styles.buttonText}`}>{title}</span>
     </button>
   );
 }

@@ -27,17 +27,18 @@ $color-border-button-primary: #000;
     background-color: $color-disabled;
   }
 
-  &-text {
+  &Text {
     @include text-body;
+    
     opacity: 0.8;
   }
 
-  &-primary {
+  &Primary {
     border-color: $color-border-button-primary;
     background-color: $color-accent;
   }
 
-  &-default {
+  &Default {
     border-color: $color-accent;
     background-color: $color-surface;
   }
