@@ -3,6 +3,7 @@
 
 .skill-tag {
   @include mixins.text-caption;
+
   color: variables.$color-text;
   display: inline-flex;
   align-items: center;
