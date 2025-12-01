@@ -1,0 +1,45 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+$color-border-button-primary: #000;
+
+.button {
+  height: 48px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  outline: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: $color-button-hover;
+  }
+
+  &:active {
+    background-color: $color-button-pressed;
+  }
+
+  &:disabled {
+    pointer-events: none;
+    background-color: $color-disabled;
+  }
+
+  &Text {
+    @include text-body;
+    
+    opacity: 0.8;
+  }
+
+  &Primary {
+    border-color: $color-border-button-primary;
+    background-color: $color-accent;
+  }
+
+  &Default {
+    border-color: $color-accent;
+    background-color: $color-surface;
+  }
+}
