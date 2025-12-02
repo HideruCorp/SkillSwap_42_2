@@ -1,4 +1,4 @@
-@import '../../../shared/styles/mixins';
+@use '@shared/styles/mixins' as *;
 
 .notification {
   @include button-reset;

@@ -1,5 +1,5 @@
-@import '../../styles/variables';
-@import '../../styles/mixins';
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
 
 $color-border-button-primary: #000;
 
