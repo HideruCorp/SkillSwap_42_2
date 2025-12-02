@@ -7,13 +7,14 @@ interface ButtonProps {
   onClick: () => void;
   type: ButtonType;
   disabled?: boolean;
+  className?: string;
 }
 
-function Button({ title, onClick, type = 'default', disabled = false }: ButtonProps) {
+function Button({ title, onClick, type = 'default', disabled = false, className }: ButtonProps) {
   return (
     <button
       type="button"
-      className={`${styles.button} ${type === 'default' ? styles.buttonDefault : styles.buttonPrimary}`}
+      className={`${styles.button} ${className} ${type === 'default' ? styles.buttonDefault : styles.buttonPrimary}`}
       onClick={onClick}
       disabled={disabled}
     >
@@ -24,6 +25,7 @@ function Button({ title, onClick, type = 'default', disabled = false }: ButtonPr
 
 Button.defaultProps = {
   disabled: false,
+  className: undefined,
 };
 
 export default Button;

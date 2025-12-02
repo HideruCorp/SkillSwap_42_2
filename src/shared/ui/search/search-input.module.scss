@@ -2,30 +2,33 @@
   display: flex;
   margin: 0 25px;
   max-height: 48px;
-  max-width: 527px;
+  max-width: 648px;
+  width: 100%;
 }
 
 .containerInput {
   border: none;
+  border-radius: 0 12px 12px 0;
   width: 100%;
   font-size: 16px;
   font-family: Roboto, sans-serif;
   background-color: #fff;
   caret-color: #508826;
-  color: #69735D;
+  color: #69735d;
 }
 
 .containerInput::placeholder {
-  color: #69735D;
+  color: #69735d;
 }
 
 .containerInput:focus {
-  outline: none; 
+  outline: none;
 }
 
 .containerButton {
   background-color: #fff;
   padding: 10px;
   border: none;
+  border-radius: 12px 0 0 12px;
   cursor: pointer;
 }

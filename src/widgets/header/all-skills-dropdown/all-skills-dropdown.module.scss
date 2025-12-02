@@ -1,0 +1,14 @@
+@import '../../../shared/styles/variables';
+
+.allSkillsDropdown {
+  font-family: $font-body;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: $color-text;
+}
+
+.allSkillsDropdownImg {
+  width: 16px;
+  height: 16px;
+}
