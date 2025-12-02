@@ -1,0 +1,79 @@
+@use '@shared/styles/variables' as *;
+
+.filterContainer {
+  margin: 35px 0;
+}
+
+.sectionTitle {
+  margin-bottom: 10px;
+  color: $color-text;
+  font-family: $font-heading;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.skillsList {
+  display: flex;
+  flex-direction: column;
+  gap: 21px;
+  margin-bottom: 12px;
+  margin-top: 18px;
+}
+
+.skillItem {
+  display: flex;
+  align-items: center;
+}
+
+.categoryWithArrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.toggleSubcategories {
+  margin-left: auto;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.toggleVisibility {
+  display: flex;
+  align-items: center;
+  border: none;
+  padding: 0;
+  background-color: transparent;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.toggleVisibility:hover {
+  opacity: 0.8;
+}
+
+.buttonLabel {
+  font-family: $font-body;
+  margin-right: 8px;
+  color: $color-button-pressed;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.arrowIcon {
+  width: 24px;
+  height: 24px;
+  margin-top: 3px;
+  transition: transform 0.2s;
+  fill: currentColor;
+}
