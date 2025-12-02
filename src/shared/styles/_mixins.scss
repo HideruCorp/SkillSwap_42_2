@@ -47,3 +47,10 @@
   line-height: 16px;
   letter-spacing: 0.02em;
 }
+
+@mixin button-reset {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
+}

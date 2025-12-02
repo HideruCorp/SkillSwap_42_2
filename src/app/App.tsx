@@ -1,7 +1,8 @@
+import Header from '@widgets/header/Header';
 import './App.scss';
 
 function App() {
-  return <div />;
+  return <Header />;
 }
 
 export default App;
