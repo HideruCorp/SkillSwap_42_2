@@ -1,0 +1,136 @@
+@import '@shared/styles/variables';
+@import '@shared/styles/mixins';
+
+.card {
+  background: $color-surface;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.avatarSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatarPlaceholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: $color-accent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-text;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.name {
+  @include text-h4;
+  color: $color-text;
+  margin: 0;
+}
+
+.location {
+  @include text-caption;
+  color: $color-text-caption;
+  margin: 0;
+}
+
+.likeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.likeIcon {
+  width: 24px;
+  height: 24px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.likeIconDefault {
+  background-image: url('@shared/assets/img/like-Default.svg');
+}
+
+.likeIconActive {
+  background-image: url('@shared/assets/img/like-Active.svg');
+}
+
+.skillsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skillsTitle {
+  @include text-caption;
+  color: $color-text-caption;
+  margin: 0;
+  font-weight: 500;
+}
+
+.skillsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.moreSkills {
+  @include text-caption;
+  color: $color-text-caption;
+  background: $color-disabled;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+}
