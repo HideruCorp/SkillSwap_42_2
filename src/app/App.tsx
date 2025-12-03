@@ -1,8 +1,13 @@
 import './App.scss';
-import MainLayout from '@/pages/MainLayout/MainLayout';
+import Layout from '@/widgets/layout/Layout';
+import Catalog from '@/pages/catalog/Catalog';
 
 function App() {
-  return <MainLayout />;
+  return (
+    <Layout>
+      <Catalog />
+    </Layout>
+  );
 }
 
 export default App;
