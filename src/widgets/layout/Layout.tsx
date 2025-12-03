@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import './Layout.scss';
+import Header from '../header/Header';
 
 interface LayoutProps {
   children: ReactNode;
@@ -9,9 +10,7 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="container">
       <div className="wrapper">
-        {/* TODO: Добавить Header Component*/}
-        <header className="header">Header</header>
-        {/* Header Component*/}
+        <Header />
 
         <main className="main">
           {/* TODO: Добавить Sidebar Component*/}
