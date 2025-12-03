@@ -1,0 +1,9 @@
+$overlay-color: #8e8e8e;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: $overlay-color;
+  opacity: 0.6;
+  z-index: 2;
+}
