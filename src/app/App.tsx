@@ -1,8 +1,15 @@
 import Header from '@widgets/header/Header';
 import './App.scss';
+import Layout from '@/widgets/layout/Layout';
+import Catalog from '@/pages/catalog/Catalog';
 
 function App() {
-  return <Header />;
+  return (
+    <Layout>
+      <Catalog />
+    </Layout>
+  );
+
 }
 
 export default App;

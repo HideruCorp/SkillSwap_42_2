@@ -1,0 +1,20 @@
+.container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+
+  padding: 0 36px;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-rows: 104px 1fr;
+  gap: 32px;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 324px 1020px;
+  gap: 24px;
+}
+
