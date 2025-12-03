@@ -1,0 +1,25 @@
+.tag-list {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+
+  &__measure {
+    position: absolute;
+    visibility: hidden;
+    pointer-events: none;
+    display: flex;
+    gap: 4px;
+    white-space: nowrap;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    overflow: hidden;
+
+    &--expanded {
+      flex-wrap: wrap;
+    }
+  }
+}

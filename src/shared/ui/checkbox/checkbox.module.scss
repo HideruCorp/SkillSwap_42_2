@@ -1,0 +1,83 @@
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/typography' as *;
+
+.container {
+  font-family: $font-body;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  margin: 0;
+  transition: all 0.3s ease;
+}
+
+.container input[type='checkbox'] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.visualIndicator {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.visualIndicator::before,
+.visualIndicator::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  transition: opacity 0.3s ease;
+}
+
+.visualIndicator::before {
+  opacity: 1;
+  background-image: url('@shared/assets/img/checkbox-Default.svg');
+}
+
+.visualIndicator::after {
+  opacity: 0;
+  background-image: url('@shared/assets/img/checkbox-Done-Active.svg');
+}
+
+.removeStyle .visualIndicator::after {
+  background-image: url('@shared/assets/img/checkbox-Remove-Active.svg');
+}
+
+.container input[type='checkbox']:checked + .visualIndicator::before {
+  opacity: 0;
+}
+
+.container input[type='checkbox']:checked + .visualIndicator::after {
+  opacity: 1;
+}
+
+.textContent {
+  color: $color-text;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.container input[type='checkbox']:disabled ~ .textContent {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.container input[type='checkbox']:disabled ~ .visualIndicator {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

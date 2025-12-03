@@ -1,0 +1,23 @@
+@use '@shared/styles/variables' as *;
+
+.header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 104px;
+  background-color: $color-bg;
+}
+
+.about {
+  font-family: $font-body;
+  text-decoration: none;
+  color: $color-text;
+}
+
+.signIn {
+  padding-inline: 22.5px;
+}
+
+.signUp {
+  padding-inline: 23.5px;
+}

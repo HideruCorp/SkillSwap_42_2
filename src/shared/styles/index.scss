@@ -1,7 +1,7 @@
-@import './functions';
-@import './variables';
-@import './mixins';
-@import './fonts';
-@import './reset';
-@import './typography';
-@import './utilities';
+@forward './functions';
+@forward './variables';
+@forward './mixins';
+@forward './fonts';
+@forward './reset';
+@forward './typography';
+@forward './utilities';

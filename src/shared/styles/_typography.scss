@@ -1,4 +1,4 @@
-@import './mixins';
+@use './mixins' as *;
 
 .text-h1 {
   @include text-h1;
