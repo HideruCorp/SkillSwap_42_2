@@ -11,14 +11,10 @@ const Layout = ({ children }: LayoutProps) => {
     <div className="container">
       <div className="wrapper">
         <Header />
+        <main className="main">{children}</main>
 
-        <main className="main">
-          {/* TODO: Добавить Sidebar Component*/}
-          <aside className="sidebar">Sidebar</aside>
-          {/* Sidebar Component*/}
-
-          <section className="content">{children}</section>
-        </main>
+         
+        
       </div>
     </div>
   );
