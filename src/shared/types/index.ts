@@ -10,8 +10,11 @@ export interface Skill {
   likesReceived: number[];
 }
 
+//Тип навыка для фильтра
+export type TSkillType = 'all' | 'learn' | 'teach';
+
 // Типы для пользователей
-export type Gender = 'male' | 'female';
+export type Gender = 'all' | 'male' | 'female';
 
 export interface User {
   id: number;
