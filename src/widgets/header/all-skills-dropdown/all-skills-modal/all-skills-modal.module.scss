@@ -1,0 +1,40 @@
+@use '@shared/styles/variables' as *;
+
+.section {
+	display: flex;
+	flex-direction: column;
+}
+
+.wrapper {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+}
+
+.icon {
+	display: flex;
+	flex-shrink: 0;
+	justify-content: center;
+	align-items: center;
+	width: 40px;
+	height: 40px;
+	padding: 8px;
+	border-radius: 100px;
+}
+
+.content {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.title {
+	font-size: 24px; //миксин подключить
+	font-family: $font-body;
+}
+
+.list {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
