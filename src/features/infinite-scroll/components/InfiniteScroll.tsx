@@ -1,8 +1,8 @@
-// src/features/infinite-scroll/components/InfiniteScroll.tsx
-import React, { useCallback, useEffect, useRef, useState, type JSX } from 'react';
+import { useCallback, useEffect, useRef, useState, type JSX } from 'react';
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import UserCard from '../../../shared/ui/user-card/UserCard';
 import type { UserCardProps } from '../../../shared/ui/user-card/types';
+import type { SkillTag } from '../../../shared/ui/skill-tag-list/type';
 import getUsersMock from '../../../services/mockApi/users';
 import getSkillsMock from '../../../services/mockApi/skills';
 import getCitiesMock from '../../../services/mockApi/cities';
@@ -27,8 +27,7 @@ type RawUser = {
   about?: string;
   cityId?: number;
   dateOfBirth?: string;
-  skillInterests?: number[]; // массив id-субкатегорий (в твоём JSON)
-  // ... прочие поля
+  skillInterests?: number[];
 };
 
 type RawSkill = {
@@ -36,13 +35,14 @@ type RawSkill = {
   subcategoryId?: number;
   userId: number;
   title: string;
-  // ...
 };
 
 type RawCity = { id: number; name: string };
+type RawCategory = { id: number; name: string; color: string };
+type RawSubcategory = { id: number; name: string; categoryId: number };
 type RawCategoriesJson = {
-  categories: unknown[];
-  subcategories: { id: number; name: string; categoryId: number }[];
+  categories: RawCategory[];
+  subcategories: RawSubcategory[];
 };
 
 const PAGE_SIZE = 15; // сколько карточек подгружаем за раз — подскажи, если нужно другое значение
@@ -80,38 +80,50 @@ export default function InfiniteScroll(): JSX.Element {
           : (citiesRes.cities ?? []);
         const rawCategories: RawCategoriesJson = categoriesRes;
 
-        // subcategories из category.json
-        const subcategories = (rawCategories && rawCategories.subcategories) || [];
+        const categories = rawCategories?.categories || [];
+        const subcategories = rawCategories?.subcategories || [];
+
+        const getCategoryColorBySubcategoryId = (subcategoryId: number): string => {
+          const subcategory = subcategories.find((sc) => sc.id === subcategoryId);
+          if (!subcategory) return '#EEE7F7';
+          const category = categories.find((c) => c.id === subcategory.categoryId);
+          return category?.color || '#EEE7F7';
+        };
 
         // мапим пользователей в пропсы, которые ожидает UserCard
         // предполагается, что rawUsers: RawUser[], rawSkills: RawSkill[], subcategories: { id: number; name: string }[]
         const mapped: UserCardProps[] = rawUsers.map((u) => {
           const id = typeof u.id === 'number' ? u.id : Number(u.id);
 
-          // Найдём навыки, которые принадлежат пользователю (title из skills.json)
-          const userSkills: string[] = rawSkills.filter((s) => s.userId === id).map((s) => s.title);
+          const userSkillsRaw = rawSkills.filter((s) => s.userId === id);
+          const canTeach: SkillTag[] = userSkillsRaw.map((skill) => ({
+            id: String(skill.id),
+            text: skill.title,
+            bgColor: getCategoryColorBySubcategoryId(skill.subcategoryId || 0),
+          }));
 
-          // wantsToLearn: если есть skillInterests (массив id subcategory), берём имена subcategory
-          const wantsToLearnCandidates: Array<string | undefined> =
+          const wantsToLearn: SkillTag[] =
             Array.isArray(u.skillInterests) && u.skillInterests.length > 0
-              ? u.skillInterests.map((sid) => subcategories.find((sc) => sc.id === sid)?.name)
+              ? u.skillInterests
+                  .map((sid) => {
+                    const subcategory = subcategories.find((sc) => sc.id === sid);
+                    if (!subcategory) return null;
+                    return {
+                      id: String(sid),
+                      text: subcategory.name,
+                      bgColor: getCategoryColorBySubcategoryId(sid),
+                    };
+                  })
+                  .filter((tag): tag is SkillTag => tag !== null)
               : [];
 
-          // Type-guard: оставляем только string (убираем undefined)
-          const wantsToLearn: string[] =
-            wantsToLearnCandidates.length > 0
-              ? wantsToLearnCandidates.filter((s): s is string => Boolean(s))
-              : ['Тайм-менеджмент', 'Медитация']; // fallback
-
-          // вычисляем возраст, если есть dateOfBirth
           let age = 0;
           if (u.dateOfBirth) {
             const dob = new Date(u.dateOfBirth);
             const now = new Date();
             age = now.getFullYear() - dob.getFullYear();
             const m = now.getMonth() - dob.getMonth();
-            // eslint-disable-next-line no-plusplus
-            if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) age--;
+            if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) age -= 1;
           }
 
           return {
@@ -120,10 +132,10 @@ export default function InfiniteScroll(): JSX.Element {
               (typeof u.cityId === 'number' && rawCities?.find((c) => c.id === u.cityId)?.name) ||
               'Город не указан',
             age,
-            canTeach: userSkills.length > 0 ? userSkills : ['—'],
+            canTeach,
             wantsToLearn,
             avatarUrl: u.avatarUrl ?? null,
-          } as UserCardProps;
+          };
         });
 
         if (!mounted) return;

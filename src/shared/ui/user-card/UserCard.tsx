@@ -1,5 +1,4 @@
-import React from 'react';
-import { SkillTagUI } from '@shared/ui/skill-tag';
+import { SkillTagListUI } from '@shared/ui/skill-tag-list';
 import Button from '@shared/ui/button/Button';
 import styles from './user-card.module.scss';
 import type { UserCardProps } from './types';
@@ -52,23 +51,12 @@ function UserCard({
 
       <div className={styles.skillsSection}>
         <h4 className={styles.skillsTitle}>Может научить:</h4>
-        <div className={styles.skillsList}>
-          {canTeach.map((skill) => (
-            <SkillTagUI key={`can-${skill}`} bgColor="#EEE7F7" text={skill} />
-          ))}
-        </div>
+        <SkillTagListUI tags={canTeach} />
       </div>
 
       <div className={styles.skillsSection}>
         <h4 className={styles.skillsTitle}>Хочет научиться:</h4>
-        <div className={styles.skillsList}>
-          {wantsToLearn.slice(0, 2).map((skill) => (
-            <SkillTagUI key={`want-${skill}`} bgColor="#E9F7E7" text={skill} />
-          ))}
-          {wantsToLearn.length > 2 && (
-            <span className={styles.moreSkills}>+{wantsToLearn.length - 2}</span>
-          )}
-        </div>
+        <SkillTagListUI tags={wantsToLearn} />
       </div>
 
       <div className={styles.footer}>
