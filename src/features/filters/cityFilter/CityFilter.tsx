@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import styles from '../cityFilter/city-filter.module.scss';
+import styles from './city-filter.module.scss';
 import { CheckboxUI } from '@shared/ui/checkbox/CheckboxUI';
 import ChevronUp from '@shared/assets/img/chevron-Up.svg?react';
 import ChevronDown from '@shared/assets/img/chevron-Down.svg?react';
@@ -55,7 +55,7 @@ export const CityFilter: React.FC<CityFilterProps> = ({
   }
 
   return (
-    <section className={styles.filterContainer}>
+    <section>
       <h2 className={styles.sectionTitle}>Город</h2>
       <ul className={styles.citiesList}>
         {visibleCities.map(city => (

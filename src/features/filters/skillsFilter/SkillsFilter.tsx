@@ -137,7 +137,7 @@ export const SkillsFilter: React.FC<SkillsFilterProps> = ({
   }
 
   return (
-    <section className={styles.filterContainer}>
+    <section>
       <h2 className={styles.sectionTitle}>Навыки</h2>
       <ul className={styles.skillsList}>
         {visibleSkills.map((skill) => {

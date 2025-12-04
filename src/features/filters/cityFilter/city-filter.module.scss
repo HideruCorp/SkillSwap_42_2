@@ -1,21 +1,14 @@
 @use '@shared/styles/variables' as *;
-
-.filterContainer {
-  margin: 35px 0;
-}
+@use '@shared/styles/mixins' as *;
 
 .filterHeading {
-  margin-bottom: 10px;
-  color: $color-text;
-  font-family: $font-heading;
-  font-size: 20px;
-  font-weight: 500;
+  @include text-h2;
 }
 
 .citiesList {
   display: flex;
   flex-direction: column;
-  gap: 21px;
+  gap: 12px;
   margin-bottom: 12px;
   margin-top: 18px;
 }
