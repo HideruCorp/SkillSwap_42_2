@@ -60,3 +60,8 @@
   flex-direction: $direction;
   gap: $gap;
 }
+
+@mixin fixed-size($width, $height) {
+  inline-size: $width;
+  block-size: $height;
+}

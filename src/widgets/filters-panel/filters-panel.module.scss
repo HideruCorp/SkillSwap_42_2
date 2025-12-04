@@ -2,14 +2,43 @@
 @use '@shared/styles/variables' as v;
 
 .filters {
-  inline-size: 324px;
+  max-inline-size: 324px;
   padding: 20px;
   background-color: v.$color-surface;
+
+  &__header-row {
+    @include m.flex(row, 40px);
+
+    align-items: center;
+    justify-content: space-between;
+  }
 
   &__header {
     @include m.text-h2;
 
     color: v.$color-text;
+  }
+
+  &__reset-btn {
+    @include m.button-reset;
+    @include m.text-body;
+    @include m.flex(row, 4px);
+
+    align-items: center;
+    color: v.$color-text-link;
+    white-space: nowrap;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &__reset-icon {
+    @include m.fixed-size(24px, 24px);
+
+    path {
+      fill: v.$color-text-link;
+    }
   }
 
   &__subheader {
