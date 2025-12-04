@@ -8,6 +8,7 @@
 
   &__header {
     @include m.text-h2;
+
     color: v.$color-text;
   }
 
