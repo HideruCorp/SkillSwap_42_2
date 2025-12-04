@@ -1,5 +1,5 @@
 @use '@shared/styles/variables' as *;
-@use '@shared/styles/typography' as *;
+@use '@shared/styles/mixins' as *;
 
 .radio {
   display: flex;
