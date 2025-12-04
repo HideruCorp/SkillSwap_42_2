@@ -1,40 +1,52 @@
 @use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
+
+.container {
+  display: flex;
+  flex-flow: row wrap;
+  width: 1136px;
+  gap: 40px;
+}
 
 .section {
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  width: calc((100% - 40px) / 2);
 }
 
 .wrapper {
-	display: flex;
-	align-items: flex-start;
-	gap: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .icon {
-	display: flex;
-	flex-shrink: 0;
-	justify-content: center;
-	align-items: center;
-	width: 40px;
-	height: 40px;
-	padding: 8px;
-	border-radius: 100px;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  background-color: aqua;
 }
 
 .content {
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .title {
-	font-size: 24px; //миксин подключить
-	font-family: $font-body;
+  @include text-h2;
 }
 
 .list {
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item {
+  @include text-body;
 }

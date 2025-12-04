@@ -25,16 +25,16 @@
       "icon": "book"
     },
     {
-      "id": 5,
-      "name": "Здоровье и лайфстайл",
-      "color": "#e9f7e7",
-      "icon": "lifestyle"
-    },
-    {
       "id": 6,
       "name": "Дом и уют",
       "color": "#f7ebe5",
       "icon": "home"
+    },
+    {
+      "id": 5,
+      "name": "Здоровье и лайфстайл",
+      "color": "#e9f7e7",
+      "icon": "lifestyle"
     }
   ],
   "subcategories": [

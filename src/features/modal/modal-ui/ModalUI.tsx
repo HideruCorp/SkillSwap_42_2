@@ -6,12 +6,13 @@ export interface ModalUIProps {
   title?: string | ReactNode;
   onClose: () => void;
   children?: ReactNode;
+  className?: string;
 }
 
-function ModalUI({ title, onClose, children }: ModalUIProps) {
+function ModalUI({ title, onClose, children, className }: ModalUIProps) {
   return (
     <>
-      <div className={styles.modal} data-testid="modal">
+      <div className={`${styles.modal} ${className}`} data-testid="modal">
         {title && (
           <div className={styles.header}>
             <h3 className={`${styles.title}`}>{title}</h3>
@@ -27,6 +28,7 @@ function ModalUI({ title, onClose, children }: ModalUIProps) {
 ModalUI.defaultProps = {
   title: undefined,
   children: undefined,
+  className: undefined,
 };
 
 export default ModalUI;

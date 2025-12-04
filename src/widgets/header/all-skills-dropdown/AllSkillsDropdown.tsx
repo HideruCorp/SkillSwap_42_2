@@ -1,12 +1,16 @@
-import styles from './all-skills-dropdown.module.scss';
-import { useEffect, useState } from 'react';
-import { fetchCategories } from '@/api/categoriesApi';
+import { useEffect, useState, type SyntheticEvent } from 'react';
 import type { Category, Subcategory } from '@shared/types';
+import { fetchCategories } from '@api/categoriesApi';
+import Modal from '@features/modal/Modal';
+import styles from './all-skills-dropdown.module.scss';
+import AllSkillsModal from './all-skills-modal/AllSkillsModal';
 
 function AllSkillsDropdown() {
-  const [category, setCategory] = useState<Category[]>();
-  const [subcategory, setSubcategory] = useState<Subcategory[]>();
+  const [categories, setCategory] = useState<Category[]>([]);
+  const [subcategories, setSubcategory] = useState<Subcategory[]>([]);
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
+  // если categories/subcategories будут храниться в общем сторе, можно брать их оттуда, без запроса
   const fetchData = async () => {
     const result = await fetchCategories();
     setCategory(result.categories);
@@ -17,9 +21,17 @@ function AllSkillsDropdown() {
     fetchData();
   }, []);
 
+  const handleClose = () => {
+    setIsOpenModal(false);
+  };
+  const handleOpen = (e: SyntheticEvent) => {
+    e.preventDefault();
+    setIsOpenModal(true);
+  };
+
   return (
     <>
-      <a href="#allskills" className={`${styles.allSkillsDropdown}`}>
+      <a href="#allskills" onClick={handleOpen} className={`${styles.allSkillsDropdown}`}>
         Все навыки
         <img
           className={`${styles.allSkillsDropdownImg}`}
@@ -27,6 +39,11 @@ function AllSkillsDropdown() {
           alt="раскрытие списка навыков"
         />
       </a>
+      {isOpenModal && (
+        <Modal onClose={handleClose} className={styles.skillModal}>
+          <AllSkillsModal categories={categories} subcategories={subcategories} />
+        </Modal>
+      )}
     </>
   );
 }
