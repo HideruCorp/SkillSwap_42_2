@@ -39,20 +39,15 @@ export const SkillsFilter: React.FC<SkillsFilterProps> = ({
 
     const result: ISkill[] = [];
 
-    const categoryOrder = [1, 4, 2, 5, 6, 3];
+    categoryData.categories.forEach((category) => {
+      result.push({
+        id: category.id,
+        name: category.name,
+      });
 
-    categoryOrder.forEach((categoryId) => {
-      const category = categoryData.categories.find((c) => c.id === categoryId);
-      if (category) {
-        result.push({
-          id: category.id,
-          name: category.name,
-        });
-      }
-
-      // Добавляем подкатегории только для творчества (id = 4)
-      if (categoryId === 4) {
-        const creativeSubs = categoryData.subcategories.filter((sub) => sub.categoryId === 4);
+      // Добавляем подкатегории только для творчества (id = 2)
+      if (category.id === 2) {
+        const creativeSubs = categoryData.subcategories.filter((sub) => sub.categoryId === category.id);
 
         creativeSubs.forEach((sub) => {
           result.push({
