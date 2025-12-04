@@ -1,8 +1,6 @@
 @use '@shared/styles/variables' as *;
 @use '@shared/styles/mixins' as *;
 
-$color-border-button-primary: #000;
-
 .button {
   height: 48px;
   border: 1px solid transparent;
@@ -34,7 +32,6 @@ $color-border-button-primary: #000;
   }
 
   &Primary {
-    border-color: $color-border-button-primary;
     background-color: $color-accent;
   }
 
