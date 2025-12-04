@@ -1,5 +1,5 @@
 export interface CheckboxProps {
-  variant: "default" | "remove";
+  variant: "remove" | "default";
   checked?: boolean;
   isDisabled?: boolean;
   text: string;

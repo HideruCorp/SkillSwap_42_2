@@ -1,0 +1,22 @@
+@use '@shared/styles/mixins' as m;
+@use '@shared/styles/variables' as v;
+
+.filters {
+  width: 324px;
+  padding: 20px;
+  background-color: v.$color-surface;
+
+  &__header {
+    @include m.text-h2;
+
+    color: v.$color-text;
+  }
+
+  &__content {
+    margin-block-start: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    flex-shrink: 0;
+  }
+}

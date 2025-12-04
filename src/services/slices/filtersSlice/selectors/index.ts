@@ -5,5 +5,5 @@ export const {
   selectGender,
   selectCities,
   selectSubcategories,
-  selectTextSearch
+  selectTextSearch,
 } = filtersSlice.selectors;

@@ -1,10 +1,9 @@
-import React from 'react';
-import { SkillTagUI } from '@shared/ui/skill-tag';
+import { SkillTagListUI } from '@shared/ui/skill-tag-list';
 import Button from '@shared/ui/button/Button';
 import styles from './user-card.module.scss';
 import type { UserCardProps } from './types';
 
-const UserCard: React.FC<UserCardProps> = ({
+function UserCard({
   name,
   city,
   age,
@@ -14,10 +13,10 @@ const UserCard: React.FC<UserCardProps> = ({
   onDetailsClick,
   onLikeClick,
   isLiked = false,
-}) => {
-  const getAgeSuffix = (age: number): string => {
-    if (age % 10 === 1 && age % 100 !== 11) return 'год';
-    if ([2, 3, 4].includes(age % 10) && ![12, 13, 14].includes(age % 100)) return 'года';
+}: UserCardProps) {
+  const getAgeSuffix = (years: number): string => {
+    if (years % 10 === 1 && years % 100 !== 11) return 'год';
+    if ([2, 3, 4].includes(years % 10) && ![12, 13, 14].includes(years % 100)) return 'года';
     return 'лет';
   };
 
@@ -52,31 +51,12 @@ const UserCard: React.FC<UserCardProps> = ({
 
       <div className={styles.skillsSection}>
         <h4 className={styles.skillsTitle}>Может научить:</h4>
-        <div className={styles.skillsList}>
-          {canTeach.map((skill, index) => (
-            <SkillTagUI
-              key={`can-${index}`}
-              bgColor="#EEE7F7" 
-              text={skill}
-            />
-          ))}
-        </div>
+        <SkillTagListUI tags={canTeach} />
       </div>
 
       <div className={styles.skillsSection}>
         <h4 className={styles.skillsTitle}>Хочет научиться:</h4>
-        <div className={styles.skillsList}>
-          {wantsToLearn.slice(0, 2).map((skill, index) => (
-            <SkillTagUI
-              key={`want-${index}`}
-              bgColor="#E9F7E7" 
-              text={skill}
-            />
-          ))}
-          {wantsToLearn.length > 2 && (
-            <span className={styles.moreSkills}>+{wantsToLearn.length - 2}</span>
-          )}
-        </div>
+        <SkillTagListUI tags={wantsToLearn} />
       </div>
 
       <div className={styles.footer}>
@@ -84,6 +64,6 @@ const UserCard: React.FC<UserCardProps> = ({
       </div>
     </div>
   );
-};
+}
 
 export default UserCard;

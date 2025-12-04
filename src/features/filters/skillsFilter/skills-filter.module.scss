@@ -1,9 +1,5 @@
 @use '@shared/styles/variables' as *;
 
-.filterContainer {
-  margin: 35px 0;
-}
-
 .sectionTitle {
   margin-bottom: 10px;
   color: $color-text;
@@ -15,7 +11,7 @@
 .skillsList {
   display: flex;
   flex-direction: column;
-  gap: 21px;
+  gap: 12px;
   margin-bottom: 12px;
   margin-top: 18px;
 }
@@ -75,5 +71,5 @@
   height: 24px;
   margin-top: 3px;
   transition: transform 0.2s;
-  fill: currentColor;
+  fill: currentcolor;
 }

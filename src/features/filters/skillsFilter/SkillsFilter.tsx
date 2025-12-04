@@ -1,10 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import styles from './skills-filter.module.scss';
 import { CheckboxUI } from '@shared/ui/checkbox/CheckboxUI';
 import ChevronUp from '@shared/assets/img/chevron-Up.svg?react';
 import ChevronDown from '@shared/assets/img/chevron-Down.svg?react';
 import type { SkillsFilterProps } from './types';
-import categoryData from '../../../../public/db/category.json';
 
 interface ISkill {
   id: number;
@@ -16,26 +15,39 @@ export const SkillsFilter: React.FC<SkillsFilterProps> = ({
   selectedSkills,
   onSelectionChange,
 }) => {
+  const [categoryData, setCategoryData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [showCreativeSubcategories, setShowCreativeSubcategories] = useState(false);
 
+  // Загрузка данных при монтировании
+  useEffect(() => {
+    fetch('/db/category.json')
+      .then((res) => res.json())
+      .then((data) => {
+        setCategoryData(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Ошибка загрузки category.json:', err);
+        setLoading(false);
+      });
+  }, []);
+
   const allSkills = useMemo((): ISkill[] => {
+    if (!categoryData) return [];
+
     const result: ISkill[] = [];
 
-    const categoryOrder = [1, 4, 2, 5, 6, 3];
+    categoryData.categories.forEach((category) => {
+      result.push({
+        id: category.id,
+        name: category.name,
+      });
 
-    categoryOrder.forEach((categoryId) => {
-      const category = categoryData.categories.find((c) => c.id === categoryId);
-      if (category) {
-        result.push({
-          id: category.id,
-          name: category.name,
-        });
-      }
-
-      // Добавляем подкатегории только для творчества (id = 4)
-      if (categoryId === 4) {
-        const creativeSubs = categoryData.subcategories.filter((sub) => sub.categoryId === 4);
+      // Добавляем подкатегории только для творчества (id = 2)
+      if (category.id === 2) {
+        const creativeSubs = categoryData.subcategories.filter((sub) => sub.categoryId === category.id);
 
         creativeSubs.forEach((sub) => {
           result.push({
@@ -48,11 +60,12 @@ export const SkillsFilter: React.FC<SkillsFilterProps> = ({
     });
 
     return result;
-  }, []);
+  }, [categoryData]);
 
   const creativeSubcategoryIds = useMemo(() => {
+    if (!categoryData) return [];
     return categoryData.subcategories.filter((sub) => sub.categoryId === 4).map((sub) => sub.id);
-  }, []);
+  }, [categoryData]);
 
   const areAllCreativeSubcategoriesSelected = useMemo(() => {
     return creativeSubcategoryIds.every((id) => selectedSkills.includes(id));
@@ -108,8 +121,18 @@ export const SkillsFilter: React.FC<SkillsFilterProps> = ({
     setExpanded(!expanded);
   };
 
+  // Показать loader пока данные загружаются
+  if (loading || !categoryData) {
+    return (
+      <section className={styles.filterContainer}>
+        <h2 className={styles.sectionTitle}>Навыки</h2>
+        <p>Загрузка...</p>
+      </section>
+    );
+  }
+
   return (
-    <section className={styles.filterContainer}>
+    <section>
       <h2 className={styles.sectionTitle}>Навыки</h2>
       <ul className={styles.skillsList}>
         {visibleSkills.map((skill) => {
