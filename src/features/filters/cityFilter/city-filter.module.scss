@@ -2,7 +2,8 @@
 @use '@shared/styles/mixins' as *;
 
 .filterHeading {
-  @include text-h2;
+  @include text-h3;
+  color: $color-text;
 }
 
 .citiesList {

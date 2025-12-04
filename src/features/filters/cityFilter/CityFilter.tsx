@@ -56,7 +56,7 @@ export const CityFilter: React.FC<CityFilterProps> = ({
 
   return (
     <section>
-      <h2 className={styles.sectionTitle}>Город</h2>
+      <h2 className={styles.filterHeading}>Город</h2>
       <ul className={styles.citiesList}>
         {visibleCities.map(city => (
           <li key={city} className={styles.cityItem}>
