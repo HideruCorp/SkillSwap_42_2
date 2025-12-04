@@ -43,12 +43,15 @@ function FiltersPanel() {
           onChange={handleSkillTypeChange}
         />
         <SkillsFilter selectedSkills={selectedSkills} onSelectionChange={setSelectedSkills} />
-        <RadioGroupUI
-          name="gender"
-          options={genderOptions}
-          value={gender}
-          onChange={handleGenderChange}
-        />
+        <section className={styles.filters__section}>
+          <h3 className={styles.filters__subheader}>Пол автора</h3>
+          <RadioGroupUI
+            name="gender"
+            options={genderOptions}
+            value={gender}
+            onChange={handleGenderChange}
+          />
+        </section>
         <CityFilter selectedCities={selectedCities} onSelectionChange={setSelectedCities} />
       </div>
     </aside>

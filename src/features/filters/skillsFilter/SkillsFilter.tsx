@@ -64,7 +64,7 @@ export const SkillsFilter: React.FC<SkillsFilterProps> = ({
 
   const creativeSubcategoryIds = useMemo(() => {
     if (!categoryData) return [];
-    return categoryData.subcategories.filter((sub) => sub.categoryId === 4).map((sub) => sub.id);
+    return categoryData.subcategories.filter((sub) => sub.categoryId === 2).map((sub) => sub.id);
   }, [categoryData]);
 
   const areAllCreativeSubcategoriesSelected = useMemo(() => {
@@ -84,7 +84,7 @@ export const SkillsFilter: React.FC<SkillsFilterProps> = ({
 
     if (showCreativeSubcategories) {
       const creativeSubs = allSkills.filter((skill) => skill.isCreativeSubcategory);
-      const creativityIndex = skills.findIndex((skill) => skill.id === 4);
+      const creativityIndex = skills.findIndex((skill) => skill.id === 2);
       if (creativityIndex !== -1) {
         skills.splice(creativityIndex + 1, 0, ...creativeSubs);
       }
@@ -137,7 +137,7 @@ export const SkillsFilter: React.FC<SkillsFilterProps> = ({
       <ul className={styles.skillsList}>
         {visibleSkills.map((skill) => {
           // "Творчество и искусство" с особой логикой
-          if (skill.id === 4) {
+          if (skill.id === 2) {
             return (
               <li key={skill.id} className={styles.skillItem}>
                 <div className={styles.categoryWithArrow}>

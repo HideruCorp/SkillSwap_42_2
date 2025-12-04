@@ -2,7 +2,7 @@
 @use '@shared/styles/variables' as v;
 
 .filters {
-  width: 324px;
+  inline-size: 324px;
   padding: 20px;
   background-color: v.$color-surface;
 
@@ -12,11 +12,19 @@
     color: v.$color-text;
   }
 
+  &__subheader {
+    @include m.text-h3;
+
+    color: v.$color-text;
+  }
+
   &__content {
+    @include m.flex(column, 32px);
+
     margin-block-start: 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    flex-shrink: 0;
+  }
+
+  &__section {
+    @include m.flex(column, 20px);
   }
 }
