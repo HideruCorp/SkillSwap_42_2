@@ -1,0 +1,11 @@
+export { Catalog } from './catalog';
+export { LoginPage } from './login';
+export { RegisterPage } from './register';
+export { ProfilePage } from './profile';
+export { ProfileFavoritesPage } from './profile-favorites';
+export { SkillPage } from './skill';
+export { AboutPage } from './about';
+export { NotFoundPage } from './not-found';
+export { ServerErrorPage } from './server-error';
+export { PrivacyPage } from './privacy';
+export { TermsPage } from './terms';
