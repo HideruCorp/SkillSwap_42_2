@@ -1,0 +1,35 @@
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
+
+.container {
+  max-inline-size: 460px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image {
+  max-width: 460px;
+  height: 304px;
+  margin-bottom: 40px;
+}
+
+
+.title {
+  @include text-h2;
+  color: $color-text;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.message {
+  @include text-body;
+  color: $color-text;
+  text-align: center;
+  margin: 0 0 32px;
+}
+
+.buttons {
+  display: flex;
+  gap: 24px;
+}
