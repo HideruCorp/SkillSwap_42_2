@@ -1,8 +1,9 @@
 import { SkillsFilter } from '@features/filters/skillsFilter';
 import { CityFilter } from '@features/filters/cityFilter';
 import { RadioGroupUI } from '@shared/ui/radiogroup';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { TSkillType, Gender } from '@shared/types';
+import CrossIcon from '@shared/assets/img/cross.svg?react';
 import styles from './filters-panel.module.scss';
 
 function FiltersPanel() {
@@ -32,9 +33,41 @@ function FiltersPanel() {
     setGender(value as Gender);
   };
 
+  // Calculate active filters count
+  const activeFiltersCount = useMemo(() => {
+    let count = 0;
+    if (selectedSkills.length > 0) count += selectedSkills.length;
+    if (selectedCities.length > 0) count += selectedCities.length;
+    if (skillType !== 'all') count += 1;
+    if (gender !== 'all') count += 1;
+    return count;
+  }, [selectedSkills, selectedCities, skillType, gender]);
+
+  // Reset all filters to default values
+  const handleResetFilters = () => {
+    setSelectedSkills([]);
+    setSelectedCities([]);
+    setSkillType('all');
+    setGender('all');
+  };
+
   return (
     <aside className={styles.filters}>
-      <h2 className={styles.filters__header}>Фильтры</h2>
+      <div className={styles['filters__header-row']}>
+        <h2 className={styles.filters__header}>
+          Фильтры{activeFiltersCount > 0 && ` (${activeFiltersCount})`}
+        </h2>
+        {activeFiltersCount > 0 && (
+          <button
+            type="button"
+            className={styles['filters__reset-btn']}
+            onClick={handleResetFilters}
+          >
+            Сбросить
+            <CrossIcon className={styles['filters__reset-icon']} />
+          </button>
+        )}
+      </div>
       <div className={styles.filters__content}>
         <RadioGroupUI
           name="skillType"
@@ -43,12 +76,15 @@ function FiltersPanel() {
           onChange={handleSkillTypeChange}
         />
         <SkillsFilter selectedSkills={selectedSkills} onSelectionChange={setSelectedSkills} />
-        <RadioGroupUI
-          name="gender"
-          options={genderOptions}
-          value={gender}
-          onChange={handleGenderChange}
-        />
+        <section className={styles.filters__section}>
+          <h3 className={styles.filters__subheader}>Пол автора</h3>
+          <RadioGroupUI
+            name="gender"
+            options={genderOptions}
+            value={gender}
+            onChange={handleGenderChange}
+          />
+        </section>
         <CityFilter selectedCities={selectedCities} onSelectionChange={setSelectedCities} />
       </div>
     </aside>
