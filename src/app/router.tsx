@@ -1,5 +1,20 @@
-import Catalog from '@pages/catalog';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import {
+  Catalog,
+  LoginPage,
+  RegisterPage,
+  ProfilePage,
+  ProfileFavoritesPage,
+  ProfileRequestsPage,
+  ProfileSkillsPage,
+  ProfileExchangesPage,
+  SkillPage,
+  AboutPage,
+  NotFoundPage,
+  ServerErrorPage,
+  PrivacyPage,
+  TermsPage,
+} from '@pages/index';
 
 function AppRouter() {
   const location = useLocation();
@@ -7,42 +22,36 @@ function AppRouter() {
 
   return (
     <Routes location={backgroundLocation || location}>
+      {/* Главные страницы */}
       <Route path="/" element={<Catalog />} />
+      <Route path="/skill/:id" element={<SkillPage />} />
+      <Route path="/about" element={<AboutPage />} />
+
       {/*
-      <Route
-        path="/login"
-        element={
-          <PrivateRoute forUnauthorized>
-            <Login />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/register"
-        element={
-          <PrivateRoute forUnauthorized>
-            <Register />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/profile"
-        element={
-          <PrivateRoute>
-            <Profile />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/profile/orders"
-        element={
-          <PrivateRoute>
-            <ProfileOrders />
-          </PrivateRoute>
-        }
-      />
-      <Route path="*" element={<NotFound404 />} />
+        Страницы авторизации - защищены от авторизованных юзеров
+        TODO: <PrivateRoute forUnauthorized><LoginPage /></PrivateRoute>
+        - перебрасывают на прошлую страницу, или на `/`
       */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+
+      {/*
+        Профиль пользователя - защищен от неавторизованных юзеров
+        TODO: <PrivateRoute><ProfilePage /></PrivateRoute>
+      */}
+      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/profile/favorites" element={<ProfileFavoritesPage />} />
+      <Route path="/profile/requests" element={<ProfileRequestsPage />} />
+      <Route path="/profile/skills" element={<ProfileSkillsPage />} />
+      <Route path="/profile/exchanges" element={<ProfileExchangesPage />} />
+
+      {/* Служебные страницы */}
+      <Route path="/privacy" element={<PrivacyPage />} />
+      <Route path="/terms" element={<TermsPage />} />
+
+      {/* Страницы ошибок */}
+      <Route path="/error" element={<ServerErrorPage />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
