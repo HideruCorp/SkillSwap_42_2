@@ -5,6 +5,9 @@ import {
   RegisterPage,
   ProfilePage,
   ProfileFavoritesPage,
+  ProfileRequestsPage,
+  ProfileSkillsPage,
+  ProfileExchangesPage,
   SkillPage,
   AboutPage,
   NotFoundPage,
@@ -24,20 +27,23 @@ function AppRouter() {
       <Route path="/skill/:id" element={<SkillPage />} />
       <Route path="/about" element={<AboutPage />} />
 
-      {/* 
-        Страницы авторизации - защищены от авторизованных юзеров 
+      {/*
+        Страницы авторизации - защищены от авторизованных юзеров
         TODO: <PrivateRoute forUnauthorized><LoginPage /></PrivateRoute>
-        - перебрасывают на прошлую страницу, или на `/` 
+        - перебрасывают на прошлую страницу, или на `/`
       */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
-      {/* 
-        Профиль пользователя - защищен от неавторизованных юзеров 
+      {/*
+        Профиль пользователя - защищен от неавторизованных юзеров
         TODO: <PrivateRoute><ProfilePage /></PrivateRoute>
       */}
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/profile/favorites" element={<ProfileFavoritesPage />} />
+      <Route path="/profile/requests" element={<ProfileRequestsPage />} />
+      <Route path="/profile/skills" element={<ProfileSkillsPage />} />
+      <Route path="/profile/exchanges" element={<ProfileExchangesPage />} />
 
       {/* Служебные страницы */}
       <Route path="/privacy" element={<PrivacyPage />} />
