@@ -1,0 +1,40 @@
+@use '@shared/styles/variables';
+@use '@shared/styles/mixins';
+
+.container {
+  max-height: 248px;
+  max-width: 400px;
+  width: 100%;
+  grid-column:2;
+  overflow: scroll;
+}
+
+.head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: variables.$color-surface  
+}
+
+.skillName {
+  @include mixins.text-h1;
+
+  color: variables.$color-text;
+}
+
+.category {
+  @include mixins.text-caption;
+
+  color: variables.$color-text-caption;
+  padding: 5px 0 20px;
+}
+
+.description {
+  @include mixins.text-body;
+  
+  color: variables.$color-text;
+  max-height: 168px;
+}
+
+
+
