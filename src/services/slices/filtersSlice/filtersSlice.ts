@@ -14,7 +14,7 @@ const initialState: TFiltersState = {
   gender: 'all',
   cities: [],
   subcategories: [],
-  textSearch: ''
+  textSearch: '',
 };
 
 export const filtersSlice = createSlice({
@@ -30,7 +30,7 @@ export const filtersSlice = createSlice({
     setCities: (state, action: PayloadAction<string[]>) => {
       state.cities = action.payload;
     },
-	setSubcategories: (state, action: PayloadAction<number[]>) => {
+    setSubcategories: (state, action: PayloadAction<number[]>) => {
       state.subcategories = action.payload;
     },
     setTextSearch: (state, action: PayloadAction<string>) => {
@@ -38,24 +38,18 @@ export const filtersSlice = createSlice({
     },
     resetFilters() {
       return initialState;
-    }
+    },
   },
   selectors: {
     selectSkillType: (state) => state.skillType,
     selectGender: (state) => state.gender,
-	  selectCities: (state) => state.cities,
-	  selectSubcategories: (state) => state.subcategories,
-    selectTextSearch: (state) => state.textSearch
+    selectCities: (state) => state.cities,
+    selectSubcategories: (state) => state.subcategories,
+    selectTextSearch: (state) => state.textSearch,
   },
 });
 
-export const { 
-  setSkillType,
-  setGender,
-  setCities,
-  setSubcategories,
-  setTextSearch,
-  resetFilters
-} = filtersSlice.actions;
+export const { setSkillType, setGender, setCities, setSubcategories, setTextSearch, resetFilters } =
+  filtersSlice.actions;
 
 export default filtersSlice.reducer;
