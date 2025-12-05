@@ -2,13 +2,13 @@ import React from 'react';
 import styles from './checkbox.module.scss';
 import type { CheckboxProps } from './type';
 
-export const CheckboxUI = ({
+export function CheckboxUI({
   variant,
   checked = false,
   isDisabled = false,
   text,
   onToggle,
-}: CheckboxProps) => {
+}: CheckboxProps) {
   const inputId = React.useId();
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (onToggle) {
@@ -32,6 +32,6 @@ export const CheckboxUI = ({
       <span className={styles.textContent}>{text}</span>
     </label>
   );
-};
+}
 
 export default CheckboxUI;
