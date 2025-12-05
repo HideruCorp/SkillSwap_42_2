@@ -12,3 +12,18 @@
   width: 16px;
   height: 16px;
 }
+
+.skillModal {
+  border: 1px solid $color-text;
+
+  &[data-testid='modal'] {
+    top: 94px;
+    left: 36px;
+    transform: none;
+  }
+
+  // change standard opacity for modals
+  & + div[role='dialog'] {
+    opacity: 0.2;
+  }
+}
