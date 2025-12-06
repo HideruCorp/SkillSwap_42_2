@@ -1,0 +1,51 @@
+@use '@shared/styles/variables' as v;
+@use '@shared/styles/mixins' as m;
+
+.menu-list {
+  @include m.flex(column, 24px);
+
+  padding: 40px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  background-color: v.$color-surface;
+  border: 1px solid v.$color-toggle;
+  border-radius: 12px;
+}
+
+.link {
+  @include m.text-h4;
+
+  text-decoration: none;
+  color: v.$color-text;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: v.$color-button-pressed;
+  }
+}
+
+.logout-button {
+  @include m.button-reset;
+  @include m.text-h4;
+  @include m.flex($gap: 8px, $align: center);
+
+  color: v.$color-text;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: v.$color-button-pressed;
+  }
+
+  & .icon {
+    @include m.fixed-size(24px, 24px);
+    @include m.flex($align: center, $justify: center);
+
+    svg {
+      width: 100%;
+      height: 100%;
+      transition: color 0.3s ease;
+      fill: currentcolor;
+    }
+  }
+}

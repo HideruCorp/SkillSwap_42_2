@@ -1,0 +1,35 @@
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
+
+.dropdown {
+  --dropdown-gap: 8px;
+  display: inline-block;
+}
+
+.trigger {
+  cursor: pointer;
+  user-select: none;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + var(--dropdown-gap, 8px));
+  z-index: 1000;
+
+  &--left {
+    left: 0;
+  }
+
+  &--right {
+    right: 0;
+  }
+
+  &--center {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
