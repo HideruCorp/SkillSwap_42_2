@@ -144,9 +144,7 @@ export default function InfiniteScroll(): JSX.Element {
         setVisibleItems(mapped.slice(0, PAGE_SIZE));
         setPage(1);
       } catch (err) {
-        // в реальном проекте — показать UI-ошибку
-        // eslint-disable-next-line no-console
-        console.error('Ошибка при загрузке моков для InfiniteScroll:', err);
+        // TODO: handle error properly - show UI error
       } finally {
         loadingInitialRef.current = false;
         setLoadingInitial(false);
@@ -202,13 +200,10 @@ export default function InfiniteScroll(): JSX.Element {
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...userProps}
               onDetailsClick={() => {
-                // заглушка — можно открыть popup или navigate
-                // eslint-disable-next-line no-console
-                console.log('Подробнее:', userProps.name);
+                // TODO: implement details navigation
               }}
               onLikeClick={() => {
-                // eslint-disable-next-line no-console
-                console.log('Like:', userProps.name);
+                // TODO: implement like functionality
               }}
             />
           ))}
