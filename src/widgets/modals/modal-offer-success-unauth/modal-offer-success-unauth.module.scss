@@ -1,0 +1,34 @@
+@use '@shared/styles/mixins' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 556px;
+}
+
+.icon {
+  width: 100px;
+  height: 100px;
+  background-image: url('../../../shared/assets/img/user-circle.svg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.title {
+  @include text-h2;
+
+  margin-top: 52px;
+  margin-bottom: 12px;
+}
+
+.text {
+  @include text-body;
+  
+  margin-bottom: 32px;
+}
+
+.button {
+  width: 436px;
+}
