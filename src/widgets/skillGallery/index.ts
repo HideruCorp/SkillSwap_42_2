@@ -1,1 +1,1 @@
-export { SkillGallery } from './SkillGallery';
+export { default as SkillGallery } from './SkillGallery';

@@ -1,3 +1,5 @@
+/* stylelint-disable no-descending-specificity */
+
 @use '@shared/styles/mixins' as *;
 @use '@shared/styles/variables' as *;
 
@@ -8,7 +10,6 @@
 
   // Переопределяем стили библиотеки под наш дизайн
   :global {
-
     .image-gallery-slide img {
         width: 324px;
         height: 324px;
@@ -37,7 +38,7 @@
       width: 92px;
       height: 92px;
       flex-shrink: 0;
-      border: 0px solid transparent;
+      border: 0 solid transparent;
       border-radius: 8px;
       overflow: hidden;
 
@@ -64,14 +65,14 @@
 
     .image-gallery-left-nav,
     .image-gallery-right-nav {
-      background: rgba(255, 255, 255, 0.85);
+      background: rgb(255 255 255 / 85%);
       border-radius: 8px;
       width: 44px;
       height: 44px;
       padding: 0;
 
       &:hover {
-        background: rgba(255, 255, 255, 1);
+        background: rgb(255 255 255 / 100%);
       }
     }
   }
@@ -89,6 +90,14 @@
   font-size: 16px;
 }
 
+.leftArrow {
+    left: 12px;
+  }
+
+  .rightArrow {
+    right: 12px;
+  }
+
 .leftArrow,.rightArrow {
     position: absolute;
     top: 50%;
@@ -104,13 +113,7 @@
     }
   }
 
-  .leftArrow {
-    left: 12px;
-  }
-
-  .rightArrow {
-    right: 12px;
-  }
+  
 
   .thumbnailWrapper {
     position: relative;
@@ -123,16 +126,19 @@
       object-fit: cover;
       display: block;
     }
+    
   }
 
   .overlay {
     position: absolute;
     inset: 0;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgb(255 255 255 / 50%);
     color: $color-text;
     display: flex;
     align-items: center;
     justify-content: center;
+
     @include text-body;
+
     border-radius: 8px;
   }
