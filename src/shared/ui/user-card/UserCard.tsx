@@ -60,7 +60,12 @@ function UserCard({
       </div>
 
       <div className={styles.footer}>
-        <Button title="Подробнее" onClick={() => onDetailsClick?.()} type="default" />
+        <Button
+          title="Подробнее"
+          onClick={() => onDetailsClick?.()}
+          type="default"
+          className={styles.detailsButton}
+        />
       </div>
     </div>
   );
