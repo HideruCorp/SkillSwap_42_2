@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable react/no-array-index-key */
 import { useCallback, useEffect, useRef, useState, type JSX } from 'react';
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import UserCard from '../../../shared/ui/user-card/UserCard';
@@ -145,7 +147,6 @@ export default function InfiniteScroll(): JSX.Element {
         setPage(1);
       } catch (err) {
         // в реальном проекте — показать UI-ошибку
-        // eslint-disable-next-line no-console
         console.error('Ошибка при загрузке моков для InfiniteScroll:', err);
       } finally {
         loadingInitialRef.current = false;
@@ -187,7 +188,6 @@ export default function InfiniteScroll(): JSX.Element {
         {/* если данные ещё не загружены — можно показать skeletons */}
         {loadingInitial &&
           Array.from({ length: 6 }).map((_, i) => (
-            // eslint-disable-next-line react/no-array-index-key
             <div key={`skeleton-${i}`} className={styles.card}>
               {/* простая заглушка; ты можешь заменить на UserCardSkeleton */}
               <div style={{ height: 140, background: '#f4f4f4', borderRadius: 8 }} />
@@ -197,17 +197,13 @@ export default function InfiniteScroll(): JSX.Element {
           visibleItems.map((userProps, idx) => (
             <UserCard
               // у нас нет id в UserCardProps, поэтому use index — лучше заменить, если id потребуется
-              // eslint-disable-next-line react/no-array-index-key
               key={`${userProps.name}-${idx}`}
-              // eslint-disable-next-line react/jsx-props-no-spreading
               {...userProps}
               onDetailsClick={() => {
                 // заглушка — можно открыть popup или navigate
-                // eslint-disable-next-line no-console
                 console.log('Подробнее:', userProps.name);
               }}
               onLikeClick={() => {
-                // eslint-disable-next-line no-console
                 console.log('Like:', userProps.name);
               }}
             />
