@@ -1,0 +1,74 @@
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
+
+.footer {
+  background-color: $color-surface;
+  position: relative;
+  width: 1440px; 
+  height: 232px; 
+  margin: 0 auto; 
+  box-sizing: border-box;
+}
+
+.container {
+  padding: 32px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%; 
+  box-sizing: border-box;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 112px;
+  height: 100%;
+  justify-content: space-between; 
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.linksSection {
+  display: flex;
+  gap: 24px;
+  position: relative;
+  top: 8px; 
+}
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 324px;
+  
+  
+  &:first-child {
+    .link {
+      margin-left: 15px;
+    }
+  }
+}
+
+.link {
+  @include text-body;
+  color: $color-text;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-text-caption;
+    text-decoration: none;
+  }
+}
+
+.copyright {
+  @include text-caption;
+  color: $color-text-caption;
+}
