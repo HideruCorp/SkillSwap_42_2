@@ -1,5 +1,5 @@
-import styles from './footer.module.scss';
 import Logo from '@shared/ui/logo/Logo';
+import styles from './footer.module.scss';
 
 function Footer() {
   const currentYear = new Date().getFullYear();
@@ -16,18 +16,30 @@ function Footer() {
 
         <div className={styles.linksSection}>
           <div className={styles.column}>
-            <a href="#about" className={styles.link}>• О проекте</a>
-            <a href="#allskills" className={styles.link}>• Все навыки</a>
+            <a href="#about" className={styles.link}>
+              • О проекте
+            </a>
+            <a href="#allskills" className={styles.link}>
+              • Все навыки
+            </a>
           </div>
-          
+
           <div className={styles.column}>
-            <a href="#contacts" className={styles.link}>Контакты</a>
-            <a href="#blog" className={styles.link}>Блог</a>
+            <a href="#contacts" className={styles.link}>
+              Контакты
+            </a>
+            <a href="#blog" className={styles.link}>
+              Блог
+            </a>
           </div>
-          
+
           <div className={styles.column}>
-            <a href="#privacy" className={styles.link}>Политика конфиденциальности</a>
-            <a href="#terms" className={styles.link}>Пользовательское соглашение</a>
+            <a href="#privacy" className={styles.link}>
+              Политика конфиденциальности
+            </a>
+            <a href="#terms" className={styles.link}>
+              Пользовательское соглашение
+            </a>
           </div>
         </div>
       </div>
