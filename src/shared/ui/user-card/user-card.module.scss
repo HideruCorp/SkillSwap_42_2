@@ -2,42 +2,51 @@
 @use '@shared/styles/mixins' as *;
 
 .card {
+  width: 324px;
+  height: auto;
+  min-height: 368px;
   background: $color-surface;
   border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
-  border: 1px solid rgb(0 0 0 / 5%);
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  height: 100%;
-  width: 100%;
+  gap: 19px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
+  border: 1px solid rgb(0 0 0 / 5%);
+  box-sizing: border-box;
+
+  .skillsSection {
+    .tag-list__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+  }
 }
 
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
-  gap: 12px;
 }
 
 .avatarSection {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   flex: 1;
 }
 
 .avatar {
-  width: 48px;
-  height: 48px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .avatarPlaceholder {
-  width: 48px;
-  height: 48px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   background: $color-accent;
   display: flex;
@@ -46,24 +55,27 @@
   color: $color-text;
   font-size: 20px;
   font-weight: 500;
+  flex-shrink: 0;
 }
 
 .userInfo {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex-grow: 1;
+  justify-content: center;
+  min-height: 100px;
 }
 
 .name {
   @include text-h4;
-
   color: $color-text;
   margin: 0;
+  font-size: 19px;
 }
 
 .location {
   @include text-caption;
-
   color: $color-text-caption;
   margin: 0;
 }
@@ -72,16 +84,20 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px;
+  padding: 0;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
+  align-self: flex-start;
+  margin-top: 0;
   transition: transform 0.2s ease;
-  
+
   &:hover {
     transform: scale(1.1);
   }
-  
+
   &:active {
     transform: scale(0.95);
   }
@@ -110,23 +126,24 @@
 }
 
 .skillsTitle {
-  @include text-caption;
-
-  color: $color-text-caption;
-  margin: 0;
+  font-family: $font-body;
   font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+  color: $color-text;
+  margin: 0;
 }
 
 .skillsList {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 4px;
   align-items: center;
 }
 
 .moreSkills {
   @include text-caption;
-
   color: $color-text-caption;
   background: $color-disabled;
   padding: 4px 8px;
@@ -137,4 +154,24 @@
   margin-top: auto;
   display: flex;
   justify-content: center;
+  width: 100%;
+
+  .detailsButton {
+    width: 100%;
+    background-color: $color-accent;
+    border: none;
+
+    &:hover {
+      background-color: $color-button-hover;
+    }
+
+    &:active {
+      background-color: $color-button-pressed;
+    }
+
+    :global(.buttonText) {
+      opacity: 1;
+      color: $color-text;
+    }
+  }
 }
