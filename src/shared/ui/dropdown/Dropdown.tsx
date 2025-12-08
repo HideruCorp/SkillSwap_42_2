@@ -16,9 +16,19 @@ export function Dropdown({
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Управляемый или неуправляемый режим
   const isControlled = controlledIsOpen !== undefined;
   const isOpen = isControlled ? controlledIsOpen : internalIsOpen;
+
+  const closeAndBlur = () => {
+    if (!isControlled) {
+      setInternalIsOpen(false);
+    }
+    onToggle?.(false);
+    const active = document.activeElement as HTMLElement | null;
+    if (active && containerRef.current?.contains(active)) {
+      active.blur();
+    }
+  };
 
   const handleToggle = () => {
     const newState = !isOpen;
@@ -33,6 +43,7 @@ export function Dropdown({
     if (!isOpen || disableClickOutside) return undefined;
 
     const handleClickOutside = (event: MouseEvent) => {
+      event.stopPropagation();
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         if (!isControlled) {
           setInternalIsOpen(false);
@@ -47,29 +58,35 @@ export function Dropdown({
     };
   }, [isOpen, disableClickOutside, isControlled, onToggle]);
 
-  // Закрытие по Escape
-  useEffect(() => {
-    if (!isOpen || disableEscapeKey) return undefined;
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleToggle();
+      return;
+    }
+    if (event.key === 'Escape') {
+      event.stopPropagation();
+      event.preventDefault();
+      if (disableEscapeKey) return;
+      closeAndBlur();
+    }
+  };
 
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        if (!isControlled) {
-          setInternalIsOpen(false);
-        }
-        onToggle?.(false);
-      }
-    };
-
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, disableEscapeKey, isControlled, onToggle]);
+  const handleMenuKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      event.stopPropagation();
+      event.preventDefault();
+      if (disableEscapeKey) return;
+      closeAndBlur();
+    }
+  };
 
   return (
     <div ref={containerRef} className={`${styles.dropdown} ${className}`}>
       <div
         className={styles.trigger}
         onClick={handleToggle}
-        onKeyDown={(e) => e.key === 'Enter' && handleToggle()}
+        onKeyDown={handleKeyDown}
         role="button"
         tabIndex={0}
         aria-expanded={isOpen}
@@ -79,7 +96,12 @@ export function Dropdown({
       </div>
 
       {isOpen && (
-        <div className={`${styles.menu} ${styles[`menu--${align}`]} ${menuClassName}`} role="menu">
+        <div
+          className={`${styles.menu} ${styles[`menu--${align}`]} ${menuClassName}`}
+          tabIndex={0}
+          role="menu"
+          onKeyDown={handleMenuKeyDown}
+        >
           {children}
         </div>
       )}

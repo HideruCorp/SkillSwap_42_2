@@ -1,0 +1,324 @@
+@use '@shared/styles/variables' as v;
+@use '@shared/styles/mixins' as m;
+
+.container {
+  position: relative;
+  display: inline-block;
+  width: 208px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 20px;
+  background: v.$color-surface;
+  border: 1px solid v.$color-text-caption;
+  border-radius: 12px;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+
+  &:hover {
+    border-color: v.$color-button-pressed;
+  }
+
+  &:focus-within {
+    border-color: v.$color-button-pressed;
+  }
+
+  &--open {
+    border-color: v.$color-button-pressed;
+  }
+
+  &--error {
+    border-color: v.$color-error;
+  }
+
+  &--disabled {
+    background: v.$color-disabled;
+    cursor: not-allowed;
+    opacity: 0.6;
+
+    &:hover {
+      border-color: v.$color-text-caption;
+    }
+  }
+}
+
+.input {
+  @include m.text-body;
+
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: v.$color-text;
+  outline: none;
+  cursor: text;
+  caret-color: v.$color-button-pressed;
+  line-height: 24px;
+
+  &::placeholder {
+    color: v.$color-text-caption;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.calendar-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: v.$color-text;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: v.$color-button-pressed;
+  }
+}
+
+.error-text {
+  @include m.text-caption;
+
+  margin-top: 4px;
+  color: v.$color-error;
+}
+
+.dropdown {
+  width: 280px;
+  background: v.$color-surface;
+  border: 1px solid v.$color-text-caption;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.calendar {
+  padding: 16px 28px;
+}
+
+// react-day-picker root
+.rdp-root {
+  --rdp-accent-color: v.$color-accent;
+  --rdp-accent-background-color: v.$color-accent;
+  --rdp-weekday-text-transform: capitalize;
+  --rdp-day-height: 32px;
+  --rdp-day-width: 32px;
+}
+
+// Caption with month/year dropdowns
+.caption {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  height: 40px;
+  margin-bottom: 8px;
+}
+
+.dropdowns {
+  display: flex;
+  gap: 0;
+  align-items: center;
+}
+
+.nav {
+  display: none;
+}
+
+.select {
+  @include m.text-body;
+
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 8px 8px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: v.$color-text;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-transform: capitalize;
+
+  &:hover {
+    background: v.$color-disabled;
+  }
+
+  &:focus {
+    outline: none;
+    background: v.$color-disabled;
+  }
+}
+
+.chevron {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+
+  &--open {
+    transform: rotate(180deg);
+  }
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 32px);
+  gap: 0;
+  margin-bottom: 0;
+}
+
+.weekday {
+  @include m.text-caption;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: v.$color-text-link;
+  text-transform: var(--rdp-weekday-text-transform,capitalize);
+}
+
+// Month grid and weeks
+.month-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 32px);
+  gap: 0;
+}
+
+.day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.day-button {
+  @include m.text-caption;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: v.$color-text;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover:not(.selected):not(.outside):not(.disabled) {
+    background: v.$color-disabled;
+  }
+
+  &:focus:not(.selected) {
+    outline: none;
+    border: 2px solid v.$color-accent;
+  }
+
+  &:focus-within:not(.selected) {
+    border: 2px solid v.$color-accent;
+  }
+}
+
+.selected {
+  background: transparent;
+
+  .day-button {
+    background: v.$color-accent;
+    color: v.$color-text;
+
+    &:hover {
+      background: v.$color-button-hover;
+    }
+  }
+}
+
+.today {
+  .day-button {
+    border: 2px solid v.$color-text-caption;
+  }
+}
+
+.outside {
+  .day-button {
+    color: v.$color-text-disabled;
+  }
+}
+
+.disabled {
+  .day-button {
+    color: v.$color-text-disabled;
+    cursor: not-allowed;
+  }
+}
+
+// Footer with buttons
+.footer {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px 16px;
+}
+
+.button {
+  flex: 1;
+  max-width: 125px;
+}
+
+// Month/Year selector dropdowns
+.selector-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+  background: v.$color-surface;
+  border: 1px solid v.$color-text-caption;
+  border-radius: 8px;
+}
+
+.selector-option {
+  @include m.text-body;
+
+  display: block;
+  width: 100%;
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  color: v.$color-text;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: v.$color-disabled;
+  }
+
+  &--selected {
+    color: v.$color-button-pressed;
+  }
+}
+
+.select-wrapper {
+  position: relative;
+  --dropdown-gap: 0px;
+}
