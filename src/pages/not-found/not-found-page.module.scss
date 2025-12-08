@@ -1,3 +1,7 @@
-.not-found {
-  // Стили для страницы 404
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-block-start: 100px;
+  padding-bottom: 60px;
 }
