@@ -1,0 +1,56 @@
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
+
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+  margin: 0;
+}
+
+.content {
+	display: flex;
+	justify-content: space-between;
+	gap: 20px;
+}
+
+.message {
+	display: flex;
+	flex-direction: row;
+	gap: 8px;
+}
+
+.button {
+	display: block;
+	width: 114px;
+
+	// min-width: 100px;
+}
+
+.main_icon {
+	min-width: 40px;
+}
+
+/* .main_text {
+	flex-direction: column;
+	align-items: start;
+	gap: 12px;
+} */
+
+.title {
+  @include text-body;
+
+  color: $color-text;
+}
+
+.description {
+	@include text-caption;
+
+  color: $color-text;
+}
+
+.date {
+	@include text-body;
+
+  color: $color-text-caption;
+}

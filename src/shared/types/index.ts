@@ -10,7 +10,7 @@ export interface Skill {
   likesReceived: number[];
 }
 
-//Тип навыка для фильтра
+// Тип навыка для фильтра
 export type TSkillType = 'all' | 'learn' | 'teach';
 
 // Типы для пользователей

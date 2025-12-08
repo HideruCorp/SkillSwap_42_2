@@ -1,0 +1,241 @@
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
+
+.container {
+  width: 436px;
+  height: 96px;
+  font-family: $font-body;
+}
+
+.dropzone {
+  padding: 16px;
+  text-align: center;
+  background: $color-surface;
+  border: 1px dashed $color-text-caption;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+
+  &:hover:not(.disabled) {
+    border-color: $color-accent;
+  }
+
+  &.active {
+    border-color: $color-button-pressed;
+    background-color: rgba($color-button-pressed, 0.05);
+  }
+
+  &.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    border-style: solid;
+
+    &:hover {
+      border-color: $color-text-caption;
+    }
+  }
+
+  &.error {
+    border-color: $color-alarm !important;
+    background-color: rgba($color-alarm, 0.05);
+  }
+}
+
+.dropzoneContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.label {
+  @include text-body;
+  color: $color-text-caption;
+  margin-bottom: 5px;
+  font-weight: 400;
+}
+
+.selectButton {
+  @include button-reset;
+  @include text-body;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0;
+  padding: 0;
+  color: $color-button-pressed;
+  font-size: 16px;
+  font-family: $font-body;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 400;
+  transition: color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    color: $color-accent;
+  }
+
+  &:active:not(:disabled),
+  &:focus:not(:disabled) {
+    color: $color-button-pressed;
+    outline: none;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    color: $color-text-disabled;
+  }
+}
+
+.buttonIcon {
+  width: 24px;
+  height: 24px;
+  color: currentColor;
+
+  path {
+    fill: currentColor;
+  }
+}
+
+.filesList {
+  margin-top: 8px;
+}
+
+.filesHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  color: $color-text;
+  @include text-body;
+  word-break: break-all;
+}
+
+.filesCount {
+  @include text-body;
+  color: $color-text;
+}
+
+.clearButton {
+  @include button-reset;
+
+  display: flex;
+  align-items: center;
+  margin-left: 4px;
+  padding: 0;
+  color: $color-alarm;
+  transition: color 0.2s ease;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    color: darken($color-alarm, 10%);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.clearIcon {
+  width: 16px;
+  height: 16px;
+  color: currentColor;
+
+  path {
+    fill: currentColor;
+  }
+}
+
+.filesGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.fileItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: $color-surface;
+  border: 1px solid $color-toggle;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $color-accent;
+    background-color: rgba($color-accent, 0.05);
+  }
+}
+
+.fileInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.fileIcon {
+  color: $color-text-caption;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+
+  path {
+    fill: currentColor;
+  }
+}
+
+.fileName {
+  @include text-body;
+  color: $color-text;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.removeFileButton {
+  @include button-reset;
+
+  display: flex;
+  align-items: center;
+  margin-left: 4px;
+  padding: 0;
+  color: $color-text-caption;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    color: $color-alarm;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.removeIcon {
+  width: 16px;
+  height: 16px;
+  color: currentColor;
+
+  path {
+    fill: currentColor;
+  }
+}
+
+.error {
+  margin-top: 4px;
+  margin-left: 2px;
+  color: $color-alarm;
+  font-size: 12px;
+  @include text-caption;
+}
