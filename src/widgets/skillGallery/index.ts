@@ -1,1 +1,4 @@
-export { default as SkillGallery } from './SkillGallery';
+import SkillGallery from './SkillGallery';
+
+export { SkillGallery };
+export default SkillGallery;

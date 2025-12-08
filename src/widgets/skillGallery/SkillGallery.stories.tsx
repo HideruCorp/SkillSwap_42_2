@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { SkillGallery } from './SkillGallery';
+import SkillGallery from './SkillGallery';
 
 const meta: Meta<typeof SkillGallery> = {
   title: 'Widgets/SkillGallery',
