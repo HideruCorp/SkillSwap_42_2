@@ -11,8 +11,9 @@ interface LayoutProps {
 function Layout({ children }: LayoutProps) {
   // так как разметка для главной страницы и для страниц регистрации и логина отличается, добавлено условие
   const location = useLocation();
-  const isLoginOrRegisterPage =
-    location.pathname.includes('login') || location.pathname.includes('register');
+  const isLoginOrRegisterPage = ['/login', '/register', '/error', '/*'].some((path) =>
+    location.pathname.includes(path)
+  );
 
   return (
     <div className={styles.container}>
