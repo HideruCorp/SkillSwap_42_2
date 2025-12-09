@@ -2,6 +2,8 @@ import RegisterLayout from '@widgets/registerLayout/RegisterLayout';
 import { type PropsWithChildren } from 'react';
 import styles from './register-step2-page.module.scss';
 
+import UserInfoIcon from '@/shared/assets/img/user-Info.svg?react';
+
 function GrayRectangle({ children }: PropsWithChildren) {
   return (
     <div style={{ backgroundColor: 'gray', width: '556px', height: '400px', padding: '20px' }}>
@@ -18,6 +20,7 @@ interface ImageWithTextProps {
 function ImageWithText({ title, description }: ImageWithTextProps) {
   return (
     <div className={styles.imageTextContainer}>
+      <UserInfoIcon className={styles.icon} />
       <h2 className={styles.title}>{title}</h2>
       <p className={styles.description}>{description}</p>
     </div>
