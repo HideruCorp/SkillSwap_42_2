@@ -2,7 +2,7 @@
 @use '@shared/styles/mixins' as m;
 
 .header {
-  @include m.flex($gap: 32px, $align: center, $justify: left);
+  @include m.flex($gap: 32px, $align: center, $justify: space-between);
 
   height: 104px;
   background-color: $color-bg;
@@ -16,6 +16,7 @@
   font-family: $font-body;
   text-decoration: none;
   color: $color-text;
+  white-space: nowrap;
 }
 
 .sign-in {
