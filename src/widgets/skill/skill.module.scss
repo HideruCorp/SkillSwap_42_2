@@ -1,0 +1,95 @@
+@use '@shared/styles/variables' as *;
+
+.skillCard {
+  display: flex;
+  // flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  background: $color-surface;
+  background: blue;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  width: 100%;
+}
+
+.buttonBlock {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+// Общие стили для кнопок иконок
+%iconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-accent;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+.likeButton {
+  @extend %iconButton;
+  width: 24px;
+  height: 24px;
+}
+
+.likeIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.shareButton {
+  @extend %iconButton;
+  width: 24px;
+  height: 24px;
+}
+
+.shareIcon {
+  width: 24px;
+  height: 24px;
+}
+
+// Основной контент (описание + галерея)
+.skillInfoBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  // Desktop: две колонки
+  @media (min-width: 768px) {
+    flex-direction: row;
+    gap: 32px;
+  }
+}
+
+// Левая колонка с описанием
+.descriptionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+
+  // Кнопка "Подробнее" прижата к низу
+  > button {
+    margin-top: auto;
+  }
+}
