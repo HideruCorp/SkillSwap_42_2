@@ -1,3 +1,7 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 /* Отключаем браузерные дефолтные стили для всех элементов */
 html,
 div,
@@ -78,6 +82,7 @@ summary,
 time,
 mark,
 audio,
+textarea,
 video {
   margin: 0;
   padding: 0;

@@ -1,0 +1,144 @@
+/* stylelint-disable no-descending-specificity */
+
+@use '@shared/styles/mixins' as *;
+@use '@shared/styles/variables' as *;
+
+.skillGallery {
+  width: 100%;
+  max-width: 900px;
+  position: relative;
+
+  // Переопределяем стили библиотеки под наш дизайн
+  :global {
+    .image-gallery-slide img {
+        width: 324px;
+        height: 324px;
+        object-fit: cover;
+      }
+
+    .image-gallery-content .image-gallery-slide-wrapper {
+        width: 324px;
+        height: 324px;
+      }
+
+    .image-gallery-thumbnails-wrapper {
+        margin-left: 24px;
+        height: 324px;
+      }
+
+    .image-gallery-thumbnails-container {
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-start;
+      height: 100%;
+      gap: 22px;
+      }  
+
+    .image-gallery-thumbnail {
+      width: 92px;
+      height: 92px;
+      flex-shrink: 0;
+      border: 0 solid transparent;
+      border-radius: 8px;
+      overflow: hidden;
+
+      * {
+      width: 100%;
+      height: 100%;
+    }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      &:hover {
+        border-color: #abd27a;
+      }
+    }
+
+    .image-gallery-image {
+      border-radius: 12px;
+    }
+
+    .image-gallery-left-nav,
+    .image-gallery-right-nav {
+      background: rgb(255 255 255 / 85%);
+      border-radius: 8px;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+
+      &:hover {
+        background: rgb(255 255 255 / 100%);
+      }
+    }
+  }
+}
+
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 300px;
+  background: #f9faf7;
+  border-radius: 12px;
+  color: #9ca197;
+  font-size: 16px;
+}
+
+.leftArrow {
+    left: 12px;
+  }
+
+  .rightArrow {
+    right: 12px;
+  }
+
+.leftArrow,.rightArrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    padding: 8px;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  
+
+  .thumbnailWrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgb(255 255 255 / 50%);
+    color: $color-text;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @include text-body;
+
+    border-radius: 8px;
+  }

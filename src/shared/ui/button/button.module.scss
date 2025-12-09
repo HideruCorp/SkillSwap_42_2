@@ -1,42 +1,98 @@
 @use '@shared/styles/variables' as *;
 @use '@shared/styles/mixins' as *;
 
+//Общая основа кнопки
 .button {
-  height: 48px;
-  border: 1px solid transparent;
-  border-radius: 12px;
-  outline: none;
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   gap: 8px;
+  height: 48px;
+  border-radius: 12px;
+  outline: none;
+  border: 1px solid transparent;
+  background-color: $color-accent;
+  
+  cursor: pointer;
+  
+  &:disabled {
+    background-color: $color-disabled;
+    color: $color-text-caption;
+    pointer-events: none;
+  }
+  
+  &Text {
+    @include text-body;
+  
+    opacity: 0.8;
+  }
+}
+
+
+/*PRIMARY стиль кнопок*/
+.buttonPrimary {
+  color: $color-text;
+  background-color: $color-accent;
 
   &:hover {
-    cursor: pointer;
     background-color: $color-button-hover;
   }
 
   &:active {
+    color: $color-surface;
     background-color: $color-button-pressed;
+    transform: translateY(1px); 
+  }
+}
+
+/*SECONDARY стиль кнопок*/
+.buttonSecondary {
+  border-color: $color-accent;
+  background-color: $color-surface;
+  color: $color-text;
+
+  &:hover {
+    border-color: $color-button-hover;
+    color: $color-text-caption;
+  }
+  &:active {
+    border-color: $color-button-pressed;
+    color: $color-text;
+    transform: translateY(1px);
   }
 
   &:disabled {
-    pointer-events: none;
-    background-color: $color-disabled;
+    border-color: $color-disabled;
+  }
+}
+
+/*TERTIARY стиль кнопок*/
+.buttonTertiary {
+  background-color: $color-surface;
+  border-color: $color-disabled; // Нет границы по умолчанию
+  color: $color-text;
+
+  &:hover {
+    border-color: $color-button-hover;
+    color: $color-text-caption;
   }
 
-  &Text {
-    @include text-body;
-
-    opacity: 0.8;
+  &:active {
+    background-color: $color-button-pressed;
+    color: $color-text;
+    transform: translateY(1px);
   }
+}
 
-  &Primary {
-    background-color: $color-accent;
-  }
+/*Иконка внутри кнопки (справа)*/
+.iconRight {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
 
-  &Default {
-    border-color: $color-accent;
-    background-color: $color-surface;
+  svg {
+    width: 100%;
+    height: 100%;
+    stroke: $color-text;
   }
 }

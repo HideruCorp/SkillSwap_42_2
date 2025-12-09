@@ -1,16 +1,17 @@
+import ErrorPageContent from '@widgets/ErrorPageContent/ErrorPageContent';
+import imageError500 from '@shared/assets/img/error 404.svg';
 import styles from './not-found-page.module.scss';
 
-/*
-className={styles['not-found__some-bem--specific']}
-*/
-
-function NotFoundPage() {
+function ServerErrorPage() {
   return (
-    <section className={styles['not-found']}>
-      <h1>404</h1>
-      <p>К сожалению, эта страница недоступна</p>
-    </section>
+    <div className={styles.container}>
+      <ErrorPageContent
+        image={imageError500}
+        title="На сервере произошла ошибка"
+        description="Попробуйте позже или вернитесь на главную страницу"
+      />
+    </div>
   );
 }
 
-export default NotFoundPage;
+export default ServerErrorPage;

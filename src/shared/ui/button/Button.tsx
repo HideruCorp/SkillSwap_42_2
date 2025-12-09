@@ -1,31 +1,45 @@
+import React from 'react';
+import cn from 'classnames';
 import styles from './button.module.scss';
 
-export type ButtonType = 'default' | 'primary';
+export type ButtonType = 'primary' | 'default' | 'secondary' | 'tertiary';
 
 interface ButtonProps {
   title: string;
   onClick: () => void;
-  type: ButtonType;
+  type?: ButtonType;
   disabled?: boolean;
   className?: string;
+
+  // Иконка справа от текста: <ChevronRight /> Например
+  iconRight?: React.ReactNode;
 }
 
-function Button({ title, onClick, type = 'default', disabled = false, className }: ButtonProps) {
+function Button({
+  title,
+  onClick,
+  type = 'default',
+  disabled = false,
+  className,
+  iconRight = null,
+}: ButtonProps) {
   return (
     <button
       type="button"
-      className={`${styles.button} ${className} ${type === 'default' ? styles.buttonDefault : styles.buttonPrimary}`}
+      className={cn(styles.button, className, {
+        [styles.buttonPrimary]: type === 'primary',
+        [styles.buttonDefault]: type === 'default',
+        [styles.buttonSecondary]: type === 'secondary',
+        [styles.buttonTertiary]: type === 'tertiary',
+      })}
       onClick={onClick}
       disabled={disabled}
     >
-      <span className={`${styles.buttonText}`}>{title}</span>
+      <span className={styles.buttonText}>{title}</span>
+
+      {iconRight && <span className={styles.iconRight}>{iconRight}</span>}
     </button>
   );
 }
-
-Button.defaultProps = {
-  disabled: false,
-  className: undefined,
-};
 
 export default Button;

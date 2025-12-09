@@ -59,15 +59,19 @@
 
 @mixin flex($direction: row, $gap: 0, $align: normal, $justify: flex-start) {
   display: flex;
+
   @if $direction != row {
     flex-direction: $direction;
   }
+
   @if $align != normal {
     align-items: $align;
   }
+
   @if $justify != flex-start {
     justify-content: $justify;
   }
+
   @if $gap != 0 {
     gap: $gap;
   }
