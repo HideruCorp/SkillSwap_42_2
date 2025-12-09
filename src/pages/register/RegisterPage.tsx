@@ -4,6 +4,7 @@ import { useState, type PropsWithChildren } from 'react';
 import { DatePickerUI } from '@shared/ui/date-picker';
 import { AvatarPicker } from '@features/avatar-picker';
 import styles from './register-page.module.scss';
+import { ProgressBar } from '@widgets/progress-bar/ProgressBar';
 
 /*
 className={styles['register__some-bem--specific']}
@@ -39,6 +40,7 @@ const imgAndText = [
 function RegisterPage() {
   const [testDate, setTestDate] = useState<Date | undefined>(new Date());
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [currentStep, setCurrentStep] = useState<number>(1);
 
   const handleAvatarChange = (file: File | null) => {
     setAvatarFile(file);
@@ -48,6 +50,7 @@ function RegisterPage() {
   return (
     <section className={styles.register}>
       <RegisterLayout
+        header={<ProgressBar currentStep={currentStep} totalSteps={3} />}
         leftPart={
           <GrayRectangle>
             <AvatarPicker onAvatarChange={handleAvatarChange} size={72} />
@@ -58,24 +61,10 @@ function RegisterPage() {
           // компонент вставляется в зависимости от Шага регистрации
           // Шаг 1
           <ComponentWithImg
-            img={imgAndText[0].img}
-            title={imgAndText[0].title}
-            text={imgAndText[0].text}
+            img={imgAndText[currentStep - 1].img}
+            title={imgAndText[currentStep - 1].title}
+            text={imgAndText[currentStep - 1].text}
           />
-
-          // Шаг 2
-          // <ComponentWithImg
-          //   img={imgAndText[1].img}
-          //   title={imgAndText[1].title}
-          //   text={imgAndText[1].text}
-          // />
-
-          // Шаг 3
-          // <ComponentWithImg
-          //   img={imgAndText[2].img}
-          //   title={imgAndText[2].title}
-          //   text={imgAndText[2].text}
-          // />
         }
       />
     </section>
