@@ -1,0 +1,8 @@
+@use '@shared/styles/mixins' as m;
+
+.notification {
+  @include m.flex($align: center, $justify: center);
+  
+  position: relative;
+  cursor: pointer;
+}
