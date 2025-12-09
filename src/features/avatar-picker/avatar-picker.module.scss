@@ -1,0 +1,109 @@
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatarWrapper {
+  position: relative;
+  width: var(--avatar-size, 72px);
+  height: var(--avatar-size, 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: visible;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.placeholderIcon {
+  width: 63px;
+  height: 63px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.addButton {
+  @include button-reset;
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 16px;
+  height: 16px;
+  background: $color-accent;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  box-sizing: border-box;
+  z-index: 1;
+
+  &:hover {
+    background: $color-button-hover;
+    transform: scale(1.1);
+  }
+
+  &:active {
+    background: $color-button-pressed;
+    transform: scale(0.95);
+  }
+}
+
+.addIcon {
+  width: 12px;
+  height: 12px;
+  color: $color-surface;
+  flex-shrink: 0;
+}
+
+.removeButton {
+  @include button-reset;
+  position: absolute;
+
+  top: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  background: $color-text;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    background: $color-text-caption;
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.removeIcon {
+  width: 10px;
+  height: 10px;
+  color: $color-surface;
+  flex-shrink: 0;
+}
+
+.errorMessage {
+  @include text-caption;
+
+  color: $color-error;
+  text-align: center;
+  max-width: 200px;
+}
+

@@ -2,6 +2,7 @@ import RegisterLayout from '@widgets/registerLayout/RegisterLayout';
 import ComponentWithImg from '@widgets/componentWithImg/ComponentWithImg';
 import { useState, type PropsWithChildren } from 'react';
 import { DatePickerUI } from '@shared/ui/date-picker';
+import { AvatarPicker } from '@features/avatar-picker';
 import styles from './register-page.module.scss';
 
 /*
@@ -37,11 +38,19 @@ const imgAndText = [
 
 function RegisterPage() {
   const [testDate, setTestDate] = useState<Date | undefined>(new Date());
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+
+  const handleAvatarChange = (file: File | null) => {
+    setAvatarFile(file);
+    // TODO: Сохранить файл для отправки формы
+  };
+
   return (
     <section className={styles.register}>
       <RegisterLayout
         leftPart={
           <GrayRectangle>
+            <AvatarPicker onAvatarChange={handleAvatarChange} size={72} />
             <DatePickerUI value={testDate} onChange={setTestDate} maxDate={new Date()} />
           </GrayRectangle>
         }
