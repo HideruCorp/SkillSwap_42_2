@@ -4,10 +4,12 @@ import {
   useDispatch as dispatchHook,
   useSelector as selectorHook,
 } from 'react-redux';
+import notificationsReducer from '@entities/notification';
 import filtersReducer from './slices/filtersSlice/filtersSlice';
 
 export const rootReducer = combineReducers({
   filters: filtersReducer,
+  notifications: notificationsReducer,
 });
 
 const store = configureStore({
