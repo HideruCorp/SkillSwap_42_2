@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { RadioGroupUI } from './RadioGroupUI';
 import { useState } from 'react';
+import { RadioGroupUI } from './RadioGroupUI';
 
 const meta: Meta<typeof RadioGroupUI> = {
   title: 'Components/RadiogroupUi',
@@ -13,13 +13,13 @@ type Story = StoryObj<typeof RadioGroupUI>;
 export const Interactive: Story = {
   render: function Render() {
     const [selectedValue, setSelectedValue] = useState('all');
-    
+
     const options = [
       { label: 'Все', value: 'all' },
       { label: 'Хочу научиться', value: 'want' },
       { label: 'Могу научить', value: 'can' },
     ];
-    
+
     return (
       <div>
         <RadioGroupUI

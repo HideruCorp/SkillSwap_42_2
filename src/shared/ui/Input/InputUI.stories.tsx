@@ -13,13 +13,7 @@ export default meta;
 export const Basic: StoryObj<typeof InputUI> = {
   render: function Render() {
     const [value, setValue] = useState('');
-    return (
-      <InputUI
-        value={value}
-        onChange={setValue}
-        placeholder="Введите что-нибудь..."
-      />
-    );
+    return <InputUI value={value} onChange={setValue} placeholder="Введите что-нибудь..." />;
   },
 };
 
@@ -27,7 +21,7 @@ export const WithError: StoryObj<typeof InputUI> = {
   render: function Render() {
     const [value, setValue] = useState('');
     const error = value.length > 0 && value.length < 3 ? 'Минимум 3 символа' : undefined;
-    
+
     return (
       <InputUI
         value={value}
@@ -48,23 +42,15 @@ export const Password: StoryObj<typeof InputUI> = {
         onChange={setValue}
         placeholder="Введите пароль"
         type="password"
-        message='Надежный'
+        message="Надежный"
       />
     );
   },
 };
 
-
 export const Edit: StoryObj<typeof InputUI> = {
   render: function Render() {
     const [value, setValue] = useState('Мария');
-    return (
-      <InputUI
-        value={value}
-        onChange={setValue}
-        placeholder="Введите имя"
-        type="change"
-      />
-    );
+    return <InputUI value={value} onChange={setValue} placeholder="Введите имя" type="change" />;
   },
 };

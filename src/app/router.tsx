@@ -3,6 +3,7 @@ import {
   Catalog,
   LoginPage,
   RegisterPage,
+  RegisterStep2Page,
   ProfilePage,
   ProfileFavoritesPage,
   ProfileRequestsPage,
@@ -41,6 +42,7 @@ function AppRouter() {
       */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/register/step2" element={<RegisterStep2Page />} />
 
       {/*
         Профиль пользователя - защищен от неавторизованных юзеров

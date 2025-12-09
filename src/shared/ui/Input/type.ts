@@ -3,7 +3,7 @@ export interface InputProps {
   onChange: (value: string) => void;
   placeholder?: string;
   type?: 'text' | 'change' | 'password';
-  
+
   error?: string;
   message?: string;
   disabled?: boolean;

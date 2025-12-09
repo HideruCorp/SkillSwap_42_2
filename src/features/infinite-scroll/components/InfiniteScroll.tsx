@@ -148,7 +148,6 @@ export default function InfiniteScroll(): JSX.Element {
       } catch (err) {
         // в реальном проекте — показать UI-ошибку
         console.error('Ошибка при загрузке моков для InfiniteScroll:', err);
-
       } finally {
         loadingInitialRef.current = false;
         setLoadingInitial(false);

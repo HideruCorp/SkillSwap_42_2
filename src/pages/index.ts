@@ -1,6 +1,7 @@
 export { Catalog } from './catalog';
 export { LoginPage } from './login';
 export { RegisterPage } from './register';
+export { RegisterStep2Page } from './register-step2';
 export { ProfilePage } from './profile';
 export { ProfileFavoritesPage } from './profile-favorites';
 export { ProfileRequestsPage } from './profile-requests';

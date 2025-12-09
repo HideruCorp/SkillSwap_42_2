@@ -21,4 +21,3 @@ export const fetchSkills = async (): Promise<Skill[]> => {
     throw new Error('Unknown error occurred while loading skills');
   }
 };
-
