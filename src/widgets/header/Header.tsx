@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Logo from '@shared/ui/logo/Logo';
 import { SearchInput } from '@shared/ui/search';
 import Button from '@shared/ui/button/Button';
@@ -12,6 +13,7 @@ import Favorites from './favorites/Favorites';
 import UserInfo from './userInfo/UserInfo';
 
 function Header() {
+  const navigate = useNavigate();
   const [authenticated] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
@@ -22,6 +24,14 @@ function Header() {
   const handleLogout = () => {
     // TODO: Добавить логику выхода из аккаунта
     setIsProfileMenuOpen(false);
+  };
+
+  const handleLoginClick = () => {
+    navigate('/login');
+  };
+
+  const handleRegisterClick = () => {
+    navigate('/register');
   };
 
   return (
@@ -59,12 +69,12 @@ function Header() {
           </>
         ) : (
           <>
-            <Button type="default" className={styles['sign-in']} title="Войти" onClick={() => {}} />
+            <Button type="default" className={styles['sign-in']} title="Войти" onClick={handleLoginClick} />
             <Button
               type="primary"
               className={styles['sign-up']}
               title="Зарегистрироваться"
-              onClick={() => {}}
+              onClick={handleRegisterClick}
             />
           </>
         )}

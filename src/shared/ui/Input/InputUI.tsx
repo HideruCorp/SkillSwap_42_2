@@ -4,10 +4,10 @@ import type { InputProps } from './type';
 import eyeIcon from '../../assets/img/visible.svg';
 import editIcon from '../../assets/img/edit.svg';
 
-function Input({ value, onChange, error, type, message, ...props }: InputProps) {
+function Input({ value, onChange, error, type, message, label, ...props }: InputProps) {
   const [showPassword, setShowPassword] = useState(false);
   
-  const inputType = type === 'password' && showPassword ? 'text' : type;
+  const inputType = type === 'password' && showPassword ? 'text' : (type === 'change' ? 'text' : type);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -15,9 +15,10 @@ function Input({ value, onChange, error, type, message, ...props }: InputProps) 
 
   return (
     <div className={styles.wrapper}>
+      {label && <label className={styles.label}>{label}</label>}
       <div className={styles.inputContainer}>
       <input
-        className={`${styles.input} ${error ? styles.error : ''}`}
+        className={`${styles.input} ${error ? styles.error : ''} ${type !== 'password' && type !== 'change' ? styles.inputWithoutIcon : ''}`}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         type={inputType}
