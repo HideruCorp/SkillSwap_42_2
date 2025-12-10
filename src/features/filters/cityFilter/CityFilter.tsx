@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import styles from './city-filter.module.scss';
 import { CheckboxUI } from '@shared/ui/checkbox/CheckboxUI';
 import ChevronUp from '@shared/assets/img/chevron-Up.svg?react';
 import ChevronDown from '@shared/assets/img/chevron-Down.svg?react';
+import styles from './city-filter.module.scss';
 import type { ICity, CityFilterProps } from './type';
 
 export const CityFilter: React.FC<CityFilterProps> = ({

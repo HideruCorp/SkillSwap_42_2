@@ -1,6 +1,6 @@
 import styles from './search-input.module.scss';
 
-export const SearchInput = () => {
+export function SearchInput() {
     
     return (
     <div className={`${styles.container}`}>
@@ -13,6 +13,6 @@ export const SearchInput = () => {
             placeholder="Искать навык" 
         />
     </div>
-)};
+)}
 
 

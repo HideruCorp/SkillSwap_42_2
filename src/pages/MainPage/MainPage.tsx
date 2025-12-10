@@ -1,6 +1,6 @@
-// src/pages/MainPage/MainPage.tsx
 import React, { type JSX } from 'react';
-import InfiniteScroll from '../../features/infinite-scroll/components/InfiniteScroll';
+import UsersSection from '../../widgets/users-section/UsersSection';
+import InfiniteScroll from '../../features/infinite-scroll/InfiniteScroll';
 import styles from './main-page.module.scss'; // заглушка: локальные стили для layout
 
 export default function MainPage(): JSX.Element {
@@ -14,11 +14,23 @@ export default function MainPage(): JSX.Element {
       </aside>
 
       <section className={styles.content}>
-        <h2 className={styles.title}>Популярное</h2>
+        <UsersSection
+          title="Популярное"
+          mode="likes"
+          previewLimit={3}
+          infinite={false}
+          showAllButton
+        />
 
-        <InfiniteScroll />
+        <UsersSection
+          title="Новое"
+          mode="created"
+          previewLimit={3}
+          infinite={false}
+          showAllButton
+        />
 
-        {/* Добавить другие разделы или компоненты слева */}
+        <UsersSection title="Рекомендуем" mode="created" infinite previewLimit={20} />
       </section>
     </main>
   );

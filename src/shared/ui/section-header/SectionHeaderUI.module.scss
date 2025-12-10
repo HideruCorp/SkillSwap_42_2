@@ -1,0 +1,42 @@
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  @include text-title; // Заголовок секции
+}
+
+.title {
+  color: $color-text;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 120%;
+}
+
+/* Обёртка для кнопки (если нужно позиционирование) */
+.actionWrapper {
+  flex-shrink: 0;
+}
+
+/* На мобильном скрываем текст кнопки — остаётся только иконка */
+@media (max-width: 600px) {
+  .hideTextMobile {
+    .buttonText {
+      display: none; // скрываем текст
+    }
+
+    /* уменьшаем кнопку под стрелку */
+    height: 40px !important;
+    width: 40px !important;
+    padding: 0;
+
+    .iconRight {
+      margin: 0;
+    }
+  }
+}

@@ -6,7 +6,7 @@ interface LayoutProps {
   children: ReactNode;
 }
 
-const Layout = ({ children }: LayoutProps) => {
+function Layout({ children }: LayoutProps) {
   return (
     <div className="container">
       <div className="wrapper">
@@ -18,6 +18,6 @@ const Layout = ({ children }: LayoutProps) => {
       </div>
     </div>
   );
-};
+}
 
 export default Layout;

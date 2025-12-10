@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { RadioGroupUI } from './RadioGroupUI';
 import { useState } from 'react';
+import { RadioGroupUI } from './RadioGroupUI';
 
 const meta: Meta<typeof RadioGroupUI> = {
   title: 'Components/RadiogroupUi',

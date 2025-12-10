@@ -1,5 +1,5 @@
-import styles from './RadioGroupUI.module.scss';
 import React from 'react';
+import styles from './RadioGroupUI.module.scss';
 import type { RadioGroupProps } from './type';
 
 export const RadioGroupUI: React.FC<RadioGroupProps> = ({

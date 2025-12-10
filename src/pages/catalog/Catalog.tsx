@@ -1,5 +1,5 @@
 import FiltersPanel from '@widgets/filters-panel';
-import InfiniteScroll from '@features/infinite-scroll/components/InfiniteScroll';
+import InfiniteScroll from '@/features/infinite-scroll/InfiniteScroll';
 import './Catalog.scss';
 import FilterBar from '@widgets/filter-bar';
 
