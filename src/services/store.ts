@@ -4,12 +4,21 @@ import {
   useDispatch as dispatchHook,
   useSelector as selectorHook,
 } from 'react-redux';
+
+// Entity reducers
 import notificationsReducer from '@entities/notification';
+import usersReducer from '@entities/user';
+
+// TODO: переместить в  @features
 import filtersReducer from './slices/filtersSlice/filtersSlice';
 
 export const rootReducer = combineReducers({
-  filters: filtersReducer,
+  // Entities
+  users: usersReducer,
   notifications: notificationsReducer,
+
+  // Features
+  filters: filtersReducer,
 });
 
 const store = configureStore({
