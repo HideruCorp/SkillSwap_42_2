@@ -31,6 +31,7 @@ export function DragDrop({
         ...file,
         preview: URL.createObjectURL(file),
         id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        name: file.name,
       }));
 
       const updatedFiles = [...files, ...newFilesWithPreview];

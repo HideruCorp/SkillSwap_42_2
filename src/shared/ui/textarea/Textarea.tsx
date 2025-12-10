@@ -3,13 +3,19 @@ import './textarea.scss';
 
 interface TextareaProps {
   value?: string;
+  placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
-export default function Textarea({ value, onChange }: TextareaProps) {
+export default function Textarea({ value, placeholder, onChange }: TextareaProps) {
   return (
     <div className="textarea__wrapper">
-      <textarea className="textarea__input" value={value} onChange={onChange} />
+      <textarea
+        className="textarea__input"
+        value={value}
+        placeholder={placeholder}
+        onChange={onChange}
+      />
       <img className="textarea__icon" src={editIcon} alt="edit" />
     </div>
   );
