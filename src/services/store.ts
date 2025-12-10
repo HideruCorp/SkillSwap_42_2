@@ -14,6 +14,9 @@ import skillsReducer from '@entities/skill';
 import { authReducer, registrationReducer } from '@features/auth';
 import sessionReducer from '@features/session';
 
+// Middleware
+import persistMiddleware from '@shared/lib/storage/persistMiddleware';
+
 // TODO: переместить в  @features
 import filtersReducer from './slices/filtersSlice/filtersSlice';
 
@@ -32,10 +35,10 @@ export const rootReducer = combineReducers({
 
 const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(persistMiddleware),
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
-
 export type AppDispatch = typeof store.dispatch;
 
 export const useDispatch: () => AppDispatch = () => dispatchHook();
