@@ -8,6 +8,7 @@ import {
 // Entity reducers
 import notificationsReducer from '@entities/notification';
 import usersReducer from '@entities/user';
+import skillsReducer from '@entities/skill';
 
 // TODO: переместить в  @features
 import filtersReducer from './slices/filtersSlice/filtersSlice';
@@ -15,6 +16,7 @@ import filtersReducer from './slices/filtersSlice/filtersSlice';
 export const rootReducer = combineReducers({
   // Entities
   users: usersReducer,
+  skills: skillsReducer,
   notifications: notificationsReducer,
 
   // Features
