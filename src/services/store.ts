@@ -12,6 +12,8 @@ import skillsReducer from '@entities/skill';
 
 // Feature reducers
 import { authReducer, registrationReducer } from '@features/auth';
+import sessionReducer from '@features/session';
+
 // TODO: переместить в  @features
 import filtersReducer from './slices/filtersSlice/filtersSlice';
 
@@ -24,6 +26,7 @@ export const rootReducer = combineReducers({
   // Features
   auth: authReducer,
   registration: registrationReducer,
+  session: sessionReducer,
   filters: filtersReducer,
 });
 
