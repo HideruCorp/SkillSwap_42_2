@@ -1,6 +1,14 @@
 // API
 export { default as authApi } from './api/authApi';
 
+// Hooks
+export {
+  useRegistrationWizard,
+  useStepCredentials,
+  useStepUserData,
+  useStepSkillData,
+} from './hooks';
+
 // Model
 export {
   authReducer,

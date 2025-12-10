@@ -10,6 +10,8 @@ import notificationsReducer from '@entities/notification';
 import usersReducer from '@entities/user';
 import skillsReducer from '@entities/skill';
 
+// Feature reducers
+import { authReducer, registrationReducer } from '@features/auth';
 // TODO: переместить в  @features
 import filtersReducer from './slices/filtersSlice/filtersSlice';
 
@@ -20,6 +22,8 @@ export const rootReducer = combineReducers({
   notifications: notificationsReducer,
 
   // Features
+  auth: authReducer,
+  registration: registrationReducer,
   filters: filtersReducer,
 });
 
