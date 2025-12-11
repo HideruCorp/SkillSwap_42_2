@@ -1,0 +1,47 @@
+@use '@shared/styles/variables' as v;
+@use '@shared/styles/mixins' as m;
+
+.panel {
+  @include m.flex(column, 40px);
+
+  width: 556px;
+  padding: 60px;
+  background-color: v.$color-surface;
+  border: 1px solid v.$color-text-caption;
+  border-radius: 12px;
+}
+
+.section {
+  @include m.flex(column, 32px);
+}
+
+.header {
+  @include m.flex(row, 32px, center, space-between);
+}
+
+.title {
+  @include m.text-h2;
+
+  color: v.$color-text;
+}
+
+.empty {
+  @include m.text-body;
+
+  color: v.$color-text;
+}
+
+.action-button {
+  @include m.button-reset;
+  @include m.text-h4;
+
+  color: v.$color-text-link;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.notifications {
+  @include m.flex(column, 24px);
+}

@@ -24,6 +24,7 @@ function RegisterLayout({
         <div className={styles.left}>{leftPart}</div>
         <div className={styles.right}>{rightPart}</div>
       </div>
+
     </div>
   );
 }

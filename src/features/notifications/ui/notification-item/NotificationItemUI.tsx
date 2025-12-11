@@ -1,17 +1,21 @@
+import { formatRelativeDate } from '@shared/lib/date';
 import Button from '@shared/ui/button/Button';
 import Idea from '@shared/assets/img/idea.svg?react';
 import type { NotificationItemProps } from './type';
 import styles from './notification-item-ui.module.scss';
 
+const doNothing = () => {};
+
 function NotificationItemUI({
-  isNew,
+  readed,
   userName,
   action,
   createdDate,
   onClick,
 }: NotificationItemProps) {
-  const title = `${userName} ${action === 'accepts' ? 'принял ваш обмен' : 'предлагает вам обмен'}`;
-  const description = `${action === 'accepts' ? 'Перейдите в профиль, чтобы обсудить детали' : 'Примите обмен, чтобы обсудить детали'}`;
+  const title = `${userName} ${action === 'accept' ? 'принял ваш обмен' : 'предлагает вам обмен'}`;
+  const description = `${action === 'accept' ? 'Перейдите в профиль, чтобы обсудить детали' : 'Примите обмен, чтобы обсудить детали'}`;
+  const formattedDate = formatRelativeDate(new Date(createdDate));
 
   return (
     <div className={styles.container}>
@@ -23,12 +27,15 @@ function NotificationItemUI({
             <p className={styles.description}>{description}</p>
           </div>
         </div>
-        <div className={styles.date}>{createdDate}</div>
+        <div className={styles.date}>{formattedDate}</div>
       </div>
-      {isNew ? (
-        <div className={styles.button}>
-          <Button title="Перейти" type="primary" onClick={onClick || (() => {})} />
-        </div>
+      {!readed ? (
+        <Button
+          className={styles.button}
+          title="Перейти"
+          type="primary"
+          onClick={onClick || doNothing}
+        />
       ) : (
         ''
       )}
