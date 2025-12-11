@@ -1,3 +1,5 @@
+@import '../../styles/variables.scss';
+
 .wrapper {
   width: 100%;
   display: flex;
@@ -11,23 +13,23 @@
   gap: 24px;
 }
 
-/*.card {
-  background: #f7f7f7;
+.card {
+  background: $color-bg;
   border-radius: 12px;
   padding: 16px;
   min-height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #444;
+  color: $color-text;
   font-size: 16px;
-}*/
+}
 
 .loading,
 .end {
   text-align: center;
   padding: 16px 0;
-  color: $text-secondary;
+  color: $color-text-caption;
 }
 
 .trigger {
