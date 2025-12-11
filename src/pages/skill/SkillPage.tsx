@@ -154,7 +154,7 @@ function SkillPage() {
   }
 
   return (
-    <section className={styles.main}>
+    <>
       <UserSkillCard {...userCardData} />
       <SkillWidget
         skill={skill}
@@ -173,7 +173,7 @@ function SkillPage() {
           console.log('More details for skill', skillId);
         }}
       />
-    </section>
+    </>
   );
 }
 

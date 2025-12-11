@@ -2,15 +2,12 @@
 
 .skillCard {
   display: flex;
-  // flex: 1;
   flex-direction: column;
   gap: 16px;
   background: $color-surface;
-  background: blue;
   border-radius: 12px;
-  padding: 20px;
+  padding: 32px 52px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  width: 100%;
 }
 
 .buttonBlock {
@@ -81,12 +78,22 @@
   }
 }
 
+
 // Левая колонка с описанием
 .descriptionBlock {
   display: flex;
   flex-direction: column;
   gap: 16px;
   flex: 1;
+
+  div {
+      overflow: hidden;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
 
   // Кнопка "Подробнее" прижата к низу
   > button {

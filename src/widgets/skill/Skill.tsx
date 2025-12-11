@@ -1,4 +1,4 @@
-import type { Skill } from '@shared/types';
+import type { SkillType } from '@shared/types';
 import { SkillDescriptionUI } from '@shared/ui/skill-description';
 import Button from '@shared/ui/button/Button';
 import LikeDefaultIcon from '@shared/assets/img/like-Default.svg?react';
@@ -8,7 +8,7 @@ import styles from './skill.module.scss';
 import { SkillGallery } from '../skillGallery';
 
 export interface SkillProps {
-  skill: Skill;
+  skill: SkillType;
   skillDescription: {
     skillName: string;
     category: string;
@@ -21,17 +21,10 @@ export interface SkillProps {
   onMoreDetails: (skillId: number) => void;
 }
 
-function Skill({
-  skill,
-  skillDescription,
-  isLiked,
-  onLike,
-  onShare,
-  onMoreDetails,
-}: SkillProps) {
+function Skill({ skill, skillDescription, isLiked, onLike, onShare, onMoreDetails }: SkillProps) {
   return (
     <div className={styles.skillCard}>
-      {/* <div className={styles.buttonBlock}>
+      <div className={styles.buttonBlock}>
         <button
           type="button"
           className={styles.likeButton}
@@ -56,16 +49,18 @@ function Skill({
       </div>
       <div className={styles.skillInfoBlock}>
         <div className={styles.descriptionBlock}>
-          <SkillDescriptionUI
-            skillName={skillDescription.skillName}
-            category={skillDescription.category}
-            subcategory={skillDescription.subcategory}
-            description={skillDescription.description}
-          />
+          <div className={styles.descriptionWrapper}>
+            <SkillDescriptionUI
+              skillName={skillDescription.skillName}
+              category={skillDescription.category}
+              subcategory={skillDescription.subcategory}
+              description={skillDescription.description}
+            />
+          </div>
           <Button title="Подробнее" onClick={() => onMoreDetails(skill.id)} type="default" />
         </div>
         <SkillGallery images={skill.images} title={skill.title} />
-      </div> */}
+      </div>
     </div>
   );
 }

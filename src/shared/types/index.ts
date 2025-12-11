@@ -1,5 +1,5 @@
 // Типы для навыков
-export interface Skill {
+export interface SkillType {
   id: number;
   subcategoryId: number;
   userId: number;
