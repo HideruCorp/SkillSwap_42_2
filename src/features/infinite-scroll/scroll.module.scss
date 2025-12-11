@@ -1,3 +1,5 @@
+@import '../../styles/variables.scss';
+
 .wrapper {
   width: 100%;
   display: flex;
@@ -12,14 +14,14 @@
 }
 
 .card {
-  background: #f7f7f7;
+  background: $color-bg;
   border-radius: 12px;
   padding: 16px;
   min-height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #444;
+  color: $color-text;
   font-size: 16px;
 }
 
