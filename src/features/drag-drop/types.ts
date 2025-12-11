@@ -1,6 +1,7 @@
 export interface FileWithPreview extends File {
   preview?: string;
   id: string;
+  name: string;
 }
 
 export interface DragDropProps {
