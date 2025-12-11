@@ -39,3 +39,14 @@ export const fetchUserById = async (id: number): Promise<User | null> => {
     throw new Error('Unknown error occurred while loading user by id');
   }
 };
+
+/**
+ * usersApi — отдаёт полностью весь массив
+ */
+export const usersApi = {
+  getUsers: async () => {
+    return fetchUsers(); // просто возвращаем всех пользователей
+  },
+  getUserById: fetchUserById,
+};
+
