@@ -1,14 +1,13 @@
+
 import React, { useState, useMemo, useEffect } from 'react';
+
 import { CheckboxUI } from '@shared/ui/checkbox/CheckboxUI';
 import ChevronUp from '@shared/assets/img/chevron-Up.svg?react';
 import ChevronDown from '@shared/assets/img/chevron-Down.svg?react';
 import styles from './city-filter.module.scss';
 import type { ICity, CityFilterProps } from './type';
 
-export const CityFilter: React.FC<CityFilterProps> = ({
-  selectedCities,
-  onSelectionChange,
-}) => {
+export function CityFilter({ selectedCities, onSelectionChange }: CityFilterProps) {
   const [citiesData, setCitiesData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(false);
@@ -27,13 +26,10 @@ export const CityFilter: React.FC<CityFilterProps> = ({
       });
   }, []);
 
-  const cityNames = useMemo(
-    () => {
-      if (!citiesData) return [];
-      return citiesData.cities.map((city: ICity) => city.name);
-    },
-    [citiesData]
-  );
+  const cityNames = useMemo(() => {
+    if (!citiesData) return [];
+    return citiesData.cities.map((city: ICity) => city.name);
+  }, [citiesData]);
 
   const visibleCities = expanded ? cityNames : cityNames.slice(0, 5);
 
@@ -58,7 +54,7 @@ export const CityFilter: React.FC<CityFilterProps> = ({
     <section>
       <h2 className={styles.filterHeading}>Город</h2>
       <ul className={styles.citiesList}>
-        {visibleCities.map(city => (
+        {visibleCities.map((city) => (
           <li key={city} className={styles.cityItem}>
             <CheckboxUI
               variant="default"
@@ -75,9 +71,7 @@ export const CityFilter: React.FC<CityFilterProps> = ({
         onClick={() => setExpanded(!expanded)}
         aria-expanded={expanded}
       >
-        <span className={styles.buttonLabel}>
-          {expanded ? 'Свернуть' : 'Все города'}
-        </span>
+        <span className={styles.buttonLabel}>{expanded ? 'Свернуть' : 'Все города'}</span>
         {expanded ? (
           <ChevronUp className={styles.arrowIcon} />
         ) : (
@@ -86,6 +80,6 @@ export const CityFilter: React.FC<CityFilterProps> = ({
       </button>
     </section>
   );
-};
+}
 
 export default CityFilter;

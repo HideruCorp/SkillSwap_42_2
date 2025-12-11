@@ -1,3 +1,60 @@
-.login {
-  // Стили для страницы входа
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
+
+.header {
+  @include text-h2;
+
+  text-align: center;
 }
+
+.login {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form {
+  width: 556px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 40px;
+  background: $color-surface;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
+}
+
+.socialButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.formError {
+  @include text-body;
+
+  width: 100%;
+  color: $color-error;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.submitButton {
+  width: 100%;
+  margin-top: 8px;
+
+  button {
+    width: 100%;
+  }
+}
+

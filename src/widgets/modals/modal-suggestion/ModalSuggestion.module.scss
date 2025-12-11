@@ -1,0 +1,61 @@
+@use '@shared/styles/mixins' as *;
+@use '@shared/styles/variables' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 1024px;
+  padding: 44px 60px 72px;
+}
+
+.title {
+  @include text-h2;
+  margin: 0;
+  color: $color-text;
+  margin-bottom: 8px;
+}
+
+.subTitle {
+  @include text-caption;
+  margin: 0;
+  color: $color-text;
+  margin-bottom: 40px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 44px;
+}
+
+.left {
+  display: grid;
+  grid-template-rows: 60px auto 48px;
+  gap: 20px
+}
+
+.scilTitle {
+  @include text-h1;
+  margin: 0;
+  color: $color-text;
+}
+
+.categories {
+  @include text-caption;
+  margin: 0;
+  color: $color-text-caption;
+}
+
+.description {
+  @include text-body;
+  margin: 0;
+  color: $color-text;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 12px;
+}

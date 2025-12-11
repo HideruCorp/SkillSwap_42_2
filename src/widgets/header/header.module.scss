@@ -1,23 +1,42 @@
 @use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as m;
 
 .header {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+  @include m.flex($gap: 32px, $align: center, $justify: space-between);
+
   height: 104px;
   background-color: $color-bg;
+}
+
+.navigation {
+  @include m.flex($gap: 24px, $align: center, $justify: space-between);
 }
 
 .about {
   font-family: $font-body;
   text-decoration: none;
   color: $color-text;
+  white-space: nowrap;
 }
 
-.signIn {
+.sign-in {
   padding-inline: 22.5px;
 }
 
-.signUp {
+.sign-up {
   padding-inline: 23.5px;
+}
+
+.profile-icons {
+  @include m.flex($gap: 20px, $align: center, $justify: space-between);
+}
+
+.profile-panel {
+  @include m.flex($gap: 8px, $align: center, $justify: space-between);
+
+  position: relative;
+
+  &--authenticated {
+    gap: 24px;
+  }
 }

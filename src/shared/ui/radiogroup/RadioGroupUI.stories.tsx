@@ -13,13 +13,13 @@ type Story = StoryObj<typeof RadioGroupUI>;
 export const Interactive: Story = {
   render: function Render() {
     const [selectedValue, setSelectedValue] = useState('all');
-    
+
     const options = [
       { label: 'Все', value: 'all' },
       { label: 'Хочу научиться', value: 'want' },
       { label: 'Могу научить', value: 'can' },
     ];
-    
+
     return (
       <div>
         <RadioGroupUI

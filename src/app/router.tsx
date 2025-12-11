@@ -3,6 +3,7 @@ import {
   Catalog,
   LoginPage,
   RegisterPage,
+  RegisterStep2Page,
   ProfilePage,
   ProfileFavoritesPage,
   ProfileRequestsPage,
@@ -15,10 +16,17 @@ import {
   PrivacyPage,
   TermsPage,
 } from '@pages/index';
+import Modal from '@features/modal/Modal';
+import ModalExchange from '@widgets/modals/modal-exchange/ModalExchange';
+import ModalOfferSuccess from '@widgets/modals/modal-offer-success/ModalOfferSuccess';
 
 function AppRouter() {
   const location = useLocation();
   const backgroundLocation = location.state?.background;
+
+  const handleModalClose = () => {
+    window.history.back();
+  };
 
   return (
     <Routes location={backgroundLocation || location}>
@@ -34,6 +42,7 @@ function AppRouter() {
       */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/register/step2" element={<RegisterStep2Page />} />
 
       {/*
         Профиль пользователя - защищен от неавторизованных юзеров
@@ -44,6 +53,25 @@ function AppRouter() {
       <Route path="/profile/requests" element={<ProfileRequestsPage />} />
       <Route path="/profile/skills" element={<ProfileSkillsPage />} />
       <Route path="/profile/exchanges" element={<ProfileExchangesPage />} />
+
+      {/* модалки */}
+      <Route
+        path="/profile/exchanges-modal"
+        element={
+          <Modal onClose={handleModalClose}>
+            <ModalExchange onClose={handleModalClose} />
+          </Modal>
+        }
+      />
+      <Route
+        path="/profile/offer-modal"
+        element={
+          <Modal onClose={handleModalClose}>
+            {/* если не авторизован показывать ModalOfferSuccessUnauth */}
+            <ModalOfferSuccess onClose={handleModalClose} />
+          </Modal>
+        }
+      />
 
       {/* Служебные страницы */}
       <Route path="/privacy" element={<PrivacyPage />} />

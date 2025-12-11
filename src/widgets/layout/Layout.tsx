@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
-import './Layout.scss';
+import { useLocation } from 'react-router-dom';
+import styles from './Layout.module.scss';
 import Header from '../header/Header';
+import Footer from '../footer/Footer';
 
 interface LayoutProps {
   children: ReactNode;
@@ -8,13 +10,11 @@ interface LayoutProps {
 
 function Layout({ children }: LayoutProps) {
   return (
-    <div className="container">
-      <div className="wrapper">
+    <div className={styles.container}>
+      <div className={styles.wrapper}>
         <Header />
-        <main className="main">{children}</main>
-
-         
-        
+        <main className={isLoginOrRegisterPage ? styles.mainLogin : styles.main}>{children}</main>
+        <Footer />
       </div>
     </div>
   );

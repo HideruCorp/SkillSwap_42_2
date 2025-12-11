@@ -21,4 +21,3 @@ export const fetchCities = async (): Promise<City[]> => {
     throw new Error('Unknown error occurred while loading cities');
   }
 };
-
