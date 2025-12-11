@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import styles from './skills-filter.module.scss';
 import { CheckboxUI } from '@shared/ui/checkbox/CheckboxUI';
 import ChevronUp from '@shared/assets/img/chevron-Up.svg?react';
 import ChevronDown from '@shared/assets/img/chevron-Down.svg?react';
+import styles from './skills-filter.module.scss';
 import type { SkillsFilterProps } from './types';
 
 interface ISkill {
@@ -47,7 +47,9 @@ export const SkillsFilter: React.FC<SkillsFilterProps> = ({
 
       // Добавляем подкатегории только для творчества (id = 2)
       if (category.id === 2) {
-        const creativeSubs = categoryData.subcategories.filter((sub) => sub.categoryId === category.id);
+        const creativeSubs = categoryData.subcategories.filter(
+          (sub) => sub.categoryId === category.id
+        );
 
         creativeSubs.forEach((sub) => {
           result.push({
@@ -80,7 +82,7 @@ export const SkillsFilter: React.FC<SkillsFilterProps> = ({
       return allSkills;
     }
 
-    let skills = allSkills.filter((skill) => !skill.isCreativeSubcategory);
+    const skills = allSkills.filter((skill) => !skill.isCreativeSubcategory);
 
     if (showCreativeSubcategories) {
       const creativeSubs = allSkills.filter((skill) => skill.isCreativeSubcategory);

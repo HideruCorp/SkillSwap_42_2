@@ -1,7 +1,8 @@
 import Button from '@shared/ui/button/Button';
 import styles from './ModalSuggestion.module.scss';
 import editIcon from '../../../shared/assets/img/edit.svg';
-import SkillGallery from '../../skillGallery/SkillGallery'
+import SkillGallery from '../../skillGallery/SkillGallery';
+
 interface ModalSuggestionProps {
   title: string;
   categories: string;
@@ -12,7 +13,15 @@ interface ModalSuggestionProps {
   onDone: () => void;
 }
 
-function ModalSuggestion({ title, categories, subcategories, description, images, onEdit, onDone }: ModalSuggestionProps) {
+function ModalSuggestion({
+  title,
+  categories,
+  subcategories,
+  description,
+  images,
+  onEdit,
+  onDone,
+}: ModalSuggestionProps) {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Ваше предложение</h2>
@@ -21,24 +30,33 @@ function ModalSuggestion({ title, categories, subcategories, description, images
         <div className={styles.left}>
           <div>
             <h1 className={styles.scilTitle}>{title}</h1>
-            <p className={styles.categories}>{categories} / {subcategories}</p>
+            <p className={styles.categories}>
+              {categories} / {subcategories}
+            </p>
           </div>
           <p className={styles.description}>{description}</p>
           <div className={styles.buttons}>
-            <Button className={styles.button} type="tertiary" onClick={onEdit} title="Редактировать" iconRight={<img 
-              src={editIcon} 
-              alt="edit" 
-              style={{ 
-                width: '24px', 
-                height: '24px',
-                display: 'inline-block'
-              }} 
-              />}
+            <Button
+              className={styles.button}
+              type="tertiary"
+              onClick={onEdit}
+              title="Редактировать"
+              iconRight={
+                <img
+                  src={editIcon}
+                  alt="edit"
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    display: 'inline-block',
+                  }}
+                />
+              }
             />
             <Button className={styles.button} type="primary" onClick={onDone} title="Готово" />
           </div>
         </div>
-        <SkillGallery images={images}></SkillGallery>
+        <SkillGallery images={images} />
       </div>
     </div>
   );
