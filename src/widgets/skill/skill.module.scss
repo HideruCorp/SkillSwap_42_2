@@ -69,12 +69,15 @@
 .skillInfoBlock {
   display: flex;
   flex-direction: column;
+  // gap: 24px;
   gap: 24px;
 
   // Desktop: две колонки
   @media (min-width: 768px) {
     flex-direction: row;
-    gap: 32px;
+
+
+    // gap: 32px;
   }
 }
 
