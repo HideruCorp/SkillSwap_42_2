@@ -9,6 +9,7 @@ export type CategoryId = number;
 export type SubcategoryId = number;
 export type NotificationId = number;
 export type RequestId = number;
+export type ExchangeId = number;
 
 // Типы для навыков
 export interface Skill {
@@ -62,17 +63,25 @@ export interface City {
 }
 
 // Типы для заявок на обмен (для localStorage)
-export type RequestStatus = 'pending' | 'accepted' | 'rejected' | 'inProgress' | 'done';
-
 export interface Request {
   id: RequestId;
-  skillId: SkillId;
+  requestedSkill: SkillId;
   fromUser: UserId;
-  toUser: UserId;
   status: RequestStatus;
-  createdAt: string; // ISO string
-  completedAt?: string; // ISO string
+  createdAt: string;
 }
+
+export interface Exchange {
+  id: ExchangeId;
+  requestId: RequestId;
+  skills: [SkillId, SkillId]; // навыки обоих участников
+  status: ExchangeStatus;
+  createdAt: string;
+  completedAt?: string;
+}
+
+export type RequestStatus = 'pending' | 'accepted' | 'rejected';
+export type ExchangeStatus = 'inProgress' | 'completed' | 'cancelled';
 
 // Типы для ответов API (обертки JSON)
 export interface SkillsResponse {
