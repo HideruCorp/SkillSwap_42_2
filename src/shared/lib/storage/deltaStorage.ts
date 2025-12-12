@@ -1,11 +1,13 @@
-import type { StoredUser, StoredSkill } from './types';
+import type { StoredUser, StoredSkill, StoredRequest, StoredExchange } from './types';
 
 const DB_NAME = 'skillswap_db';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 const STORES = {
   USERS: 'users',
   SKILLS: 'skills',
+  REQUESTS: 'requests',
+  EXCHANGES: 'exchanges',
   META: 'meta',
 } as const;
 
@@ -56,6 +58,21 @@ class DeltaStorageClass {
         if (!db.objectStoreNames.contains(STORES.SKILLS)) {
           const store = db.createObjectStore(STORES.SKILLS, { keyPath: 'id' });
           store.createIndex('userId', 'userId', { unique: false });
+        }
+
+        // Requests store
+        if (!db.objectStoreNames.contains(STORES.REQUESTS)) {
+          const store = db.createObjectStore(STORES.REQUESTS, { keyPath: 'id' });
+          store.createIndex('fromUser', 'fromUser', { unique: false });
+          store.createIndex('requestedSkill', 'requestedSkill', { unique: false });
+          store.createIndex('status', 'status', { unique: false });
+        }
+
+        // Exchanges store
+        if (!db.objectStoreNames.contains(STORES.EXCHANGES)) {
+          const store = db.createObjectStore(STORES.EXCHANGES, { keyPath: 'id' });
+          store.createIndex('requestId', 'requestId', { unique: true });
+          store.createIndex('status', 'status', { unique: false });
         }
 
         // Meta store
@@ -164,6 +181,80 @@ class DeltaStorageClass {
     return DeltaStorageClass.promisify(store.getAll());
   }
 
+  // ==================== REQUESTS ====================
+
+  async addRequest(request: StoredRequest): Promise<void> {
+    const store = await this.getStore(STORES.REQUESTS, 'readwrite');
+    await DeltaStorageClass.promisify(store.put(request));
+  }
+
+  async updateRequest(id: number, changes: Partial<StoredRequest>): Promise<void> {
+    const store = await this.getStore(STORES.REQUESTS, 'readwrite');
+    const existing = await DeltaStorageClass.promisify(store.get(id));
+
+    if (existing) {
+      await DeltaStorageClass.promisify(store.put({ ...existing, ...changes }));
+    }
+  }
+
+  async deleteRequest(id: number): Promise<void> {
+    const store = await this.getStore(STORES.REQUESTS, 'readwrite');
+    await DeltaStorageClass.promisify(store.delete(id));
+  }
+
+  async getRequestById(id: number): Promise<StoredRequest | undefined> {
+    const store = await this.getStore(STORES.REQUESTS);
+    return DeltaStorageClass.promisify(store.get(id));
+  }
+
+  async getRequestsByUserId(userId: number): Promise<StoredRequest[]> {
+    const store = await this.getStore(STORES.REQUESTS);
+    const index = store.index('fromUser');
+    return DeltaStorageClass.promisify(index.getAll(userId));
+  }
+
+  async getAllRequests(): Promise<StoredRequest[]> {
+    const store = await this.getStore(STORES.REQUESTS);
+    return DeltaStorageClass.promisify(store.getAll());
+  }
+
+  // ==================== EXCHANGES ====================
+
+  async addExchange(exchange: StoredExchange): Promise<void> {
+    const store = await this.getStore(STORES.EXCHANGES, 'readwrite');
+    await DeltaStorageClass.promisify(store.put(exchange));
+  }
+
+  async updateExchange(id: number, changes: Partial<StoredExchange>): Promise<void> {
+    const store = await this.getStore(STORES.EXCHANGES, 'readwrite');
+    const existing = await DeltaStorageClass.promisify(store.get(id));
+
+    if (existing) {
+      await DeltaStorageClass.promisify(store.put({ ...existing, ...changes }));
+    }
+  }
+
+  async deleteExchange(id: number): Promise<void> {
+    const store = await this.getStore(STORES.EXCHANGES, 'readwrite');
+    await DeltaStorageClass.promisify(store.delete(id));
+  }
+
+  async getExchangeById(id: number): Promise<StoredExchange | undefined> {
+    const store = await this.getStore(STORES.EXCHANGES);
+    return DeltaStorageClass.promisify(store.get(id));
+  }
+
+  async getExchangeByRequestId(requestId: number): Promise<StoredExchange | undefined> {
+    const store = await this.getStore(STORES.EXCHANGES);
+    const index = store.index('requestId');
+    return DeltaStorageClass.promisify(index.get(requestId));
+  }
+
+  async getAllExchanges(): Promise<StoredExchange[]> {
+    const store = await this.getStore(STORES.EXCHANGES);
+    return DeltaStorageClass.promisify(store.getAll());
+  }
+
   // ==================== META ====================
 
   async getMeta<T>(key: string): Promise<T | undefined> {
@@ -187,16 +278,25 @@ class DeltaStorageClass {
   async getStats(): Promise<{
     users: number;
     skills: number;
+    requests: number;
+    exchanges: number;
     estimatedSize: string;
   }> {
-    const [users, skills] = await Promise.all([this.getAllUsers(), this.getAllSkills()]);
+    const [users, skills, requests, exchanges] = await Promise.all([
+      this.getAllUsers(),
+      this.getAllSkills(),
+      this.getAllRequests(),
+      this.getAllExchanges(),
+    ]);
 
     // Примерная оценка размера
-    const jsonSize = JSON.stringify({ users, skills }).length;
+    const jsonSize = JSON.stringify({ users, skills, requests, exchanges }).length;
 
     return {
       users: users.length,
       skills: skills.length,
+      requests: requests.length,
+      exchanges: exchanges.length,
       estimatedSize: `~${(jsonSize / 1024).toFixed(1)} KB`,
     };
   }

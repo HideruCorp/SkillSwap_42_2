@@ -9,6 +9,8 @@ import {
 import notificationsReducer from '@entities/notification';
 import usersReducer from '@entities/user';
 import skillsReducer from '@entities/skill';
+import requestsReducer from '@entities/request';
+import exchangesReducer from '@entities/exchange';
 
 // Feature reducers
 import { authReducer, registrationReducer } from '@features/auth';
@@ -25,6 +27,8 @@ export const rootReducer = combineReducers({
   users: usersReducer,
   skills: skillsReducer,
   notifications: notificationsReducer,
+  requests: requestsReducer,
+  exchanges: exchangesReducer,
 
   // Features
   auth: authReducer,

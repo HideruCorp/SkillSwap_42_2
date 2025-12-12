@@ -1,6 +1,6 @@
 import type { Middleware, UnknownAction } from '@reduxjs/toolkit';
 import DeltaStorage from './deltaStorage';
-import type { StoredUser, StoredSkill } from './types';
+import type { StoredUser, StoredSkill, StoredRequest, StoredExchange } from './types';
 
 /**
  * Типы payload для разных actions
@@ -37,6 +37,23 @@ interface UpdatePayload<T> {
 interface FavoritePayload {
   skillId: number;
   userId: number;
+}
+
+interface RequestPayload {
+  id: number;
+  requestedSkill: number;
+  fromUser: number;
+  status: string;
+  createdAt: string;
+}
+
+interface ExchangePayload {
+  id: number;
+  requestId: number;
+  skills: [number, number];
+  status: string;
+  createdAt: string;
+  completedAt?: string;
 }
 
 /**
@@ -118,6 +135,55 @@ const persistHandlers: Record<string, (payload: unknown) => Promise<void>> = {
         likesReceived: skill.likesReceived.filter((id) => id !== userId),
       });
     }
+  },
+
+  // ==================== REQUESTS ====================
+
+  'requests/addRequest': async (payload) => {
+    const request = payload as RequestPayload;
+    const storedRequest: StoredRequest = {
+      id: request.id,
+      requestedSkill: request.requestedSkill,
+      fromUser: request.fromUser,
+      status: request.status as StoredRequest['status'],
+      createdAt: request.createdAt,
+    };
+    await DeltaStorage.addRequest(storedRequest);
+  },
+
+  'requests/updateRequest': async (payload) => {
+    const { id, changes } = payload as UpdatePayload<RequestPayload>;
+    await DeltaStorage.updateRequest(id, changes as Partial<StoredRequest>);
+  },
+
+  'requests/deleteRequest': async (payload) => {
+    const id = payload as number;
+    await DeltaStorage.deleteRequest(id);
+  },
+
+  // ==================== EXCHANGES ====================
+
+  'exchanges/addExchange': async (payload) => {
+    const exchange = payload as ExchangePayload;
+    const storedExchange: StoredExchange = {
+      id: exchange.id,
+      requestId: exchange.requestId,
+      skills: exchange.skills,
+      status: exchange.status as StoredExchange['status'],
+      createdAt: exchange.createdAt,
+      completedAt: exchange.completedAt,
+    };
+    await DeltaStorage.addExchange(storedExchange);
+  },
+
+  'exchanges/updateExchange': async (payload) => {
+    const { id, changes } = payload as UpdatePayload<ExchangePayload>;
+    await DeltaStorage.updateExchange(id, changes as Partial<StoredExchange>);
+  },
+
+  'exchanges/deleteExchange': async (payload) => {
+    const id = payload as number;
+    await DeltaStorage.deleteExchange(id);
   },
 
   // ==================== SESSION ====================
