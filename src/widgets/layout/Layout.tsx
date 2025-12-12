@@ -20,7 +20,7 @@ function Layout({ children }: LayoutProps) {
       <div className={styles.wrapper}>
         <Header />
         <main className={isLoginOrRegisterPage ? styles.mainLogin : styles.main}>{children}</main>
-        <Footer />
+        {!isLoginOrRegisterPage && <Footer />}
       </div>
     </div>
   );

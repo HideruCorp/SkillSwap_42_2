@@ -9,10 +9,8 @@
 
 .header {
   grid-column: 1 / -1;
-  width: 212px;
-  background-color: gray;
-  margin: auto;
-  height: 44px;
+  display: flex;
+  justify-content: center;
 }
 
 .left {
