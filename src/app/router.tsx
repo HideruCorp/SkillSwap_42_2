@@ -3,8 +3,6 @@ import {
   Catalog,
   LoginPage,
   RegisterPage,
-  RegisterStep2Page,
-  RegisterStep3Page,
   ProfilePage,
   ProfileFavoritesPage,
   ProfileRequestsPage,
@@ -49,7 +47,7 @@ function AppRouter() {
         path="/register"
         element={
           <ProtectedRoute forUnauthorized>
-            <RegisterPage />
+            <RegisterPage step={1}/>
           </ProtectedRoute>
         }
       />
@@ -57,7 +55,7 @@ function AppRouter() {
         path="/register/step2"
         element={
           <ProtectedRoute forUnauthorized>
-            <RegisterStep2Page />
+            <RegisterPage step={2}/>
           </ProtectedRoute>
         }
       />
@@ -65,7 +63,7 @@ function AppRouter() {
         path="/register/step3"
         element={
           <ProtectedRoute forUnauthorized>
-            <RegisterStep3Page />
+            <RegisterPage step={3}/>
           </ProtectedRoute>
         }
       />

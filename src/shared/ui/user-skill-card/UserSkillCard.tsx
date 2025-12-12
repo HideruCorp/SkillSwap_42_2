@@ -1,20 +1,16 @@
 import { SkillTagListUI } from '@shared/ui/skill-tag-list';
-import Button from '@shared/ui/button/Button';
-import styles from './user-card.module.scss';
-import type { UserCardProps } from './types';
+import styles from './user-skill-card.module.scss';
+import type { UserSkillCardProps } from './types';
 
-function UserCard({
-  id, // добавлен id
+function UserSkillCard({
   name,
   city,
   age,
+  about,
   canTeach,
   wantsToLearn,
   avatarUrl,
-  onDetailsClick,
-  onLikeClick,
-  isLiked = false,
-}: UserCardProps) {
+}: UserSkillCardProps) {
   const getAgeSuffix = (years: number): string => {
     if (years % 10 === 1 && years % 100 !== 11) return 'год';
     if ([2, 3, 4].includes(years % 10) && ![12, 13, 14].includes(years % 100)) return 'года';
@@ -37,18 +33,13 @@ function UserCard({
             </p>
           </div>
         </div>
-
-        <button
-          type="button"
-          className={styles.likeButton}
-          onClick={() => onLikeClick?.(id)}
-          aria-label={isLiked ? 'Убрать лайк' : 'Поставить лайк'}
-        >
-          <div
-            className={`${styles.likeIcon} ${isLiked ? styles.likeIconActive : styles.likeIconDefault}`}
-          />
-        </button>
       </div>
+
+      {about && (
+        <div className={styles.aboutSection}>
+          <p className={styles.aboutText}>{about}</p>
+        </div>
+      )}
 
       <div className={styles.skillsSection}>
         <h4 className={styles.skillsTitle}>Может научить:</h4>
@@ -59,17 +50,8 @@ function UserCard({
         <h4 className={styles.skillsTitle}>Хочет научиться:</h4>
         <SkillTagListUI tags={wantsToLearn} />
       </div>
-
-      <div className={styles.footer}>
-        <Button
-          className={styles.detailsButton}
-          title="Подробнее"
-          onClick={() => onDetailsClick?.(id)}
-          type="default"
-        />
-      </div>
     </div>
   );
 }
 
-export default UserCard;
+export default UserSkillCard;
