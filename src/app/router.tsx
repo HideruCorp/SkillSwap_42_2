@@ -3,8 +3,6 @@ import {
   Catalog,
   LoginPage,
   RegisterPage,
-  RegisterStep2Page,
-  RegisterStep3Page,
   ProfilePage,
   ProfileFavoritesPage,
   ProfileRequestsPage,
@@ -42,9 +40,9 @@ function AppRouter() {
         - перебрасывают на прошлую страницу, или на `/`
       */}
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/register/step2" element={<RegisterStep2Page />} />
-      <Route path="/register/step3" element={<RegisterStep3Page />} />
+      <Route path="/register" element={<RegisterPage step={1}/>} />
+      <Route path="/register/step2" element={<RegisterPage step={2}/>} />
+      <Route path="/register/step3" element={<RegisterPage step={3}/>} />
 
       {/*
         Профиль пользователя - защищен от неавторизованных юзеров

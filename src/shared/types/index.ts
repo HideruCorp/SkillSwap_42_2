@@ -1,5 +1,6 @@
 // Базовые утилитарные типы
 export type Nullable<T> = T | null;
+export type IsoDate = string; /// ISO-date string alias for structures
 
 // ID типы для type-safety
 export type UserId = number;
@@ -9,6 +10,7 @@ export type CategoryId = number;
 export type SubcategoryId = number;
 export type NotificationId = number;
 export type RequestId = number;
+export type ExchangeId = number;
 
 // Типы для навыков
 export interface Skill {
@@ -62,17 +64,25 @@ export interface City {
 }
 
 // Типы для заявок на обмен (для localStorage)
-export type RequestStatus = 'pending' | 'accepted' | 'rejected' | 'inProgress' | 'done';
-
 export interface Request {
   id: RequestId;
-  skillId: SkillId;
+  requestedSkill: SkillId;
   fromUser: UserId;
-  toUser: UserId;
   status: RequestStatus;
-  createdAt: string; // ISO string
-  completedAt?: string; // ISO string
+  createdAt: IsoDate;
 }
+
+export interface Exchange {
+  id: ExchangeId;
+  requestId: RequestId;
+  skills: [SkillId, SkillId]; // навыки обоих участников
+  status: ExchangeStatus;
+  createdAt: IsoDate;
+  completedAt?: IsoDate;
+}
+
+export type RequestStatus = 'pending' | 'accepted' | 'rejected';
+export type ExchangeStatus = 'inProgress' | 'completed' | 'cancelled';
 
 // Типы для ответов API (обертки JSON)
 export interface SkillsResponse {
