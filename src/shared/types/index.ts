@@ -1,5 +1,6 @@
 // Базовые утилитарные типы
 export type Nullable<T> = T | null;
+export type IsoDate = string; /// ISO-date string alias for structures
 
 // ID типы для type-safety
 export type UserId = number;
@@ -68,7 +69,7 @@ export interface Request {
   requestedSkill: SkillId;
   fromUser: UserId;
   status: RequestStatus;
-  createdAt: string;
+  createdAt: IsoDate;
 }
 
 export interface Exchange {
@@ -76,8 +77,8 @@ export interface Exchange {
   requestId: RequestId;
   skills: [SkillId, SkillId]; // навыки обоих участников
   status: ExchangeStatus;
-  createdAt: string;
-  completedAt?: string;
+  createdAt: IsoDate;
+  completedAt?: IsoDate;
 }
 
 export type RequestStatus = 'pending' | 'accepted' | 'rejected';
