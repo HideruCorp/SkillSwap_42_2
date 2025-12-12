@@ -5,6 +5,7 @@ import Button from '@shared/ui/button/Button';
 import { SocialButton } from '@shared/ui/social-button';
 import { Divider } from '@shared/ui/divider';
 import styles from './login-page.module.scss';
+import ComponentWithImg from '@widgets/componentWithImg/ComponentWithImg';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -44,20 +45,24 @@ function LoginPage() {
 
     // Базовая валидация наличия полей
     if (!email || !password) {
-      setFormError('Email или пароль введён неверно. Пожалуйста проверьте правильность введённых данных');
+      setFormError(
+        'Email или пароль введён неверно. Пожалуйста проверьте правильность введённых данных'
+      );
       return;
     }
 
     // Валидация формата email и длины пароля
     if (!validateEmail(email) || !validatePassword(password)) {
-      setFormError('Email или пароль введён неверно. Пожалуйста проверьте правильность введённых данных');
+      setFormError(
+        'Email или пароль введён неверно. Пожалуйста проверьте правильность введённых данных'
+      );
       return;
     }
 
     // Здесь будет проверка на сервере (заглушка)
     // TODO: Отправка данных на сервер для проверки
     console.log('Форма валидна, отправка данных на сервер');
-    
+
     // Заглушка: если данные неверны, показываем ошибку
     // В реальном приложении это будет ответ от сервера
     // setFormError('Email или пароль введён неверно. Пожалуйста проверьте правильность введённых данных');
@@ -74,6 +79,7 @@ function LoginPage() {
   return (
     <section className={styles.login}>
       <RegisterLayout
+        header={<h2 className={styles.header}>Вход</h2>}
         leftPart={
           <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.socialButtons}>
@@ -102,22 +108,20 @@ function LoginPage() {
               />
             </div>
 
-            {formError && (
-              <div className={styles.formError}>
-                {formError}
-              </div>
-            )}
+            {formError && <div className={styles.formError}>{formError}</div>}
 
             <div className={styles.submitButton}>
-              <Button
-                type="primary"
-                title="Далее"
-                onClick={() => handleSubmit()}
-              />
+              <Button type="primary" title="Далее" onClick={() => handleSubmit()} />
             </div>
           </form>
         }
-        rightPart={<div className={styles.rightPart} />}
+        rightPart={
+          <ComponentWithImg
+            img="src/shared/assets/img/light-Bulb.svg"
+            title="С возвращением в SkillSwap!"
+            text="Обменивайтесь знаниями и навыками с другими людьми"
+          />
+        }
       />
     </section>
   );

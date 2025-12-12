@@ -1,9 +1,14 @@
 @use '@shared/styles/variables' as *;
 @use '@shared/styles/mixins' as *;
 
+.header {
+  @include text-h2;
+
+  text-align: center;
+}
+
 .login {
   width: 100%;
-  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,9 +20,6 @@
   flex-direction: column;
   gap: 24px;
   padding: 40px;
-  background: $color-surface;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
 }
 
 .socialButtons {
@@ -53,6 +55,3 @@
   }
 }
 
-.rightPart {
-  // Правая часть пока пустая, будет добавлена позже
-}

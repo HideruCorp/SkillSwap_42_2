@@ -6,26 +6,30 @@ import Button from '@shared/ui/button/Button';
 import { SocialButton } from '@shared/ui/social-button';
 import { Divider } from '@shared/ui/divider';
 import styles from './register-page.module.scss';
+import lightBulbImg from '@shared/assets/img/light-Bulb.svg';
+import userInfoImg from '@shared/assets/img/user-Info.svg';
+import schoolBoardImg from '@shared/assets/img/school-Board.svg';
 
 const imgAndText = [
   {
-    img: 'light-Bulb.svg',
+    img: lightBulbImg,
     title: 'Добро пожаловать в SkillSwap!',
     text: 'Присоединяйтесь к SkillSwap и обменивайтесь знаниями и навыками с другими людьми',
   },
   {
-    img: 'user-Info.svg',
-    title: 'Расскажите немного о себе',
-    text: 'Это поможет другим людям лучше вас узнать, чтобы выбрать для обмена',
+    img: userInfoImg,
+    title: 'Расскажите немного о себе',
+    text: 'Это поможет другим людям лучше вас узнать, чтобы выбрать для обмена',
   },
   {
-    img: 'school-Board.svg',
-    title: 'Укажите, чем вы готовы поделиться',
-    text: 'Так другие люди смогут увидеть ваши предложения и предложить вам обмен!',
+    img: schoolBoardImg,
+    title: 'Укажите, чем вы готовы поделиться',
+    text: 'Так другие люди смогут увидеть ваши предложения и предложить вам обмен!',
   },
 ];
 
 function RegisterPage() {
+  const [currentStep, setCurrentStep] = useState(1);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formError, setFormError] = useState('');
@@ -121,31 +125,13 @@ function RegisterPage() {
           </form>
         }
         rightPart={
-          <div className={styles.rightPart}>
-            {/* компонент вставляется в зависимости от Шага регистрации */}
-            {/* Шаг 1 */}
-            <ComponentWithImg
-              img={imgAndText[0].img}
-              title={imgAndText[0].title}
-              text={imgAndText[0].text}
-            />
-
-            {/* Шаг 2 */}
-            {/* <ComponentWithImg
-              img={imgAndText[1].img}
-              title={imgAndText[1].title}
-              text={imgAndText[1].text}
-            /> */}
-
-            {/* Шаг 3 */}
-            {/* <ComponentWithImg
-              img={imgAndText[2].img}
-              title={imgAndText[2].title}
-              text={imgAndText[2].text}
-            /> */}
-          </div>
+          <ComponentWithImg
+            img={imgAndText[currentStep - 1].img}
+            title={imgAndText[currentStep - 1].title}
+            text={imgAndText[currentStep - 1].text}
+          />
         }
-        currentStep={1}
+        currentStep={currentStep}
         totalSteps={3}
       />
     </section>

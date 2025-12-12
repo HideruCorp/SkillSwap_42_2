@@ -9,7 +9,7 @@ interface ComponentWithImgProps {
 function ComponentWithImg({ img, title, text }: ComponentWithImgProps) {
   return (
     <div className={styles.container}>
-      <img className={styles.image} src={`src/shared/assets/img/${img}`} alt="картинка-заглушка" />
+      <img className={styles.image} src={`${img}`} alt="картинка-заглушка" />
       <h2 className={styles.title}>{title}</h2>
       <p className={styles.text}>{text}</p>
     </div>

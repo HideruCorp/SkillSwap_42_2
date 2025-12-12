@@ -1,0 +1,23 @@
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.cardsGrid {
+  display: grid;
+  gap: 24px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.empty {
+  @include text-body;
+  color: $color-text-caption;
+  padding: 16px 0;
+}

@@ -8,6 +8,7 @@ import getSkillsMock from '../../services/mockApi/skills';
 import getCitiesMock from '../../services/mockApi/cities';
 import getCategoriesMock from '../../services/mockApi/categories';
 import './CardsBlock.scss';
+import { calculateAge, getCategoryColorBySubcategoryId } from '../../shared/helpers';
 
 interface CardsBlockProps {
   title: string;
@@ -72,12 +73,12 @@ export function CardsBlock({
         const categories = rawCategories?.categories || [];
         const subcategories = rawCategories?.subcategories || [];
 
-        const getCategoryColorBySubcategoryId = (subcategoryId: number): string => {
-          const subcategory = subcategories.find((sc) => sc.id === subcategoryId);
-          if (!subcategory) return '#EEE7F7';
-          const category = categories.find((c) => c.id === subcategory.categoryId);
-          return category?.color || '#EEE7F7';
-        };
+        // const getCategoryColorBySubcategoryId = (subcategoryId: number): string => {
+        //   const subcategory = subcategories.find((sc) => sc.id === subcategoryId);
+        //   if (!subcategory) return '#EEE7F7';
+        //   const category = categories.find((c) => c.id === subcategory.categoryId);
+        //   return category?.color || '#EEE7F7';
+        // };
 
         const mapped: UserCardProps[] = rawUsers.map((u) => {
           const id = typeof u.id === 'number' ? u.id : Number(u.id);
@@ -86,7 +87,12 @@ export function CardsBlock({
           const canTeach: SkillTag[] = userSkillsRaw.map((skill) => ({
             id: String(skill.id),
             text: skill.title,
-            bgColor: getCategoryColorBySubcategoryId(skill.subcategoryId || 0),
+
+            bgColor: getCategoryColorBySubcategoryId(
+              skill.subcategoryId || 0,
+              categories,
+              subcategories
+            ),
           }));
 
           const wantsToLearn: SkillTag[] =
@@ -98,20 +104,13 @@ export function CardsBlock({
                     return {
                       id: String(sid),
                       text: subcategory.name,
-                      bgColor: getCategoryColorBySubcategoryId(sid),
+                      bgColor: getCategoryColorBySubcategoryId(sid, categories, subcategories),
                     };
                   })
                   .filter((tag): tag is SkillTag => tag !== null)
               : [];
 
-          let age = 0;
-          if (u.dateOfBirth) {
-            const dob = new Date(u.dateOfBirth);
-            const now = new Date();
-            age = now.getFullYear() - dob.getFullYear();
-            const m = now.getMonth() - dob.getMonth();
-            if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) age -= 1;
-          }
+          const age = u.dateOfBirth ? calculateAge(u.dateOfBirth) : 0;
 
           return {
             name: u.name ?? 'Без имени',

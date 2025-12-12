@@ -4,6 +4,7 @@ import styles from './user-card.module.scss';
 import type { UserCardProps } from './types';
 
 function UserCard({
+  id, // добавлен id
   name,
   city,
   age,
@@ -40,7 +41,7 @@ function UserCard({
         <button
           type="button"
           className={styles.likeButton}
-          onClick={onLikeClick}
+          onClick={() => onLikeClick?.(id)}
           aria-label={isLiked ? 'Убрать лайк' : 'Поставить лайк'}
         >
           <div
@@ -61,10 +62,10 @@ function UserCard({
 
       <div className={styles.footer}>
         <Button
-          title="Подробнее"
-          onClick={() => onDetailsClick?.()}
-          type="default"
           className={styles.detailsButton}
+          title="Подробнее"
+          onClick={() => onDetailsClick?.(id)}
+          type="default"
         />
       </div>
     </div>

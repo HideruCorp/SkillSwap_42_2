@@ -2,11 +2,11 @@
 @use '@shared/styles/mixins';
 
 .container {
-  max-height: 248px;
-  max-width: 400px;
-  width: 100%;
-  grid-column:2;
-  overflow: scroll;
+  min-height: 276px;
+  // max-height: 400px;
+  // min-width: 400px;
+  width: 400px;
+  // grid-column:2;
 }
 
 .head {
@@ -33,7 +33,7 @@
   @include mixins.text-body;
   
   color: variables.$color-text;
-  max-height: 168px;
+  max-height: 200px;
 }
 
 

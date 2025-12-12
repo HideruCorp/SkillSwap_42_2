@@ -1,3 +1,17 @@
+// Базовые утилитарные типы
+export type Nullable<T> = T | null;
+export type IsoDate = string; /// ISO-date string alias for structures
+
+// ID типы для type-safety
+export type UserId = number;
+export type SkillId = number;
+export type CityId = number;
+export type CategoryId = number;
+export type SubcategoryId = number;
+export type NotificationId = number;
+export type RequestId = number;
+export type ExchangeId = number;
+
 // Типы для навыков
 export interface Skill {
   id: number;
@@ -17,12 +31,12 @@ export type TSkillType = 'all' | 'learn' | 'teach';
 export type Gender = 'all' | 'male' | 'female';
 
 export interface User {
-  id: number;
+  id: UserId;
   avatarUrl: string;
   name: string;
   email: string;
   about: string;
-  cityId: number;
+  cityId: CityId;
   dateOfBirth: string;
   gender: Gender;
   registrationDate: string;
@@ -45,22 +59,30 @@ export interface Subcategory {
 
 // Типы для городов
 export interface City {
-  id: number;
+  id: CityId;
   name: string;
 }
 
 // Типы для заявок на обмен (для localStorage)
-export type RequestStatus = 'pending' | 'accepted' | 'rejected' | 'inProgress' | 'done';
-
 export interface Request {
-  id: string;
-  skillId: number;
-  fromUserId: number;
-  toUserId: number;
+  id: RequestId;
+  requestedSkill: SkillId;
+  fromUser: UserId;
   status: RequestStatus;
-  createdAt: string;
-  completedAt?: string;
+  createdAt: IsoDate;
 }
+
+export interface Exchange {
+  id: ExchangeId;
+  requestId: RequestId;
+  skills: [SkillId, SkillId]; // навыки обоих участников
+  status: ExchangeStatus;
+  createdAt: IsoDate;
+  completedAt?: IsoDate;
+}
+
+export type RequestStatus = 'pending' | 'accepted' | 'rejected';
+export type ExchangeStatus = 'inProgress' | 'completed' | 'cancelled';
 
 // Типы для ответов API (обертки JSON)
 export interface SkillsResponse {

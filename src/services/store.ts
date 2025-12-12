@@ -4,20 +4,45 @@ import {
   useDispatch as dispatchHook,
   useSelector as selectorHook,
 } from 'react-redux';
+
+// Entity reducers
 import notificationsReducer from '@entities/notification';
+import usersReducer from '@entities/user';
+import skillsReducer from '@entities/skill';
+import requestsReducer from '@entities/request';
+import exchangesReducer from '@entities/exchange';
+
+// Feature reducers
+import { authReducer, registrationReducer } from '@features/auth';
+import sessionReducer from '@features/session';
+
+// Middleware
+import persistMiddleware from '@shared/lib/storage/persistMiddleware';
+
+// TODO: переместить в  @features
 import filtersReducer from './slices/filtersSlice/filtersSlice';
 
 export const rootReducer = combineReducers({
-  filters: filtersReducer,
+  // Entities
+  users: usersReducer,
+  skills: skillsReducer,
   notifications: notificationsReducer,
+  requests: requestsReducer,
+  exchanges: exchangesReducer,
+
+  // Features
+  auth: authReducer,
+  registration: registrationReducer,
+  session: sessionReducer,
+  filters: filtersReducer,
 });
 
 const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(persistMiddleware),
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
-
 export type AppDispatch = typeof store.dispatch;
 
 export const useDispatch: () => AppDispatch = () => dispatchHook();

@@ -3,14 +3,15 @@ import cn from 'classnames';
 import styles from './button.module.scss';
 
 export type ButtonType = 'primary' | 'default' | 'secondary' | 'tertiary';
+export type HtmlType = 'button' | 'submit' | 'reset';
 
 interface ButtonProps {
   title: string;
-  onClick: () => void;
+  onClick?: () => void;
   type?: ButtonType;
   disabled?: boolean;
   className?: string;
-
+  htmlType?: HtmlType;
   // Иконка справа от текста: <ChevronRight /> Например
   iconRight?: React.ReactNode;
 }
@@ -21,11 +22,12 @@ function Button({
   type = 'default',
   disabled = false,
   className,
+  htmlType = 'button',
   iconRight = null,
 }: ButtonProps) {
   return (
     <button
-      type="button"
+      type={htmlType === 'submit' ? 'submit' : 'button'}
       className={cn(styles.button, className, {
         [styles.buttonPrimary]: type === 'primary',
         [styles.buttonDefault]: type === 'default',

@@ -1,2 +1,3 @@
+// eslint-disable-next-line no-restricted-exports
 export { default } from './SectionHeaderUI';
-export * from './type';
+export type { SectionHeaderProps } from './type';

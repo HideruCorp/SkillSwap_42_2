@@ -27,4 +27,3 @@ export const fetchCategories = async (): Promise<{
     throw new Error('Unknown error occurred while loading categories');
   }
 };
-
