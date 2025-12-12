@@ -1,13 +1,14 @@
 import type { User } from '@entities/user';
-import type { StoredUser, StoredSkill } from '@shared/lib/storage/types';
+import { hashPassword, verifyPassword } from '@shared/lib/crypto';
+import type { StoredSkill, StoredUser } from '@shared/lib/storage';
 import DeltaStorage from '@shared/lib/storage';
-import { hashPassword, verifyPassword, generateNumericId } from '@shared/lib/crypto';
+import generateNumericId from '@shared/lib/utils';
 import type {
+  AuthTokens,
   LoginCredentials,
   LoginResponse,
   RegisterRequest,
   RegisterResponse,
-  AuthTokens,
 } from '../model/types';
 
 /**

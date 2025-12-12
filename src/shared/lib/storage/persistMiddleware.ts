@@ -70,6 +70,7 @@ const persistHandlers: Record<string, (payload: unknown) => Promise<void>> = {
     if (!existing) {
       // Если пользователя нет (edge case), создаём без пароля
       // Это не должно происходить при нормальном flow
+      // eslint-disable-next-line no-console
       console.warn('User not found in IndexedDB during persist:', user.id);
     }
   },
@@ -223,7 +224,11 @@ export const persistMiddleware: Middleware = () => (next) => (action) => {
   if (handler && typedAction.payload !== undefined) {
     // Асинхронно сохраняем, не блокируя UI
     handler(typedAction.payload).catch((error) => {
-      console.error(`[persistMiddleware] Failed to persist ${actionType}:`, error);
+      // eslint-disable-next-line no-console
+      console.error(
+        `[persistMiddleware] Failed to persist ${actionType} with payload ${typedAction.payload}:`,
+        error
+      );
     });
   }
 

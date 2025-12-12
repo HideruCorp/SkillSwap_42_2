@@ -1,10 +1,10 @@
 import {
-  addExchange,
   initializeExchanges,
   selectAllExchanges,
   selectExchangesError,
   selectExchangesLoading,
 } from '@entities/exchange';
+import { useExchangesApi } from '@features/exchanges';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
 import styles from './profile-exchanges-page.module.scss';
@@ -18,6 +18,7 @@ import styles from './profile-exchanges-page.module.scss';
 
 function ProfileExchangesPage() {
   const dispatch = useDispatch();
+  const { createExchange } = useExchangesApi();
   const exchanges = useSelector(selectAllExchanges);
   const isLoading = useSelector(selectExchangesLoading);
   const error = useSelector(selectExchangesError);
@@ -27,26 +28,18 @@ function ProfileExchangesPage() {
   }, [dispatch]);
 
   const handleAddTestExchange = () => {
-    const testExchange = {
-      id: Date.now(),
-      requestId: Date.now() - 1000, // связь с заявкой
-      skills: [1, 2] as [number, number], // навыки обоих участников
-      status: 'inProgress' as const,
-      createdAt: new Date().toISOString(),
-    };
-    dispatch(addExchange(testExchange));
+    createExchange({
+      requestId: Date.now() - 1000,
+      skills: [1, 2],
+    });
   };
 
   const handleAddCompletedExchange = () => {
-    const testExchange = {
-      id: Date.now(),
+    createExchange({
       requestId: Date.now() - 1000,
-      skills: [3, 4] as [number, number],
-      status: 'completed' as const,
-      createdAt: new Date(Date.now() - 86400000).toISOString(), // вчера
-      completedAt: new Date().toISOString(),
-    };
-    dispatch(addExchange(testExchange));
+      skills: [3, 4],
+      status: 'completed',
+    });
   };
 
   const getStatusLabel = (status: string) => {

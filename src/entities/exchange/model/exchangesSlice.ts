@@ -2,7 +2,7 @@ import DeltaStorage from '@shared/lib/storage/deltaStorage';
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Exchange, Nullable } from '@shared/types';
 
-interface ExchangesState {
+export interface ExchangesState {
   items: Exchange[];
   isLoading: boolean;
   error: Nullable<string>;
