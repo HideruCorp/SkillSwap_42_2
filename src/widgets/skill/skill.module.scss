@@ -3,10 +3,10 @@
 .skillCard {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 25px;
   background: $color-surface;
   border-radius: 12px;
-  padding: 32px 52px;
+  padding: 32px 52px 48px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
@@ -69,15 +69,11 @@
 .skillInfoBlock {
   display: flex;
   flex-direction: column;
-  // gap: 24px;
   gap: 24px;
 
   // Desktop: две колонки
   @media (min-width: 768px) {
     flex-direction: row;
-
-
-    // gap: 32px;
   }
 }
 
@@ -86,7 +82,7 @@
 .descriptionBlock {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  // gap: 16px;
   flex: 1;
 
   div {
