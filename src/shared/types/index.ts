@@ -11,12 +11,10 @@ export type NotificationId = number;
 export type RequestId = number;
 
 // Типы для навыков
-
 export interface Skill {
-  id: SkillId;
-  subcategoryId: SubcategoryId;
-  userId: UserId;
-
+  id: number;
+  subcategoryId: number;
+  userId: number;
   title: string;
   description: string;
   createdAt: string;
