@@ -2,7 +2,7 @@ import exchangesReducer from './model/exchangesSlice';
 
 // Types
 export type { Exchange, ExchangeStatus } from './model/types';
-export type { ExchangesState } from './model/types';
+export type { ExchangesState } from './model/exchangesSlice';
 
 // Slice
 export {
@@ -16,7 +16,7 @@ export {
   setExchangesError,
 } from './model/exchangesSlice';
 
-// Selectors (from slice)
+// Selectors (from slice) - только базовые селекторы, работающие со своим state
 export {
   selectAllExchanges,
   selectExchangeById,
@@ -29,13 +29,10 @@ export {
   selectExchangesError,
 } from './model/exchangesSlice';
 
-// Memoized selectors (from separate file)
-export {
-  selectExchangesState,
-  selectExchangesByUserId,
-  selectActiveExchangesByUserId,
-  selectCompletedExchangesByUserId,
-  selectHasExchangeForRequest,
-} from './model/selectors';
+// Memoized selectors (только те, что не требуют cross-slice данных)
+export { selectExchangesState, selectHasExchangeForRequest } from './model/selectors';
+
+// Cross-slice селекторы (selectExchangesByUserId, selectActiveExchangesByUserId, selectCompletedExchangesByUserId)
+// перенесены в features/exchanges согласно FSD
 
 export default exchangesReducer;

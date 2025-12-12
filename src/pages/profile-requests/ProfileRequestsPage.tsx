@@ -1,10 +1,10 @@
 import {
-  addRequest,
   initializeRequests,
   selectAllRequests,
   selectRequestsError,
   selectRequestsLoading,
 } from '@entities/request';
+import { useRequestsApi } from '@features/requests';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
 import styles from './profile-requests-page.module.scss';
@@ -18,6 +18,7 @@ import styles from './profile-requests-page.module.scss';
 
 function ProfileRequestsPage() {
   const dispatch = useDispatch();
+  const { createRequest } = useRequestsApi();
   const requests = useSelector(selectAllRequests);
   const isLoading = useSelector(selectRequestsLoading);
   const error = useSelector(selectRequestsError);
@@ -27,14 +28,10 @@ function ProfileRequestsPage() {
   }, [dispatch]);
 
   const handleAddTestRequest = () => {
-    const testRequest = {
-      id: Date.now(),
+    createRequest({
       requestedSkill: 1,
       fromUser: 2,
-      status: 'pending' as const,
-      createdAt: new Date().toISOString(),
-    };
-    dispatch(addRequest(testRequest));
+    });
   };
 
   return (
