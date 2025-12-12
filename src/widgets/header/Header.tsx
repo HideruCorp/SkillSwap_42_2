@@ -65,12 +65,8 @@ function Header() {
     setIsProfileMenuOpen(false);
   };
 
-  const handleLoginClick = () => {
-    navigate('/login');
-  };
-
-  const handleRegisterClick = () => {
-    navigate('/register');
+  const handleAuthClick = () => {
+    navigate('/auth');
   };
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,16 +120,16 @@ function Header() {
         ) : (
           <>
             <Button
-              type="default"
+              type="secondary"
               className={styles['sign-in']}
               title="Войти"
-              onClick={handleLoginClick}
+              onClick={handleAuthClick}
             />
             <Button
               type="primary"
               className={styles['sign-up']}
               title="Зарегистрироваться"
-              onClick={handleRegisterClick}
+              onClick={handleAuthClick}
             />
           </>
         )}
