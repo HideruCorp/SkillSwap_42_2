@@ -1,20 +1,11 @@
 @use '@shared/styles/variables' as *;
 @use '@shared/styles/mixins' as *;
 
-/* .form {
-  display: flex;
-  flex-direction: column;
-  
-  margin-top: 40px;
-  width: 100%;
-} */
-
 .form {
 	display: flex;
 	flex-direction: column;
 	max-width: 556px;
 	max-height: 692px;
-  //gap: 16px;
 	margin: auto;
 	padding: 50px 60px;
 }
