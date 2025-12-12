@@ -8,9 +8,9 @@ function Footer() {
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.main}>
-          <a href="/" className={styles.logoSection}>
+          <div className={styles.logoSection}>
             <Logo />
-          </a>
+          </div>
           <span className={styles.copyright}>Skillswap – {currentYear}</span>
         </div>
 

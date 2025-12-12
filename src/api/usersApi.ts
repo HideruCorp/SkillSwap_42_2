@@ -40,3 +40,13 @@ export const fetchUserById = async (id: number): Promise<User | null> => {
   }
 };
 
+/**
+ * usersApi — отдаёт полностью весь массив
+ */
+export const usersApi = {
+  getUsers: async () => {
+    return fetchUsers(); // просто возвращаем всех пользователей
+  },
+  getUserById: fetchUserById,
+};
+

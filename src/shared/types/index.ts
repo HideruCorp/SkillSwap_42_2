@@ -1,8 +1,22 @@
+// Базовые утилитарные типы
+export type Nullable<T> = T | null;
+
+// ID типы для type-safety
+export type UserId = number;
+export type SkillId = number;
+export type CityId = number;
+export type CategoryId = number;
+export type SubcategoryId = number;
+export type NotificationId = number;
+export type RequestId = number;
+
 // Типы для навыков
-export interface SkillType {
-  id: number;
-  subcategoryId: number;
-  userId: number;
+
+export interface Skill {
+  id: SkillId;
+  subcategoryId: SubcategoryId;
+  userId: UserId;
+
   title: string;
   description: string;
   createdAt: string;
@@ -17,12 +31,12 @@ export type TSkillType = 'all' | 'learn' | 'teach';
 export type Gender = 'all' | 'male' | 'female';
 
 export interface User {
-  id: number;
+  id: UserId;
   avatarUrl: string;
   name: string;
   email: string;
   about: string;
-  cityId: number;
+  cityId: CityId;
   dateOfBirth: string;
   gender: Gender;
   registrationDate: string;
@@ -45,7 +59,7 @@ export interface Subcategory {
 
 // Типы для городов
 export interface City {
-  id: number;
+  id: CityId;
   name: string;
 }
 
@@ -53,13 +67,13 @@ export interface City {
 export type RequestStatus = 'pending' | 'accepted' | 'rejected' | 'inProgress' | 'done';
 
 export interface Request {
-  id: string;
-  skillId: number;
-  fromUserId: number;
-  toUserId: number;
+  id: RequestId;
+  skillId: SkillId;
+  fromUser: UserId;
+  toUser: UserId;
   status: RequestStatus;
-  createdAt: string;
-  completedAt?: string;
+  createdAt: string; // ISO string
+  completedAt?: string; // ISO string
 }
 
 // Типы для ответов API (обертки JSON)

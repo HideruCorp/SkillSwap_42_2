@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import styles from './Layout.module.scss';
 import { useLocation } from 'react-router-dom';
+import styles from './Layout.module.scss';
 import Header from '../header/Header';
 import Footer from '../footer/Footer';
 
@@ -11,8 +11,8 @@ interface LayoutProps {
 function Layout({ children }: LayoutProps) {
   // так как разметка для главной страницы и для страниц регистрации и логина отличается, добавлено условие
   const location = useLocation();
-  const isLoginOrRegisterPage = ['/login', '/register', '/error', '/*'].some((path) =>
-    location.pathname.includes(path)
+  const isLoginOrRegisterPage = ['/login', '/register', '/error', '/register/step2', '/*'].some(
+    (path) => location.pathname.includes(path)
   );
 
   return (

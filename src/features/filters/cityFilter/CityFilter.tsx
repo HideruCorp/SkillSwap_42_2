@@ -1,4 +1,6 @@
-import { useState, useMemo, useEffect } from 'react';
+
+import React, { useState, useMemo, useEffect } from 'react';
+
 import { CheckboxUI } from '@shared/ui/checkbox/CheckboxUI';
 import ChevronUp from '@shared/assets/img/chevron-Up.svg?react';
 import ChevronDown from '@shared/assets/img/chevron-Down.svg?react';
