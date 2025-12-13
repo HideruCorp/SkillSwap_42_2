@@ -85,7 +85,7 @@ function CredentialsForm({ onSubmit, isLoading = false, error }: CredentialsForm
   const handleFormSubmit = async (data: CredentialsFormData) => {
     // Сохраняем credentials в Redux store
     updateCredentials({ email: data.email, password: data.password });
-    // Вызываем внешний обработчик
+    // Вызываем **внешний обработчик**, нужно потому что сейчас на кнопку далее подвязаны два варианта действий - вход или регистрация
     await onSubmit(data);
   };
 
