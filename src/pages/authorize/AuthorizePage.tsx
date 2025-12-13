@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RegisterLayout from '@widgets/registerLayout/RegisterLayout';
 import Button from '@shared/ui/button/Button';
@@ -6,15 +5,13 @@ import ProgressBar from '@widgets/progress-bar/ProgressBar';
 import ComponentWithImg from '@widgets/componentWithImg/ComponentWithImg';
 import ThirdStepForm from '@widgets/forms/third-step-form';
 import CredentialsForm, { type CredentialsFormData } from '@widgets/forms/credentials-form';
-import authApi from '@features/auth/api/authApi';
 import {
-  login,
   useRegistrationWizard,
   useStepCredentials,
+  useLogin,
   prevStep,
   type RegistrationStep,
 } from '@features/auth';
-import { setUser } from '@features/session/model/sessionSlice';
 import { useDispatch } from '../../services/store';
 import styles from './authorize-page.module.scss';
 
@@ -42,52 +39,26 @@ function AuthorizePage() {
 
   // Хуки для работы с registration wizard
   const { currentStep, goToStep } = useRegistrationWizard();
-  const { updateCredentials, submitStep, isSubmitting } = useStepCredentials();
-
-  // State для ошибок авторизации
-  const [isLoading, setIsLoading] = useState(false);
-  const [credentialsError, setCredentialsError] = useState('');
+  const { updateCredentials, submitStep, checkEmail, isSubmitting } = useStepCredentials();
+  const { loginUser, isLoading, loginError, clearLoginError } = useLogin();
 
   const handleCredentialsSubmit = async (data: CredentialsFormData) => {
     const { email, password } = data;
-    setCredentialsError('');
-    setIsLoading(true);
+    clearLoginError();
 
-    try {
-      // Проверяем, существует ли email
-      const isEmailAvailable = await authApi.checkEmailAvailability(email);
+    // Проверяем, существует ли email
+    const isEmailAvailable = await checkEmail(email);
 
-      if (!isEmailAvailable) {
-        // Email существует — пытаемся войти
-        try {
-          const result = await dispatch(login({ email, password }));
-
-          if (login.fulfilled.match(result)) {
-            // Успешный вход — загружаем пользователя и редиректим
-            const user = await authApi.getUserById(result.payload.userId);
-            if (user) {
-              dispatch(setUser(user));
-            }
-            navigate('/profile');
-          } else {
-            // Ошибка входа (неверный пароль)
-            setCredentialsError('Неверный пароль');
-          }
-        } catch {
-          setCredentialsError('Ошибка при входе. Попробуйте снова');
-        }
-      } else {
-        // Email не существует — начинаем регистрацию
-        // Сохраняем credentials в registration slice
-        updateCredentials({ email, password });
-
-        // Переходим на шаг 2 через submitStep (валидация + смена шага в slice)
-        await submitStep();
+    if (!isEmailAvailable) {
+      // Email существует — пытаемся войти
+      const success = await loginUser(email, password);
+      if (success) {
+        navigate('/');
       }
-    } catch {
-      setCredentialsError('Ошибка подключения. Попробуйте позже');
-    } finally {
-      setIsLoading(false);
+    } else {
+      // Email не существует — начинаем регистрацию
+      updateCredentials({ email, password });
+      await submitStep();
     }
   };
 
@@ -105,7 +76,7 @@ function AuthorizePage() {
     <CredentialsForm
       onSubmit={handleCredentialsSubmit}
       isLoading={isLoading || isSubmitting}
-      error={credentialsError}
+      error={loginError}
     />
   );
 

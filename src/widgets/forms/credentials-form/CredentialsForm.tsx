@@ -69,23 +69,20 @@ function CredentialsForm({ onSubmit, isLoading = false, error }: CredentialsForm
     if (isNewUser && passwordValue && passwordStrength.label) {
       return passwordStrength.label;
     }
-    if (isNewUser || isNewUser === null) {
-      return 'Пароль должен содержать не менее 8 знаков';
-    }
     return undefined;
   };
 
   // Показываем внешнюю ошибку (например, "Неверный пароль")
   useEffect(() => {
     if (error) {
-      setError('root', { message: error });
+      setError('email', { message: error });
     }
   }, [error, setError]);
 
   const handleFormSubmit = async (data: CredentialsFormData) => {
     // Сохраняем credentials в Redux store
     updateCredentials({ email: data.email, password: data.password });
-    // Вызываем **внешний обработчик**, нужно потому что сейчас на кнопку далее подвязаны два варианта действий - вход или регистрация
+    // Вызываем **внешний обработчик** onSubmit, нужно потому что сейчас на кнопку далее подвязаны два варианта действий - вход или регистрация
     await onSubmit(data);
   };
 

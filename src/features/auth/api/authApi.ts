@@ -1,7 +1,7 @@
 import type { User } from '@entities/user';
 import { hashPassword, verifyPassword } from '@shared/lib/crypto';
 import type { StoredSkill, StoredUser } from '@shared/lib/storage';
-import DeltaStorage from '@shared/lib/storage';
+import DeltaStorage, { loadStoredUserByEmail, loadUserById } from '@shared/lib/storage';
 import generateNumericId from '@shared/lib/utils';
 import type {
   AuthTokens,
@@ -43,7 +43,7 @@ const authApi = {
       setTimeout(r, 500);
     });
 
-    const stored = await DeltaStorage.getUserByEmail(credentials.email);
+    const stored = await loadStoredUserByEmail(credentials.email);
 
     if (!stored) {
       throw new Error('Пользователь с таким email не найден');
@@ -124,7 +124,7 @@ const authApi = {
    * Проверка email
    */
   async checkEmailAvailability(email: string): Promise<boolean> {
-    const existing = await DeltaStorage.getUserByEmail(email);
+    const existing = await loadStoredUserByEmail(email);
     return !existing;
   },
 
@@ -132,8 +132,7 @@ const authApi = {
    * Получить пользователя по ID
    */
   async getUserById(userId: number): Promise<User | null> {
-    const stored = await DeltaStorage.getUserById(userId);
-    return stored ? toPublicUser(stored) : null;
+    return loadUserById(userId);
   },
 
   /**
