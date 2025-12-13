@@ -6,5 +6,6 @@ export interface InputProps {
   error?: string;
   message?: string;
   disabled?: boolean;
+  label?: string;
 }
 

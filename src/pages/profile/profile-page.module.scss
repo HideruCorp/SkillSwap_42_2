@@ -1,3 +1,67 @@
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
+
 .profile {
-  // Стили для страницы профиля
+  display: grid;
+  grid-template-columns: 324px 1020px;
+  margin: 0 auto;
+  max-width: calc(324px + 1020px + 24px);
+  gap: 24px;
+  min-height: 752px;
+}
+
+.sideBar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: $color-surface;
+  padding-top: 40px;
+  padding-left: 40px;
+  width: 100%;
+  border-radius: 12px;
+}
+
+.item {
+  display: block;
+  width: 244px;
+  cursor: pointer;
+  border-radius: 12px;
+
+  &:hover {
+    background-color: $color-button-hover;
+    color: $color-text-caption;
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: $color-text;
+
+    @include text-body;
+  }
+
+  img {
+    padding-right: 12px;
+  }
+}
+
+.mainInfo {
+  display: flex;
+  background-color: $color-surface;
+  gap: 196px;
+  border-radius: 12px;
+}
+
+.formEdit {
+  width: 460px;
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.avatar {
 }
