@@ -1,5 +1,7 @@
 /**
  * Конвертирует Blob в Data URL
+ * @param blob - Blob объект для конвертации
+ * @returns Promise с Data URL строкой (формат: data:mime;base64,...)
  */
 export function blobToDataUrl(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {

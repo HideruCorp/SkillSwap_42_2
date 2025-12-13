@@ -1,3 +1,3 @@
-export { compressImage, compressImages } from './compressImage';
-export { blobToDataUrl, formatFileSize } from './imageUtils';
+export { compressImage, compressImages, filesToDataUrls } from './compressImage';
+export { blobToDataUrl, formatFileSize, isDataUrl, estimateDataUrlSize } from './imageUtils';
 export type { ImageCompressionOptions } from './compressImage';
