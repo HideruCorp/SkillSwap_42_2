@@ -1,6 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit';
-import type { RootState } from '../../../services/store';
 import type { Exchange } from '@shared/types';
+import type { RootState } from '../../../services/store';
+
+/**
+ * Базовые селекторы для exchanges entity
+ * Содержат только селекторы, работающие со своим state
+ * Cross-slice селекторы вынесены в features/exchanges
+ */
 
 // Базовые селекторы
 export const selectExchangesState = (state: RootState) => state.exchanges;
@@ -13,64 +19,12 @@ export const selectExchangesError = (state: RootState): string | null => state.e
 
 // Input selectors для мемоизации
 const selectExchangesItems = (state: RootState) => state.exchanges.items;
-const selectRequestsItems = (state: RootState) => state.requests.items;
-const selectSkillsItems = (state: RootState) => state.skills.items;
 const selectExchangeId = (_state: RootState, id: number) => id;
-const selectUserId = (_state: RootState, userId: number) => userId;
 
 // Селектор по ID
 export const selectExchangeById = createSelector(
   [selectExchangesItems, selectExchangeId],
   (items, id): Exchange | undefined => items.find((item) => item.id === id)
-);
-
-// Обмены пользователя (где пользователь участвует через skills)
-// Exchange содержит skills: [SkillId, SkillId], нужно найти владельцев этих скиллов
-export const selectExchangesByUserId = createSelector(
-  [selectExchangesItems, selectSkillsItems, selectUserId],
-  (exchanges, skills, userId): Exchange[] => {
-    // Создаём Map для быстрого поиска владельца скилла
-    const skillOwnerMap = new Map(skills.map((s) => [s.id, s.userId]));
-
-    return exchanges.filter((exchange) => {
-      const [skill1, skill2] = exchange.skills;
-      const owner1 = skillOwnerMap.get(skill1);
-      const owner2 = skillOwnerMap.get(skill2);
-      return owner1 === userId || owner2 === userId;
-    });
-  }
-);
-
-// Активные обмены пользователя
-export const selectActiveExchangesByUserId = createSelector(
-  [selectExchangesItems, selectSkillsItems, selectUserId],
-  (exchanges, skills, userId): Exchange[] => {
-    const skillOwnerMap = new Map(skills.map((s) => [s.id, s.userId]));
-
-    return exchanges.filter((exchange) => {
-      if (exchange.status !== 'inProgress') return false;
-      const [skill1, skill2] = exchange.skills;
-      const owner1 = skillOwnerMap.get(skill1);
-      const owner2 = skillOwnerMap.get(skill2);
-      return owner1 === userId || owner2 === userId;
-    });
-  }
-);
-
-// Завершённые обмены пользователя
-export const selectCompletedExchangesByUserId = createSelector(
-  [selectExchangesItems, selectSkillsItems, selectUserId],
-  (exchanges, skills, userId): Exchange[] => {
-    const skillOwnerMap = new Map(skills.map((s) => [s.id, s.userId]));
-
-    return exchanges.filter((exchange) => {
-      if (exchange.status !== 'completed') return false;
-      const [skill1, skill2] = exchange.skills;
-      const owner1 = skillOwnerMap.get(skill1);
-      const owner2 = skillOwnerMap.get(skill2);
-      return owner1 === userId || owner2 === userId;
-    });
-  }
 );
 
 // Обмены по статусу
@@ -94,9 +48,8 @@ export const selectExchangeByRequestId = createSelector(
   (items, requestId): Exchange | undefined => items.find((item) => item.requestId === requestId)
 );
 
-// Проверка, есть ли у заявки связанный обмен
+// Проверка, есть ли у заявки связанный обмен (не требует cross-slice, requestId передаётся параметром)
 export const selectHasExchangeForRequest = createSelector(
-  [selectExchangesItems, selectRequestsItems, (_state: RootState, requestId: number) => requestId],
-  (exchanges, _requests, requestId): boolean =>
-    exchanges.some((exchange) => exchange.requestId === requestId)
+  [selectExchangesItems, (_state: RootState, requestId: number) => requestId],
+  (exchanges, requestId): boolean => exchanges.some((exchange) => exchange.requestId === requestId)
 );

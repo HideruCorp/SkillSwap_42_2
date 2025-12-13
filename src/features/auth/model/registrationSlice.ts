@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
-import type { Nullable } from '@shared/types';
+import type { Nullable, User } from '@shared/types';
 import authApi from '../api/authApi';
 import type {
   RegistrationStep,
@@ -142,23 +142,34 @@ const initialState: RegistrationState = {
 
 // ============ ASYNC THUNKS ============
 
+// Тип состояния для thunks, которым нужен доступ к users
+interface ThunkStateWithUsers {
+  registration: RegistrationState;
+  users: { items: User[] };
+}
+
 /**
  * Проверка доступности email (для интеграции с yup в компоненте)
+ * Проверяет email через слайс users, который содержит как мок-данные, так и данные из DeltaStorage
  */
-export const checkEmailAvailability = createAsyncThunk<boolean, string, { rejectValue: string }>(
-  'registration/checkEmail',
-  async (email, { rejectWithValue }) => {
-    try {
-      const isAvailable = await authApi.checkEmailAvailability(email);
-      if (!isAvailable) {
-        return rejectWithValue('Этот email уже зарегистрирован');
-      }
-      return true;
-    } catch (error) {
-      return rejectWithValue(error instanceof Error ? error.message : 'Ошибка проверки email');
+export const checkEmailAvailability = createAsyncThunk<
+  boolean,
+  string,
+  { state: ThunkStateWithUsers; rejectValue: string }
+>('registration/checkEmail', async (email, { getState, rejectWithValue }) => {
+  try {
+    const { users } = getState();
+    const normalizedEmail = email.toLowerCase();
+    const existingUser = users.items.find((user) => user.email.toLowerCase() === normalizedEmail);
+
+    if (existingUser) {
+      return false;
     }
+    return true;
+  } catch (error) {
+    return rejectWithValue(error instanceof Error ? error.message : 'Ошибка проверки email');
   }
-);
+});
 
 /**
  * Валидация и переход на следующий шаг
@@ -167,7 +178,7 @@ export const checkEmailAvailability = createAsyncThunk<boolean, string, { reject
 export const submitStep = createAsyncThunk<
   { nextStep: RegistrationStep; isLastStep: boolean },
   RegistrationStep,
-  { state: { registration: RegistrationState }; rejectValue: StepValidationErrors }
+  { state: ThunkStateWithUsers; rejectValue: StepValidationErrors }
 >('registration/submitStep', async (step, { getState, dispatch, rejectWithValue }) => {
   const { formData } = getState().registration;
 

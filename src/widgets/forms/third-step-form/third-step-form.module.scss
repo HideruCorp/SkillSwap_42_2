@@ -2,12 +2,10 @@
 @use '@shared/styles/mixins' as *;
 
 .form {
-	display: flex;
-	flex-direction: column;
-	max-width: 556px;
-	max-height: 692px;
-	margin: auto;
-	padding: 50px 60px;
+  display: flex;
+  flex-direction: column;
+  max-width: 556px;
+  margin: auto;
 }
 
 .input,
@@ -19,12 +17,12 @@
 }
 
 .dropdown {
-padding-block-start: 48px;
+  padding-block-start: 48px;
 }
 
 .label {
   @include text-body;
-	color: $color-text;
+  color: $color-text;
 }
 
 .input-grag-and-drop {
@@ -39,7 +37,6 @@ padding-block-start: 48px;
 
 .fullWidthButton {
   width: 100%;
-  
 }
 
 .error {
@@ -47,4 +44,3 @@ padding-block-start: 48px;
   margin-block-start: 4px;
   font-size: 13px;
 }
-

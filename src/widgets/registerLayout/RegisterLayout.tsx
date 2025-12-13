@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import styles from './RegisterLayout.module.scss';
+import styles from './registerLayout.module.scss';
 
 interface RegisterLayoutProps {
   leftPart: ReactElement;
