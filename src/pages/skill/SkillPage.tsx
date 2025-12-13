@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { SkillGallery } from '@/widgets/skillGallery';
 import { SkillDescriptionUI } from '@shared/ui/skill-description';
 import { UserSkillCard } from '@shared/ui/user-skill-card';
@@ -13,6 +13,9 @@ import type { Skill, User, City } from '@shared/types';
 import { calculateAge, getCategoryColorBySubcategoryId } from '@shared/helpers';
 import styles from './skill-page.module.scss';
 import { Skill as SkillWidget } from '@/widgets/skill';
+import SectionSimilarOffers from '@/shared/ui/section-similar-offers';
+import buildUserCards from '@entities/user/buildUserCards';
+import type { UserCardProps } from '@/shared/ui/user-card/types';
 
 function SkillPage() {
   const { id } = useParams<{ id: string }>();
@@ -27,6 +30,8 @@ function SkillPage() {
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [offers, setOffers] = useState<UserCardProps[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let mounted = true;
@@ -105,6 +110,23 @@ function SkillPage() {
         });
 
         setSkill(currentSkill);
+
+        // --- Похожие предложения (используя уже полученные данные о навыках) ---
+        const similarSkills = skillsData.filter(
+          (s) => s.subcategoryId === currentSkill.subcategoryId && s.id !== currentSkill.id
+        );
+
+        // ограничение до 12 уникальных предложений
+        const creatorIds = Array.from(new Set(similarSkills.map((s) => s.userId))).slice(0, 12);
+        const creators = await Promise.all(creatorIds.map((uid) => fetchUserById(uid)));
+        const rawCreators = creators.filter((c): c is User => c !== null);
+
+        if (mounted) {
+          const cities = Array.isArray(citiesData) ? citiesData : citiesData.cities;
+          const mappedOffers = buildUserCards(rawCreators, skillsData, cities, categoriesData);
+          setOffers(mappedOffers.slice(0, 12)); // можно изменить, если нужно
+        }
+        // --- end similar offers ---
       } catch (err) {
         if (mounted) {
           setError('Ошибка загрузки данных');
@@ -153,6 +175,17 @@ function SkillPage() {
     );
   }
 
+  // handlers for similar offers section
+  const handleLike = (userId: number) => {
+    // TODO: интеграция с favorites
+    // eslint-disable-next-line no-console
+    console.log('Like user', userId);
+  };
+
+  const handleDetails = (userId: number) => {
+    navigate(`/users/${userId}`);
+  };
+
   return (
     <>
       <UserSkillCard {...userCardData} />
@@ -172,6 +205,14 @@ function SkillPage() {
           // TODO: скролл к UserCard или открыть модальное окно
           console.log('More details for skill', skillId);
         }}
+      />
+      {/* Similar offers section */}
+      <SectionSimilarOffers
+        title="Похожие предложения"
+        cards={offers}
+        isLoading={isLoading}
+        onLikeClick={handleLike}
+        onDetailsClick={handleDetails}
       />
     </>
   );
