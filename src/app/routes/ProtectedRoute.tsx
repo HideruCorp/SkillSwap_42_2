@@ -1,5 +1,5 @@
 import Preloader from '@shared/ui/preloader/Preloader';
-import { selectIsLoggedIn, selectIsLoggingIn } from '@features/auth';
+import { selectIsAuthenticated, selectAuthChecked, selectIsLoggingIn } from '@features/auth';
 import { useSelector } from 'react-redux';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
@@ -8,28 +8,36 @@ type ProtectedRouteProps = {
   children?: React.ReactElement;
 };
 
-export const ProtectedRoute = ({ forUnauthorized, children }: ProtectedRouteProps) => {
+function ProtectedRoute({ forUnauthorized, children }: ProtectedRouteProps) {
+  const authChecked = useSelector(selectAuthChecked);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const isLoggingIn = useSelector(selectIsLoggingIn);
-  const hasToken = useSelector(selectIsLoggedIn);
 
   const location = useLocation();
 
-  if (isLoggingIn) {
+  // Показываем прелоадер пока не завершён bootstrap или идёт логин
+  if (!authChecked || isLoggingIn) {
     return <Preloader />;
   }
 
-  if (!forUnauthorized && !hasToken) {
-    return <Navigate replace to="/auth" state={{ from: location }} />;
-  }
-
-  if (forUnauthorized && hasToken) {
+  // Роут для неавторизованных, но пользователь авторизован — редирект
+  if (forUnauthorized && isAuthenticated) {
     const from = location.state?.from || { pathname: '/' };
     return <Navigate replace to={from} />;
   }
 
-  if (forUnauthorized && !hasToken) {
+  // Роут для авторизованных, но пользователь не авторизован — редирект на /auth
+  if (!forUnauthorized && !isAuthenticated) {
+    return <Navigate replace to="/auth" state={{ from: location }} />;
+  }
+
+  // Роут для неавторизованных и пользователь не авторизован — показываем children
+  if (forUnauthorized && !isAuthenticated) {
     return children;
   }
 
+  // Роут для авторизованных и пользователь авторизован — показываем Outlet
   return <Outlet />;
-};
+}
+
+export default ProtectedRoute;

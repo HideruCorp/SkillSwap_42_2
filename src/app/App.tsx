@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import DeltaStorage from '@shared/lib/storage';
 import { initializeUsers } from '@entities/user/model/usersSlice';
 import { initializeSkills } from '@entities/skill/model/skillsSlice';
+import { bootstrapAuth } from '@features/auth';
 import AppRouter from './router';
 import { useDispatch } from '../services/store';
 
@@ -18,6 +19,9 @@ function App() {
 
       // Затем загружаем данные в Redux
       await Promise.all([dispatch(initializeUsers()), dispatch(initializeSkills())]);
+
+      // Bootstrap auth после загрузки users (для проверки существования пользователя)
+      await dispatch(bootstrapAuth());
 
       setIsInitialized(true);
     };
