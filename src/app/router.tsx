@@ -1,8 +1,7 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
 import {
   Catalog,
-  LoginPage,
-  RegisterPage,
+  AuthorizePage,
   ProfilePage,
   ProfileFavoritesPage,
   ProfileRequestsPage,
@@ -36,34 +35,10 @@ function AppRouter() {
       <Route path="/about" element={<AboutPage />} />
 
       <Route
-        path="/login"
+        path="/auth"
         element={
           <ProtectedRoute forUnauthorized>
-            <LoginPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/register"
-        element={
-          <ProtectedRoute forUnauthorized>
-            <RegisterPage step={1}/>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/register/step2"
-        element={
-          <ProtectedRoute forUnauthorized>
-            <RegisterPage step={2}/>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/register/step3"
-        element={
-          <ProtectedRoute forUnauthorized>
-            <RegisterPage step={3}/>
+            <AuthorizePage />
           </ProtectedRoute>
         }
       />

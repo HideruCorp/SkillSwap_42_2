@@ -1,17 +1,14 @@
-import Preloader from "@shared/ui/preloader/Preloader";
-import { selectIsLoggedIn, selectIsLoggingIn } from "@features/auth";
-import { useSelector } from "react-redux";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import Preloader from '@shared/ui/preloader/Preloader';
+import { selectIsLoggedIn, selectIsLoggingIn } from '@features/auth';
+import { useSelector } from 'react-redux';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 type ProtectedRouteProps = {
   forUnauthorized?: boolean;
   children?: React.ReactElement;
 };
 
-export const ProtectedRoute = ({
-  forUnauthorized,
-  children
-}: ProtectedRouteProps) => {
+export const ProtectedRoute = ({ forUnauthorized, children }: ProtectedRouteProps) => {
   const isLoggingIn = useSelector(selectIsLoggingIn);
   const hasToken = useSelector(selectIsLoggedIn);
 
@@ -22,7 +19,7 @@ export const ProtectedRoute = ({
   }
 
   if (!forUnauthorized && !hasToken) {
-    return <Navigate replace to='/login' state={{ from: location }} />;
+    return <Navigate replace to="/auth" state={{ from: location }} />;
   }
 
   if (forUnauthorized && hasToken) {

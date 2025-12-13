@@ -7,6 +7,7 @@ export {
   useStepCredentials,
   useStepUserData,
   useStepSkillData,
+  useLogin,
 } from './hooks';
 
 // Model

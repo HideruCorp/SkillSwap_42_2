@@ -4,7 +4,7 @@ import DeltaStorage from './deltaStorage';
 export type { StoredUser, StoredSkill } from './types';
 
 // Utils
-export { loadMergedData, loadUserById, loadSkillById } from './dataMerger';
+export { loadMergedData, loadUserById, loadSkillById, loadStoredUserByEmail } from './dataMerger';
 export { initializeAppData, resetAllData } from './initializeApp';
 export type { InitResult } from './initializeApp';
 export default DeltaStorage;

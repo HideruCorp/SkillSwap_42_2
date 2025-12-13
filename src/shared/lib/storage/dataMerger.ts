@@ -96,3 +96,30 @@ export async function loadSkillById(id: number): Promise<Skill | null> {
     return null;
   }
 }
+
+/**
+ * Загрузить пользователя по email (сначала IndexedDB, потом mock)
+ *
+ * Возвращает StoredUser с passwordHash — используется ТОЛЬКО для авторизации.
+ * Не дублирует usersSlice: слайс хранит публичный тип User без passwordHash,
+ * а эта функция нужна для проверки пароля при логине.
+ */
+export async function loadStoredUserByEmail(email: string): Promise<StoredUser | null> {
+  const normalizedEmail = email.toLowerCase();
+
+  // Сначала IndexedDB
+  const stored = await DeltaStorage.getUserByEmail(normalizedEmail);
+  if (stored) {
+    return stored;
+  }
+
+  // Fallback на mock
+  try {
+    const response = await fetch('/db/users.json');
+    const data = await response.json();
+    const user = data.users?.find((u: StoredUser) => u.email.toLowerCase() === normalizedEmail);
+    return user || null;
+  } catch {
+    return null;
+  }
+}
