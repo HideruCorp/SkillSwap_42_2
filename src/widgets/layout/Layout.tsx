@@ -9,6 +9,10 @@ interface LayoutProps {
 }
 
 function Layout({ children }: LayoutProps) {
+  const location = useLocation();
+  const isLoginOrRegisterPage =
+    location.pathname === '/login' || location.pathname === '/register' || location.pathname.startsWith('/register/');
+
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>

@@ -42,6 +42,7 @@ function FilterBar() {
   const textSearch = useSelector(selectTextSearch);
 
   const [subcategoriesData, setSubcategoriesData] = useState<Subcategory[]>([]);
+  const [categoriesData, setCategoriesData] = useState<{ categories: any[]; subcategories: Subcategory[] } | null>(null);
   const [, setCitiesData] = useState<City[]>([]);
 
   useEffect(() => {
@@ -49,6 +50,11 @@ function FilterBar() {
       try {
         const [categoriesRes, citiesRes] = await Promise.all([fetchCategories(), fetchCities()]);
         setSubcategoriesData(categoriesRes.subcategories);
+        // Сохраняем полный объект с categories и subcategories
+        setCategoriesData({
+          categories: categoriesRes.categories,
+          subcategories: categoriesRes.subcategories,
+        });
         setCitiesData(citiesRes);
       } catch (error) {
         console.error('Error loading filter data:', error);
@@ -79,8 +85,21 @@ function FilterBar() {
   };
 
   const getSubcategoryName = (id: number): string => {
-    const subcategory = subcategoriesData.find((sc) => sc.id === id);
-    return subcategory?.name ?? `Категория ${id}`;
+    if (categoriesData?.categories && Array.isArray(categoriesData.categories)) {
+      const category = categoriesData.categories.find((cat: any) => cat && cat.id === id);
+      if (category && category.name) {
+        return category.name;
+      }
+    }
+    
+    if (Array.isArray(subcategoriesData)) {
+      const subcategory = subcategoriesData.find((sc) => sc && sc.id === id);
+      if (subcategory && subcategory.name) {
+        return subcategory.name;
+      }
+    }
+    
+    return `Категория ${id}`;
   };
 
   const hasActiveFilters =

@@ -19,6 +19,7 @@ import persistMiddleware from '@shared/lib/storage/persistMiddleware';
 
 // TODO: переместить в  @features
 import filtersReducer from './slices/filtersSlice/filtersSlice';
+import sortReducer from './slices/sortSlice/sortSlice';
 
 export const rootReducer = combineReducers({
   // Entities
@@ -31,6 +32,7 @@ export const rootReducer = combineReducers({
   registration: registrationReducer,
   session: sessionReducer,
   filters: filtersReducer,
+  sort: sortReducer,
 });
 
 const store = configureStore({

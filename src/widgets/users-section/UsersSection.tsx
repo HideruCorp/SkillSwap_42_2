@@ -1,15 +1,17 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import type { JSX } from 'react';
 import SectionUI from '@shared/ui/section/SectionUI';
 import type { UserCardProps } from '@shared/ui/user-card/types';
 import useInfiniteScroll from '@features/infinite-scroll/useInfiniteScroll';
 import type { User } from '@shared/types';
-import { sortUsersBy } from '@entities/user/sortUsers';
 import buildUserCards from '@entities/user/buildUserCards';
+import filterUsers from '@entities/user/filterUsers';
+import sortFilteredUsers from '@entities/user/sortFilteredUsers';
 import { paginate } from '@entities/user/paginate';
 import getSkillsMock from '../../services/mockApi/skills';
 import getCitiesMock from '../../services/mockApi/cities';
 import getCategoriesMock from '../../services/mockApi/categories';
+import { useSelector } from '../../services/store';
 
 // Типы секций:
 type Mode = 'likes' | 'created' | 'all';
@@ -21,6 +23,7 @@ type Props = {
   infinite?: boolean;
   showAllButton?: boolean;
   className?: string;
+  showCount?: boolean;
 };
 
 export default function UsersSection({
@@ -30,6 +33,7 @@ export default function UsersSection({
   infinite = false,
   showAllButton = false,
   className,
+  showCount = false,
 }: Props): JSX.Element {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,6 +41,16 @@ export default function UsersSection({
     null
   );
   const PAGE_SIZE = 10;
+
+  // Получаем фильтры из Redux store
+  const skillType = useSelector((state) => state.filters.skillType);
+  const gender = useSelector((state) => state.filters.gender);
+  const cities = useSelector((state) => state.filters.cities);
+  const subcategories = useSelector((state) => state.filters.subcategories);
+  const textSearch = useSelector((state) => state.filters.textSearch);
+
+  // Получаем опцию сортировки из Redux store
+  const sortBy = useSelector((state) => state.sort.sortBy);
 
   // --------------------------------------------
   // 1. Загружаем пользователей (через твой mockApi)
@@ -89,20 +103,43 @@ mounted = false;
 }, []);
 
   // --------------------------------------------
-  // 2. Сортировка по mode (используем твой sortUsersBy)
+  // 2. Применяем фильтры
   // --------------------------------------------
-  const sortedUsers = useMemo<User[]>(() => {
-    if (mode === 'all') return users;
-    return sortUsersBy(users, mode);
-  }, [users, mode]);
+  const filteredUsers = useMemo<User[]>(() => {
+    if (!aux) return users;
+    return filterUsers(
+      users,
+      {
+        skillType,
+        gender,
+        cities,
+        subcategories,
+        textSearch,
+      },
+      aux.rawSkills,
+      aux.rawCities,
+      aux.rawCategories
+    );
+  }, [users, aux, skillType, gender, cities, subcategories, textSearch]);
+
+  // --------------------------------------------
+  // 2b. Применяем сортировку к отфильтрованным пользователям
+  // Сортировка из Redux применяется ко всем секциям
+  // --------------------------------------------
+  const sortedFilteredUsers = useMemo<User[]>(() => {
+    if (!aux || filteredUsers.length === 0) return filteredUsers;
+    
+    // Применяем сортировку из Redux ко всем секциям
+    return sortFilteredUsers(filteredUsers, sortBy, aux.rawSkills);
+  }, [filteredUsers, sortBy, aux]);
 
   // --------------------------------------------
   // 3. Преобразование к карточкам (buildUserCards)
   // --------------------------------------------
   const allCards = useMemo<UserCardProps[]>(() => {
     if (!aux) return [];
-    return buildUserCards(sortedUsers, aux.rawSkills, aux.rawCities, aux.rawCategories);
-   }, [sortedUsers, aux]);
+    return buildUserCards(sortedFilteredUsers, aux.rawSkills, aux.rawCities, aux.rawCategories);
+   }, [sortedFilteredUsers, aux]);
 
   // --------------------------------------------
   // 4. Preview (если infinite = false)
@@ -152,15 +189,25 @@ mounted = false;
   // 7. Кнопка «Смотреть все» (только если разрешена)
   // --------------------------------------------
   const handleOpenAll = useCallback(() => {
-    console.log(`Открыть все: ${title}`);
+    // TODO: implement navigation to full list
   }, [title]);
 
   // --------------------------------------------
-  // 8. Рендер
+  // 8. Формируем заголовок с количеством (если нужно)
+  // --------------------------------------------
+  const displayTitle = useMemo(() => {
+    if (showCount) {
+      return `${title}: ${allCards.length}`;
+    }
+    return title;
+  }, [title, showCount, allCards.length]);
+
+  // --------------------------------------------
+  // 9. Рендер
   // --------------------------------------------
   return (
     <SectionUI
-      title={title}
+      title={displayTitle}
       cards={cards}
       onAction={showAllButton ? handleOpenAll : undefined}
       actionLabel={showAllButton ? 'Смотреть все' : undefined}

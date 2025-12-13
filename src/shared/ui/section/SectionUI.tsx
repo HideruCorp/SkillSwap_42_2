@@ -1,6 +1,6 @@
 import SectionHeaderUI from '@shared/ui/section-header/SectionHeaderUI';
 import UserCard from '@shared/ui/user-card/UserCard';
-import styles from './section-ui.module.scss';
+import styles from './SectionUI.module.scss';
 import type { SectionUIProps } from './type';
 
 function SectionUI({

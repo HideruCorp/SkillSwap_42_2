@@ -10,16 +10,23 @@ import { useDispatch } from '../services/store';
 function App() {
   const dispatch = useDispatch();
   const [isInitialized, setIsInitialized] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const init = async () => {
-      // Сначала инициализируем IndexedDB
-      await DeltaStorage.init();
+      try {
+        // Сначала инициализируем IndexedDB
+        await DeltaStorage.init();
 
-      // Затем загружаем данные в Redux
-      await Promise.all([dispatch(initializeUsers()), dispatch(initializeSkills())]);
+        // Затем загружаем данные в Redux
+        await Promise.all([dispatch(initializeUsers()), dispatch(initializeSkills())]);
 
-      setIsInitialized(true);
+        setIsInitialized(true);
+      } catch (err) {
+        console.error('Ошибка инициализации приложения:', err);
+        setError(err instanceof Error ? err.message : 'Неизвестная ошибка');
+        setIsInitialized(true); // Разрешаем рендер даже при ошибке
+      }
     };
 
     init();
@@ -27,6 +34,10 @@ function App() {
 
   if (!isInitialized) {
     return <div>Загрузка...</div>;
+  }
+
+  if (error) {
+    console.error('Ошибка приложения:', error);
   }
 
   return (

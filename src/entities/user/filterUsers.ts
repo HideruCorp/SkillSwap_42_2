@@ -1,0 +1,92 @@
+import type { User } from '@shared/types';
+import type { RawSkill, RawCity, RawCategoriesJson } from '@features/infinite-scroll/types';
+import type { TSkillType, Gender } from '@shared/types';
+
+export interface FilterParams {
+  skillType: TSkillType;
+  gender: Gender;
+  cities: string[];
+  subcategories: number[];
+  textSearch: string;
+}
+
+export default function filterUsers(
+  users: User[],
+  filters: FilterParams,
+  skills: RawSkill[],
+  cities: RawCity[],
+  categories?: RawCategoriesJson
+): User[] {
+  return users.filter((user) => {
+    if (filters.gender !== 'all' && user.gender !== filters.gender) {
+      return false;
+    }
+
+    if (filters.cities.length > 0) {
+      const userCity = cities.find((c) => c.id === user.cityId);
+      if (!userCity || !filters.cities.includes(userCity.name)) {
+        return false;
+      }
+    }
+
+    if (filters.textSearch && filters.textSearch.trim() !== '') {
+      const searchLower = filters.textSearch.toLowerCase().trim();
+      const userNameLower = (user.name || '').toLowerCase();
+      if (!userNameLower.includes(searchLower)) {
+        return false;
+      }
+    }
+
+    if (filters.skillType !== 'all') {
+      const userSkills = skills.filter((s) => s.userId === user.id);
+
+      if (filters.skillType === 'teach') {
+        if (userSkills.length === 0) {
+          return false;
+        }
+      } else if (filters.skillType === 'learn') {
+        if (!user.skillInterests || user.skillInterests.length === 0) {
+          return false;
+        }
+      }
+    }
+
+    if (filters.subcategories && filters.subcategories.length > 0) {
+      const userSkills = skills.filter((s) => s && s.userId === user.id);
+      const userSkillSubcategories = userSkills
+        .map((s) => s.subcategoryId)
+        .filter((id): id is number => id != null && typeof id === 'number');
+      const userInterestsSubcategories = user.skillInterests || [];
+
+      const expandedSubcategories = new Set<number>();
+      
+      filters.subcategories.forEach((id) => {
+        if (categories && categories.categories && categories.subcategories) {
+          const isCategory = categories.categories.some((cat: any) => cat && cat.id === id);
+          if (isCategory) {
+            const categorySubcategories = categories.subcategories
+              .filter((sub: any) => sub && sub.categoryId === id)
+              .map((sub: any) => sub.id)
+              .filter((subId: any): subId is number => typeof subId === 'number');
+            categorySubcategories.forEach((subId: number) => expandedSubcategories.add(subId));
+          } else {
+            expandedSubcategories.add(id);
+          }
+        } else {
+          expandedSubcategories.add(id);
+        }
+      });
+
+      const hasMatchingSubcategory = Array.from(expandedSubcategories).some(
+        (subId) => userSkillSubcategories.includes(subId) || userInterestsSubcategories.includes(subId)
+      );
+
+      if (!hasMatchingSubcategory) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+}
+
