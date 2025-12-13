@@ -1,0 +1,54 @@
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
+
+.mainInfo {
+  display: flex;
+  background-color: $color-surface;
+  gap: 196px;
+  border-radius: 12px;
+  padding: 60px;
+}
+
+.formEdit {
+  width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.row {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+}
+
+.dateOfBirth {
+  @include text-body;
+
+  margin-bottom: 5px;
+}
+.sex {
+  width: 100%;
+  z-index: 3;
+}
+.city {
+  height: 70px;
+}
+.about {
+  @include text-body;
+
+  margin-top: 16px;
+  margin-bottom: 5px;
+}
+
+.textarea {
+  width: 100%;
+}
+.avatar {
+  width: 244px;
+  height: 244px;
+}
+.avatarImg {
+  width: 244px;
+  height: 244px;
+}

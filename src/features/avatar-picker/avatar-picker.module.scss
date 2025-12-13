@@ -27,8 +27,8 @@
 }
 
 .placeholderIcon {
-  width: 63px;
-  height: 63px;
+  width: var(--avatar-size, 63px);
+  height: var(--avatar-size, 63px);
   flex-shrink: 0;
   display: block;
 }

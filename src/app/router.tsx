@@ -18,6 +18,7 @@ import Modal from '@features/modal/Modal';
 import ModalExchange from '@widgets/modals/modal-exchange/ModalExchange';
 import ModalOfferSuccess from '@widgets/modals/modal-offer-success/ModalOfferSuccess';
 import { ProtectedRoute } from './routes/ProtectedRoute';
+import ProfileEditForm from '@pages/profile/profileEditForm/ProfileEditForm';
 
 function AppRouter() {
   const location = useLocation();
@@ -44,11 +45,46 @@ function AppRouter() {
       />
 
       <Route element={<ProtectedRoute />}>
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/profile/favorites" element={<ProfileFavoritesPage />} />
-        <Route path="/profile/requests" element={<ProfileRequestsPage />} />
-        <Route path="/profile/skills" element={<ProfileSkillsPage />} />
-        <Route path="/profile/exchanges" element={<ProfileExchangesPage />} />
+        <Route
+          path="/profile"
+          element={
+            <ProfilePage>
+              <ProfileEditForm />
+            </ProfilePage>
+          }
+        />
+        <Route
+          path="/profile/favorites"
+          element={
+            <ProfilePage>
+              <ProfileFavoritesPage />
+            </ProfilePage>
+          }
+        />
+        <Route
+          path="/profile/requests"
+          element={
+            <ProfilePage>
+              <ProfileRequestsPage />
+            </ProfilePage>
+          }
+        />
+        <Route
+          path="/profile/skills"
+          element={
+            <ProfilePage>
+              <ProfileSkillsPage />
+            </ProfilePage>
+          }
+        />
+        <Route
+          path="/profile/exchanges"
+          element={
+            <ProfilePage>
+              <ProfileExchangesPage />
+            </ProfilePage>
+          }
+        />
       </Route>
 
       {/* модалки */}
