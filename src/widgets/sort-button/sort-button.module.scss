@@ -1,6 +1,10 @@
 @use '@shared/styles/variables' as *;
 @use '@shared/styles/mixins' as *;
 
+.relative {
+  position: relative;
+}
+
 .button {
   @include button-reset;
   @include text-body;

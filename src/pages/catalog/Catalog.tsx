@@ -5,7 +5,6 @@ import './Catalog.scss';
 import FilterBar from '@widgets/filter-bar';
 import { CardsBlock } from './CardsBlock';
 import UsersSection from '@widgets/users-section/UsersSection';
-import SortButton from '@widgets/sort-button';
 import { useSelector } from '../../services/store';
 
 export function Catalog() {
@@ -33,7 +32,6 @@ export function Catalog() {
       <div className="catalog__content">
         <div className="catalog__controls">
           <FilterBar />
-          {hasActiveFilters && <SortButton />}
         </div>
         {hasActiveFilters ? (
           <UsersSection
@@ -42,6 +40,7 @@ export function Catalog() {
             infinite
             previewLimit={20}
             showCount
+            showSortButton
           />
         ) : (
           <>

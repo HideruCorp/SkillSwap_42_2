@@ -33,6 +33,7 @@ export function SortButton() {
 
   return (
     <Dropdown
+      className={styles.relative}
       trigger={
         <div className={styles.button}>
           <SortIcon className={styles.sortIcon} />

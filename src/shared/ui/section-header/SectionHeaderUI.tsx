@@ -11,6 +11,7 @@ const SectionHeaderUI: React.FC<SectionHeaderProps> = ({
   onAction,
   actionLabel,
   className,
+  extraAction,
 }) => {
   const hasAction = actionLabel && onAction;
 
@@ -18,17 +19,20 @@ const SectionHeaderUI: React.FC<SectionHeaderProps> = ({
     <div className={cn(styles.wrapper, className)}>
       <h2 className={styles.title}>{title}</h2>
 
-      {hasAction && (
-        <div className={styles.actionWrapper}>
-          <Button
-            title={actionLabel}
-            onClick={onAction}
-            type="tertiary"
-            className={styles.hideTextMobile}
-            iconRight={<ChevronRight />}
-          />
-        </div>
-      )}
+      <div className={styles.actionsWrapper}>
+        {extraAction && <div className={styles.extraAction}>{extraAction}</div>}
+        {hasAction && (
+          <div className={styles.actionWrapper}>
+            <Button
+              title={actionLabel}
+              onClick={onAction}
+              type="tertiary"
+              className={styles.hideTextMobile}
+              iconRight={<ChevronRight />}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

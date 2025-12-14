@@ -12,6 +12,7 @@ import getSkillsMock from '../../services/mockApi/skills';
 import getCitiesMock from '../../services/mockApi/cities';
 import getCategoriesMock from '../../services/mockApi/categories';
 import { useSelector } from '../../services/store';
+import SortButton from '@widgets/sort-button';
 
 // Типы секций:
 type Mode = 'likes' | 'created' | 'all';
@@ -24,6 +25,7 @@ type Props = {
   showAllButton?: boolean;
   className?: string;
   showCount?: boolean;
+  showSortButton?: boolean; // показывать ли кнопку сортировки в заголовке
 };
 
 export default function UsersSection({
@@ -34,6 +36,7 @@ export default function UsersSection({
   showAllButton = false,
   className,
   showCount = false,
+  showSortButton = false,
 }: Props): JSX.Element {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -214,6 +217,7 @@ mounted = false;
       className={className}
       triggerRef={infinite ? targetRef : undefined}
       hasMore={hasMore}
+      headerExtra={showSortButton ? <SortButton /> : undefined}
     />
   );
 }

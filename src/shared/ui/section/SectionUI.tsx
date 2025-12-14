@@ -13,10 +13,11 @@ function SectionUI({
   onDetailsClick,
   triggerRef,
   hasMore,
+  headerExtra,
 }: SectionUIProps) {
   return (
     <section className={`${styles.section} ${className ?? ''}`}>
-      <SectionHeaderUI title={title} onAction={onAction} actionLabel={actionLabel} />
+      <SectionHeaderUI title={title} onAction={onAction} actionLabel={actionLabel} extraAction={headerExtra} />
 
       {cards.length === 0 ? (
         <div className={styles.empty}>В этой секции пусто</div>
