@@ -70,7 +70,17 @@ export const ThirdStepValidationSchema = yup.object({
     .required('Заполните описание навыка'),
   images: yup
     .array()
-    .of(yup.mixed<File>().required())
+    .of(
+      yup
+        .object()
+        .shape({
+          file: yup.mixed<File>().required(),
+          id: yup.string().required(),
+          name: yup.string().required(),
+          preview: yup.string(),
+        })
+        .required()
+    )
     .min(1, 'Загрузите хотя бы одно изображение')
     .max(5, 'Максимум 5 изображений')
     .required('Загрузите изображения навыка'),

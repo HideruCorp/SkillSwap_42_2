@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
-import type { Nullable, User } from '@shared/types';
+import type { Nullable, User, Skill } from '@shared/types';
+import { addUser } from '@entities/user';
+import { addSkill } from '@entities/skill';
 import authApi from '../api/authApi';
 import type {
   RegistrationStep,
@@ -223,7 +225,7 @@ export const submitRegistration = createAsyncThunk<
   { tokens: AuthTokens; userId: number; skillId: number },
   void,
   { state: { registration: RegistrationState }; rejectValue: string }
->('registration/submit', async (_, { getState, rejectWithValue }) => {
+>('registration/submit', async (_, { getState, rejectWithValue, dispatch }) => {
   try {
     const { formData } = getState().registration;
 
@@ -246,7 +248,24 @@ export const submitRegistration = createAsyncThunk<
       },
     });
 
-    // Сохраняем токены и userId
+    // 1) Обновляем Redux store (источник истины для UI)
+    // passwordHash уходит в action.meta, persistMiddleware использует его для DeltaStorage.addUser
+    dispatch(addUser(response.user, response.passwordHash));
+
+    const createdSkill: Skill = {
+      id: response.skillId,
+      subcategoryId: formData.skill.skillSubcategoryId ?? 0,
+      userId: response.user.id,
+      title: formData.skill.skillTitle,
+      description: formData.skill.skillDescription,
+      createdAt: new Date().toISOString(),
+      images: formData.skill.skillImages,
+      likesReceived: [],
+    };
+
+    dispatch(addSkill(createdSkill));
+
+    // 2) Сохраняем токены и userId
     localStorage.setItem('auth_tokens', JSON.stringify(response.tokens));
     localStorage.setItem('currentUserId', String(response.user.id));
 

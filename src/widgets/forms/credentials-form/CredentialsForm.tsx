@@ -26,7 +26,8 @@ const doNothing = () => {};
 const EMAIL_CHECK_DELAY = 500;
 
 function CredentialsForm({ onSubmit, isLoading = false, error }: CredentialsFormProps) {
-  const { credentials, updateCredentials, checkEmail, isCheckingEmail } = useStepCredentials();
+  const { credentials, updateCredentials, checkEmail, isCheckingEmail, isSubmitting } =
+    useStepCredentials();
   const [isNewUser, setIsNewUser] = useState<boolean | null>(null);
 
   const {
@@ -136,8 +137,8 @@ function CredentialsForm({ onSubmit, isLoading = false, error }: CredentialsForm
         <Button
           htmlType="submit"
           type="primary"
-          title={isLoading ? 'Загрузка...' : 'Далее'}
-          disabled={isLoading}
+          title={isLoading || isSubmitting ? 'Обработка...' : 'Далее'}
+          disabled={isLoading || isSubmitting}
         />
       </div>
     </form>

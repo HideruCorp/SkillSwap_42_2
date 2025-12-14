@@ -28,7 +28,7 @@ export function DragDrop({
       }
 
       const newFilesWithPreview: FileWithPreview[] = acceptedFiles.map((file) => ({
-        ...file,
+        file,
         preview: URL.createObjectURL(file),
         id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
         name: file.name,

@@ -38,19 +38,22 @@ const useRegistrationWizard = () => {
     [dispatch]
   );
 
-  const handleSubmitRegistration = useCallback(async () => {
+  const handleSubmitRegistration = useCallback(async (): Promise<{
+    success: boolean;
+    skillId: number | null;
+  }> => {
     const result = await dispatch(submitRegistration());
 
     if (submitRegistration.fulfilled.match(result)) {
       // Синхронизируем auth state после успешной регистрации
-      const { tokens, userId } = result.payload;
+      const { tokens, userId, skillId } = result.payload;
       dispatch(setTokens(tokens));
       dispatch(setCurrentUserId(userId));
       dispatch(setAuthChecked(true));
-      return true;
+      return { success: true, skillId };
     }
 
-    return false;
+    return { success: false, skillId: null };
   }, [dispatch]);
 
   const handleReset = useCallback(() => {
