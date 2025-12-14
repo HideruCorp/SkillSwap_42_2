@@ -186,18 +186,6 @@ const persistHandlers: Record<string, (payload: unknown) => Promise<void>> = {
     const id = payload as number;
     await DeltaStorage.deleteExchange(id);
   },
-
-  // ==================== SESSION ====================
-
-  'session/updateUser': async (payload) => {
-    // Обновление текущего пользователя
-    const changes = payload as Partial<UserPayload>;
-    const userId = localStorage.getItem('currentUserId');
-
-    if (userId) {
-      await DeltaStorage.updateUser(Number(userId), changes as Partial<StoredUser>);
-    }
-  },
 };
 
 /**
