@@ -7,8 +7,9 @@ import type { OptionType } from '@shared/ui/dropdown-list';
 import Button from '@shared/ui/button/Button';
 import { InputUI } from '@shared/ui/Input';
 import type { City } from '@shared/types';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type SyntheticEvent } from 'react';
 import { fetchCities } from '@api/citiesApi';
+import { useAuthState } from '@features/auth';
 
 const sex: OptionType[] = [
   { value: 'male', title: 'Мужской' },
@@ -16,19 +17,29 @@ const sex: OptionType[] = [
 ];
 
 function ProfileEditForm() {
+  const { currentUser } = useAuthState();
   const [cities, setCities] = useState<City[]>([]);
   const [selectedCity, setSelectedCity] = useState<OptionType>();
-  const [selectedSex, setSelectedSex] = useState<OptionType>(sex[0]);
-  const [email, setEmail] = useState('');
-  const [userName, setUserName] = useState('');
-  const [textAbout, setTextAbout] = useState('');
+  const [selectedSex, setSelectedSex] = useState<OptionType>(
+    sex.find((item) => item.value === currentUser?.gender)!
+  );
+  const [email, setEmail] = useState(currentUser?.email || '');
+  const [userName, setUserName] = useState(currentUser?.name || '');
+  const [textAbout, setTextAbout] = useState(currentUser?.about || '');
+  const [dateOfBirth, setDateOfBirth] = useState<Date>(new Date(currentUser?.dateOfBirth!));
+  const [avatar, setAvatar] = useState(currentUser?.avatarUrl);
+  const [editFormChange, setEditFormChange] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const citiesRes = await fetchCities();
         setCities(citiesRes);
-        setSelectedCity({ value: cities[0].id.toString(), title: cities[0].name });
+        const userCity = citiesRes.find((city) => city.id === currentUser?.cityId);
+        setSelectedCity({
+          value: (userCity || cities[0]).id.toString(),
+          title: (userCity || cities[0]).name,
+        });
       } catch (error) {
         console.error('Error loading cities data:', error);
       }
@@ -44,38 +55,56 @@ function ProfileEditForm() {
 
   const handleCityChange = (selected: OptionType[]) => {
     setSelectedCity(selected[0]);
+    setEditFormChange(true);
   };
 
   const handleSexChange = (selected: OptionType[]) => {
     setSelectedSex(selected[0]);
+    setEditFormChange(true);
   };
 
   const onChangeEmail = (value: string) => {
     setEmail(value);
+    setEditFormChange(true);
   };
 
   const onChangeName = (value: string) => {
     setUserName(value);
+    setEditFormChange(true);
   };
 
   const onChangeText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTextAbout(e.currentTarget.value);
+    setEditFormChange(true);
+  };
+
+  const onChangeDateOfBirth = (value: Date | undefined) => {
+    if (value) {
+      setDateOfBirth(value);
+      setEditFormChange(true);
+    }
+  };
+
+  const onChangeAvatar = (value: File | null) => {
+    setAvatar(value ? URL.createObjectURL(value) : undefined);
+    setEditFormChange(true);
+  };
+
+  const onSumbitEditForm = (e: SyntheticEvent) => {
+    e.preventDefault();
+    console.log('Данные обновлены');
+    setEditFormChange(false);
   };
 
   return (
     <div className={styles.mainInfo}>
-      <form className={styles.formEdit}>
+      <form className={styles.formEdit} onSubmit={onSumbitEditForm}>
         <InputUI label="Почта" type="text" value={email} onChange={onChangeEmail} />
         <InputUI label="Имя" type="text" value={userName} onChange={onChangeName} />
         <div className={styles.row}>
           <label>
             <p className={styles.dateOfBirth}>Дата рождения</p>
-            <DatePickerUI
-              onChange={() => {
-                alert;
-              }}
-              placeholder=""
-            />
+            <DatePickerUI onChange={onChangeDateOfBirth} value={dateOfBirth} placeholder="" />
           </label>
           <div className={styles.sex}>
             <DropdownListUI
@@ -103,10 +132,15 @@ function ProfileEditForm() {
           <p className={styles.about}>О себе</p>
           <Textarea className={styles.textarea} value={textAbout} onChange={onChangeText} />
         </label>
-        <Button title="Сохранить" disabled={true} />
+        <Button title="Сохранить" htmlType="submit" disabled={!editFormChange} />
       </form>
       <div className={styles.avatar}>
-        <AvatarPicker className={styles.avatarImg} size={300} onAvatarChange={() => {}} />
+        <AvatarPicker
+          className={styles.avatarImg}
+          size={300}
+          initialAvatarUrl={avatar}
+          onAvatarChange={onChangeAvatar}
+        />
       </div>
     </div>
   );
