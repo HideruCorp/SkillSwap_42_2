@@ -13,7 +13,3 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
   const newHash = await hashPassword(password);
   return newHash === hash;
 }
-
-export function generateNumericId(): number {
-  return Date.now() + Math.floor(Math.random() * 1000);
-}

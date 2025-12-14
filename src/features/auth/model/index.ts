@@ -3,13 +3,24 @@ export {
   default as authReducer,
   login,
   logout,
+  bootstrapAuth,
   setTokens,
+  setCurrentUserId,
+  setAuthChecked,
   clearAuthError,
   selectTokens,
+  selectCurrentUserId,
+  selectAuthChecked,
   selectIsLoggedIn,
   selectIsLoggingIn,
   selectLoginError,
 } from './authSlice';
+
+// Memoized selectors
+export { selectIsAuthenticated, selectCurrentUser } from './selectors';
+
+// Auth listener middleware
+export { default as authListener } from './authListener';
 
 // Registration slice
 export {

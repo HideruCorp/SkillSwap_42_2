@@ -1,6 +1,6 @@
 import type { Middleware, UnknownAction } from '@reduxjs/toolkit';
 import DeltaStorage from './deltaStorage';
-import type { StoredUser, StoredSkill } from './types';
+import type { StoredUser, StoredSkill, StoredRequest, StoredExchange } from './types';
 
 /**
  * Типы payload для разных actions
@@ -39,6 +39,23 @@ interface FavoritePayload {
   userId: number;
 }
 
+interface RequestPayload {
+  id: number;
+  requestedSkill: number;
+  fromUser: number;
+  status: string;
+  createdAt: string;
+}
+
+interface ExchangePayload {
+  id: number;
+  requestId: number;
+  skills: [number, number];
+  status: string;
+  createdAt: string;
+  completedAt?: string;
+}
+
 /**
  * Обработчики для персистенции разных actions
  */
@@ -53,6 +70,7 @@ const persistHandlers: Record<string, (payload: unknown) => Promise<void>> = {
     if (!existing) {
       // Если пользователя нет (edge case), создаём без пароля
       // Это не должно происходить при нормальном flow
+      // eslint-disable-next-line no-console
       console.warn('User not found in IndexedDB during persist:', user.id);
     }
   },
@@ -120,16 +138,53 @@ const persistHandlers: Record<string, (payload: unknown) => Promise<void>> = {
     }
   },
 
-  // ==================== SESSION ====================
+  // ==================== REQUESTS ====================
 
-  'session/updateUser': async (payload) => {
-    // Обновление текущего пользователя
-    const changes = payload as Partial<UserPayload>;
-    const userId = localStorage.getItem('currentUserId');
+  'requests/addRequest': async (payload) => {
+    const request = payload as RequestPayload;
+    const storedRequest: StoredRequest = {
+      id: request.id,
+      requestedSkill: request.requestedSkill,
+      fromUser: request.fromUser,
+      status: request.status as StoredRequest['status'],
+      createdAt: request.createdAt,
+    };
+    await DeltaStorage.addRequest(storedRequest);
+  },
 
-    if (userId) {
-      await DeltaStorage.updateUser(Number(userId), changes as Partial<StoredUser>);
-    }
+  'requests/updateRequest': async (payload) => {
+    const { id, changes } = payload as UpdatePayload<RequestPayload>;
+    await DeltaStorage.updateRequest(id, changes as Partial<StoredRequest>);
+  },
+
+  'requests/deleteRequest': async (payload) => {
+    const id = payload as number;
+    await DeltaStorage.deleteRequest(id);
+  },
+
+  // ==================== EXCHANGES ====================
+
+  'exchanges/addExchange': async (payload) => {
+    const exchange = payload as ExchangePayload;
+    const storedExchange: StoredExchange = {
+      id: exchange.id,
+      requestId: exchange.requestId,
+      skills: exchange.skills,
+      status: exchange.status as StoredExchange['status'],
+      createdAt: exchange.createdAt,
+      completedAt: exchange.completedAt,
+    };
+    await DeltaStorage.addExchange(storedExchange);
+  },
+
+  'exchanges/updateExchange': async (payload) => {
+    const { id, changes } = payload as UpdatePayload<ExchangePayload>;
+    await DeltaStorage.updateExchange(id, changes as Partial<StoredExchange>);
+  },
+
+  'exchanges/deleteExchange': async (payload) => {
+    const id = payload as number;
+    await DeltaStorage.deleteExchange(id);
   },
 };
 
@@ -157,7 +212,11 @@ export const persistMiddleware: Middleware = () => (next) => (action) => {
   if (handler && typedAction.payload !== undefined) {
     // Асинхронно сохраняем, не блокируя UI
     handler(typedAction.payload).catch((error) => {
-      console.error(`[persistMiddleware] Failed to persist ${actionType}:`, error);
+      // eslint-disable-next-line no-console
+      console.error(
+        `[persistMiddleware] Failed to persist ${actionType} with payload ${typedAction.payload}:`,
+        error
+      );
     });
   }
 

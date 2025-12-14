@@ -1,5 +1,41 @@
 import * as yup from 'yup';
-/* import type { OptionType } from '@shared/ui/dropdown-list/index'; */
+
+// ============ CREDENTIALS (Step 1) ============
+
+export const CredentialsValidationSchema = yup.object({
+  email: yup.string().email('Некорректный формат email').required('Заполните email'),
+  password: yup
+    .string()
+    .min(8, 'Пароль должен содержать не менее 8 знаков')
+    .required('Заполните пароль'),
+});
+
+export const getPasswordStrength = (password: string) => {
+  if (!password) return { score: 0, maxScore: 6, label: '' };
+
+  let score = 0;
+
+  if (password.length >= 8) score += 1;
+  if (password.length >= 12) score += 1;
+  if (/[a-z]/.test(password)) score += 1;
+  if (/[A-Z]/.test(password)) score += 1;
+  if (/[0-9]/.test(password)) score += 1;
+  if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score += 1;
+
+  const levels = [
+    { min: 0, label: 'Очень слабый' },
+    { min: 2, label: 'Слабый' },
+    { min: 3, label: 'Средний' },
+    { min: 5, label: 'Надёжный' },
+    { min: 6, label: 'Отличный' },
+  ];
+
+  const level = [...levels].reverse().find((l) => score >= l.min);
+
+  return { score, maxScore: 6, label: level?.label || '' };
+};
+
+// ============ SKILL DATA (Step 3) ============
 
 export const ThirdStepValidationSchema = yup.object({
   skillName: yup

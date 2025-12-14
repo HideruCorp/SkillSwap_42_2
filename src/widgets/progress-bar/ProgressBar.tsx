@@ -5,11 +5,17 @@ type ProgressBarProps = {
   totalSteps: number;
 };
 
-export function ProgressBar({ currentStep, totalSteps }: ProgressBarProps) {
+export default function ProgressBar({ currentStep, totalSteps }: ProgressBarProps) {
   return (
     <div className="progress-bar">
       <h2 className="progress-bar__title">
-        Шаг {currentStep} из {totalSteps}
+        {currentStep === 1 ? (
+          'Вход / Регистрация'
+        ) : (
+          <>
+            Шаг {currentStep} из {totalSteps}
+          </>
+        )}
       </h2>
 
       <div className="progress-bar__list">

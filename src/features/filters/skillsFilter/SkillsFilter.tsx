@@ -5,95 +5,121 @@ import ChevronDown from '@shared/assets/img/chevron-Down.svg?react';
 import styles from './skills-filter.module.scss';
 import type { SkillsFilterProps } from './types';
 
-interface ISkill {
+interface CategoryItem {
   id: number;
   name: string;
-  isCreativeSubcategory?: boolean;
 }
 
-export const SkillsFilter: React.FC<SkillsFilterProps> = ({
-  selectedSkills,
-  onSelectionChange,
-}) => {
-  const [categoryData, setCategoryData] = useState<any>(null);
+interface SubcategoryItem {
+  id: number;
+  name: string;
+  categoryId: number;
+}
+
+interface CategoryData {
+  categories: CategoryItem[];
+  subcategories: SubcategoryItem[];
+}
+
+interface DisplayItem {
+  id: number;
+  name: string;
+  isCategory: boolean;
+  isSubcategory?: boolean;
+  parentId?: number;
+  hasSubcategories?: boolean;
+}
+
+function SkillsFilter({ selectedSkills, onSelectionChange }: SkillsFilterProps) {
+  const [categoryData, setCategoryData] = useState<CategoryData | null>(null);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(false);
-  const [showCreativeSubcategories, setShowCreativeSubcategories] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set());
 
-  // Загрузка данных при монтировании
   useEffect(() => {
     fetch('/db/category.json')
       .then((res) => res.json())
-      .then((data) => {
+      .then((data: CategoryData) => {
         setCategoryData(data);
         setLoading(false);
       })
-      .catch((err) => {
-        console.error('Ошибка загрузки category.json:', err);
+      .catch(() => {
         setLoading(false);
       });
   }, []);
 
-  const allSkills = useMemo((): ISkill[] => {
+  const subcategoriesByCategory = useMemo(() => {
+    if (!categoryData) return new Map<number, SubcategoryItem[]>();
+
+    const map = new Map<number, SubcategoryItem[]>();
+    categoryData.subcategories.forEach((sub) => {
+      const subs = map.get(sub.categoryId) || [];
+      subs.push(sub);
+      map.set(sub.categoryId, subs);
+    });
+    return map;
+  }, [categoryData]);
+
+  const displayItems = useMemo(() => {
     if (!categoryData) return [];
 
-    const result: ISkill[] = [];
+    const items: DisplayItem[] = [];
 
     categoryData.categories.forEach((category) => {
-      result.push({
+      const subcategories = subcategoriesByCategory.get(category.id) || [];
+      const hasSubs = subcategories.length > 0;
+
+      items.push({
         id: category.id,
         name: category.name,
+        isCategory: true,
+        hasSubcategories: hasSubs,
       });
 
-      // Добавляем подкатегории только для творчества (id = 2)
-      if (category.id === 2) {
-        const creativeSubs = categoryData.subcategories.filter(
-          (sub) => sub.categoryId === category.id
-        );
-
-        creativeSubs.forEach((sub) => {
-          result.push({
+      const shouldShowSubcategories = expanded || expandedCategories.has(category.id);
+      if (shouldShowSubcategories && hasSubs) {
+        subcategories.forEach((sub) => {
+          items.push({
             id: sub.id,
             name: sub.name,
-            isCreativeSubcategory: true,
+            isCategory: false,
+            isSubcategory: true,
+            parentId: category.id,
           });
         });
       }
     });
 
-    return result;
-  }, [categoryData]);
+    return items;
+  }, [categoryData, expanded, expandedCategories, subcategoriesByCategory]);
 
-  const creativeSubcategoryIds = useMemo(() => {
-    if (!categoryData) return [];
-    return categoryData.subcategories.filter((sub) => sub.categoryId === 2).map((sub) => sub.id);
-  }, [categoryData]);
+  const getSubcategoryIds = (categoryId: number): number[] => {
+    const subs = subcategoriesByCategory.get(categoryId) || [];
+    return subs.map((sub) => sub.id);
+  };
 
-  const areAllCreativeSubcategoriesSelected = useMemo(() => {
-    return creativeSubcategoryIds.every((id) => selectedSkills.includes(id));
-  }, [selectedSkills, creativeSubcategoryIds]);
+  const areAllSubcategoriesSelected = (categoryId: number): boolean => {
+    const subIds = getSubcategoryIds(categoryId);
+    if (subIds.length === 0) return false;
+    return subIds.every((id) => selectedSkills.includes(id));
+  };
 
-  const isAnyCreativeSubcategorySelected = useMemo(() => {
-    return creativeSubcategoryIds.some((id) => selectedSkills.includes(id));
-  }, [selectedSkills, creativeSubcategoryIds]);
+  const isAnySubcategorySelected = (categoryId: number): boolean => {
+    const subIds = getSubcategoryIds(categoryId);
+    return subIds.some((id) => selectedSkills.includes(id));
+  };
 
-  const visibleSkills = useMemo(() => {
-    if (expanded) {
-      return allSkills;
-    }
-
-    const skills = allSkills.filter((skill) => !skill.isCreativeSubcategory);
-
-    if (showCreativeSubcategories) {
-      const creativeSubs = allSkills.filter((skill) => skill.isCreativeSubcategory);
-      const creativityIndex = skills.findIndex((skill) => skill.id === 2);
-      if (creativityIndex !== -1) {
-        skills.splice(creativityIndex + 1, 0, ...creativeSubs);
+  const toggleCategoryExpansion = (categoryId: number) => {
+    setExpandedCategories((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(categoryId)) {
+        newSet.delete(categoryId);
+      } else {
+        newSet.add(categoryId);
       }
-    }
-
-    return skills;
-  }, [allSkills, expanded, showCreativeSubcategories]);
+      return newSet;
+    });
+  };
 
   const toggleSkillSelection = (skillId: number) => {
     // Просто добавляем/убираем выбранный навык (категорию или подкатегорию)
@@ -103,15 +129,16 @@ export const SkillsFilter: React.FC<SkillsFilterProps> = ({
     onSelectionChange(updatedSelection);
   };
 
-  const handleCreativeCategoryToggle = () => {
-    const allSelected = areAllCreativeSubcategoriesSelected;
+  const handleCategoryToggle = (categoryId: number) => {
+    const subIds = getSubcategoryIds(categoryId);
+    const allSelected = areAllSubcategoriesSelected(categoryId);
 
     if (allSelected) {
-      const newSelection = selectedSkills.filter((id) => !creativeSubcategoryIds.includes(id));
+      const newSelection = selectedSkills.filter((id) => !subIds.includes(id));
       onSelectionChange(newSelection);
     } else {
       const newSelection = [...selectedSkills];
-      creativeSubcategoryIds.forEach((id) => {
+      subIds.forEach((id) => {
         if (!newSelection.includes(id)) {
           newSelection.push(id);
         }
@@ -124,10 +151,9 @@ export const SkillsFilter: React.FC<SkillsFilterProps> = ({
     setExpanded(!expanded);
   };
 
-  // Показать loader пока данные загружаются
   if (loading || !categoryData) {
     return (
-      <section className={styles.filterContainer}>
+      <section>
         <h2 className={styles.sectionTitle}>Навыки</h2>
         <p>Загрузка...</p>
       </section>
@@ -138,25 +164,28 @@ export const SkillsFilter: React.FC<SkillsFilterProps> = ({
     <section>
       <h2 className={styles.sectionTitle}>Навыки</h2>
       <ul className={styles.skillsList}>
-        {visibleSkills.map((skill) => {
-          // "Творчество и искусство" с особой логикой
-          if (skill.id === 2) {
+        {displayItems.map((item) => {
+          if (item.isCategory && item.hasSubcategories) {
+            const anySelected = isAnySubcategorySelected(item.id);
+            const allSelected = areAllSubcategoriesSelected(item.id);
+            const isExpanded = expanded || expandedCategories.has(item.id);
+
             return (
-              <li key={skill.id} className={styles.skillItem}>
+              <li key={`category-${item.id}`} className={styles.skillItem}>
                 <div className={styles.categoryWithArrow}>
                   <CheckboxUI
-                    variant={isAnyCreativeSubcategorySelected ? 'remove' : 'default'}
-                    text={skill.name}
-                    checked={isAnyCreativeSubcategorySelected}
-                    onToggle={handleCreativeCategoryToggle}
+                    variant={anySelected ? 'remove' : 'default'}
+                    text={item.name}
+                    checked={allSelected}
+                    onToggle={() => handleCategoryToggle(item.id)}
                   />
                   <button
                     type="button"
                     className={styles.toggleSubcategories}
-                    onClick={() => setShowCreativeSubcategories(!showCreativeSubcategories)}
-                    aria-expanded={showCreativeSubcategories}
+                    onClick={() => toggleCategoryExpansion(item.id)}
+                    aria-expanded={isExpanded}
                   >
-                    {showCreativeSubcategories ? (
+                    {isExpanded ? (
                       <ChevronUp className={styles.arrowIcon} />
                     ) : (
                       <ChevronDown className={styles.arrowIcon} />
@@ -167,27 +196,30 @@ export const SkillsFilter: React.FC<SkillsFilterProps> = ({
             );
           }
 
-          if (skill.isCreativeSubcategory) {
+          if (item.isSubcategory) {
             return (
-              <li key={skill.id} className={styles.skillItem} style={{ marginLeft: '32px' }}>
+              <li
+                key={`subcategory-${item.id}`}
+                className={styles.skillItem}
+                style={{ marginLeft: '32px' }}
+              >
                 <CheckboxUI
                   variant="default"
-                  text={skill.name}
-                  checked={selectedSkills.includes(skill.id)}
-                  onToggle={() => toggleSkillSelection(skill.id)}
+                  text={item.name}
+                  checked={selectedSkills.includes(item.id)}
+                  onToggle={() => toggleSkillSelection(item.id)}
                 />
               </li>
             );
           }
 
-          // Обычные категории
           return (
-            <li key={skill.id} className={styles.skillItem}>
+            <li key={`category-simple-${item.id}`} className={styles.skillItem}>
               <CheckboxUI
                 variant="default"
-                text={skill.name}
-                checked={selectedSkills.includes(skill.id)}
-                onToggle={() => toggleSkillSelection(skill.id)}
+                text={item.name}
+                checked={selectedSkills.includes(item.id)}
+                onToggle={() => toggleSkillSelection(item.id)}
               />
             </li>
           );
@@ -208,6 +240,6 @@ export const SkillsFilter: React.FC<SkillsFilterProps> = ({
       </button>
     </section>
   );
-};
+}
 
 export default SkillsFilter;

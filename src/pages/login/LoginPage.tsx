@@ -117,7 +117,7 @@ function LoginPage() {
         }
         rightPart={
           <ComponentWithImg
-            img="light-Bulb.svg"
+            img="src/shared/assets/img/light-Bulb.svg"
             title="С возвращением в SkillSwap!"
             text="Обменивайтесь знаниями и навыками с другими людьми"
           />

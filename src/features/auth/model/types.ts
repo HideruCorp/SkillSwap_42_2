@@ -83,6 +83,8 @@ export interface RegisterResponse {
 
 export interface AuthState {
   tokens: Nullable<AuthTokens>;
+  currentUserId: number | null;
+  checked: boolean; // bootstrap завершён
   isLoggingIn: boolean;
   isRegistering: boolean;
   loginError: Nullable<string>;

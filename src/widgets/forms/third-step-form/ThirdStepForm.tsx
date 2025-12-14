@@ -1,18 +1,18 @@
-import { useForm, Controller } from 'react-hook-form';
+import { fetchCategories } from '@api/categoriesApi';
+import { DragDrop } from '@features/drag-drop';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useState, useEffect, useMemo } from 'react';
-import type { Category, Subcategory } from '@shared/types/index';
-import { InputUI } from '@shared/ui/Input/index';
-import { DropdownListUI, type OptionType } from '@shared/ui/dropdown-list/index';
+import { ThirdStepValidationSchema } from '@shared/lib/validationSchema';
+import type { Category, Subcategory } from '@shared/types';
+import { InputUI } from '@shared/ui/Input';
+import Button from '@shared/ui/button/Button';
+import { DropdownListUI, type OptionType } from '@shared/ui/dropdown-list';
 import Textarea from '@shared/ui/textarea/Textarea';
-import { DragDrop } from '@features/drag-drop/index';
+import { useEffect, useMemo, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import styles from './third-step-form.module.scss';
-import { fetchCategories } from '@/api/categoriesApi';
-import { ThirdStepValidationSchema } from '@/shared/lib/validationSchema';
-import Button from '@/shared/ui/button/Button';
 
 interface ThirdStepFormProps {
-  setCurrentStep: (step: number | ((prev: number) => number)) => void;
+  setCurrentStep: (step: number) => void;
 }
 
 export type ThirdStepFormData = {

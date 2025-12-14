@@ -43,7 +43,7 @@ const useStepCredentials = () => {
   const handleCheckEmail = useCallback(
     async (email: string) => {
       const result = await dispatch(checkEmailAvailability(email));
-      return checkEmailAvailability.fulfilled.match(result);
+      return checkEmailAvailability.fulfilled.match(result) ? result.payload : false;
     },
     [dispatch]
   );

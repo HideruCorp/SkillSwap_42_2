@@ -68,7 +68,10 @@ export async function compressImage(
 }
 
 /**
- * Сжимает массив файлов
+ * Сжимает массив файлов и возвращает массив Data URL
+ * @param files - Массив File объектов для сжатия
+ * @param options - Опции сжатия (maxWidth, maxHeight, quality, mimeType)
+ * @returns Promise с массивом Data URL строк сжатых изображений
  */
 export async function compressImages(
   files: File[],
@@ -76,3 +79,16 @@ export async function compressImages(
 ): Promise<string[]> {
   return Promise.all(files.map((file) => compressImage(file, options)));
 }
+
+/**
+ * Конвертирует массив File в массив Data URL со сжатием
+ * @param files - Массив File объектов для конвертации
+ * @param options - Опции сжатия (опционально)
+ * @returns Promise с массивом Data URL строк
+ */
+export const filesToDataUrls = async (
+  files: File[],
+  options: ImageCompressionOptions = {}
+): Promise<string[]> => {
+  return compressImages(files, options);
+};
