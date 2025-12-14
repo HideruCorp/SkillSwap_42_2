@@ -5,6 +5,7 @@ import Button from '@shared/ui/button/Button';
 import ProgressBar from '@widgets/progress-bar/ProgressBar';
 import ComponentWithImg from '@widgets/componentWithImg/ComponentWithImg';
 import SkillDataForm from '@widgets/forms/skill-data-form';
+import SecondStepForm from '@widgets/forms/second-step-form/SecondStepForm';
 import CredentialsForm, { type CredentialsFormData } from '@widgets/forms/credentials-form';
 import { useRegistrationWizard, useStepCredentials, useLogin, prevStep } from '@features/auth';
 import { useDispatch } from '../../services/store';
@@ -57,15 +58,6 @@ function AuthorizePage() {
     }
   };
 
-  const handlePrevStep = () => {
-    dispatch(prevStep());
-  };
-
-  const handleNextStep = () => {
-    // Для шага 2 пока переходим напрямую (форма шага 2 ещё не реализована)
-    goToStep(3);
-  };
-
   // Рендер формы первого шага (credentials)
   const renderCredentialsForm = () => (
     <CredentialsForm
@@ -76,15 +68,7 @@ function AuthorizePage() {
   );
 
   // Рендер формы второго шага (userData)
-  const renderUserDataForm = () => (
-    <div>
-      <p>Форма второго шага (данные пользователя)</p>
-      <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-        <Button type="secondary" title="Назад" onClick={handlePrevStep} />
-        <Button type="primary" title="Продолжить" onClick={handleNextStep} />
-      </div>
-    </div>
-  );
+  const renderUserDataForm = () => <SecondStepForm />;
 
   // Обработчик успешного завершения третьего шага
   const handleSkillDataSubmitSuccess = useCallback(async () => {
