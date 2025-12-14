@@ -26,9 +26,23 @@ const usersSlice = createSlice({
     setUsers(state, action: PayloadAction<User[]>) {
       state.items = action.payload;
     },
-    addUser(state, action: PayloadAction<User>) {
-      state.items.push(action.payload);
+
+    /**
+     * Добавление пользователя в Redux.
+     * passwordHash передаём через action.meta (для persistMiddleware)
+     */
+    addUser: {
+      reducer(state, action: PayloadAction<User>) {
+        state.items.push(action.payload);
+      },
+      prepare(user: User, passwordHash?: string) {
+        return {
+          payload: user,
+          meta: passwordHash ? { passwordHash } : {},
+        };
+      },
     },
+
     updateUser(state, action: PayloadAction<{ id: number; changes: Partial<User> }>) {
       const index = state.items.findIndex((u) => u.id === action.payload.id);
       if (index !== -1) {
