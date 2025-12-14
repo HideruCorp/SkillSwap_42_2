@@ -1,6 +1,5 @@
 export { Catalog } from './catalog';
-export { LoginPage } from './login';
-export { RegisterPage } from './register';
+export { AuthorizePage } from './authorize';
 export { ProfilePage } from './profile';
 export { ProfileFavoritesPage } from './profile-favorites';
 export { ProfileRequestsPage } from './profile-requests';

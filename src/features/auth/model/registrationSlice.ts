@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
-import type { Nullable } from '@shared/types';
+import type { Nullable, User, Skill } from '@shared/types';
+import { addUser } from '@entities/user';
+import { addSkill } from '@entities/skill';
 import authApi from '../api/authApi';
 import type {
   RegistrationStep,
@@ -142,23 +144,34 @@ const initialState: RegistrationState = {
 
 // ============ ASYNC THUNKS ============
 
+// Тип состояния для thunks, которым нужен доступ к users
+interface ThunkStateWithUsers {
+  registration: RegistrationState;
+  users: { items: User[] };
+}
+
 /**
  * Проверка доступности email (для интеграции с yup в компоненте)
+ * Проверяет email через слайс users, который содержит как мок-данные, так и данные из DeltaStorage
  */
-export const checkEmailAvailability = createAsyncThunk<boolean, string, { rejectValue: string }>(
-  'registration/checkEmail',
-  async (email, { rejectWithValue }) => {
-    try {
-      const isAvailable = await authApi.checkEmailAvailability(email);
-      if (!isAvailable) {
-        return rejectWithValue('Этот email уже зарегистрирован');
-      }
-      return true;
-    } catch (error) {
-      return rejectWithValue(error instanceof Error ? error.message : 'Ошибка проверки email');
+export const checkEmailAvailability = createAsyncThunk<
+  boolean,
+  string,
+  { state: ThunkStateWithUsers; rejectValue: string }
+>('registration/checkEmail', async (email, { getState, rejectWithValue }) => {
+  try {
+    const { users } = getState();
+    const normalizedEmail = email.toLowerCase();
+    const existingUser = users.items.find((user) => user.email.toLowerCase() === normalizedEmail);
+
+    if (existingUser) {
+      return false;
     }
+    return true;
+  } catch (error) {
+    return rejectWithValue(error instanceof Error ? error.message : 'Ошибка проверки email');
   }
-);
+});
 
 /**
  * Валидация и переход на следующий шаг
@@ -167,7 +180,7 @@ export const checkEmailAvailability = createAsyncThunk<boolean, string, { reject
 export const submitStep = createAsyncThunk<
   { nextStep: RegistrationStep; isLastStep: boolean },
   RegistrationStep,
-  { state: { registration: RegistrationState }; rejectValue: StepValidationErrors }
+  { state: ThunkStateWithUsers; rejectValue: StepValidationErrors }
 >('registration/submitStep', async (step, { getState, dispatch, rejectWithValue }) => {
   const { formData } = getState().registration;
 
@@ -212,7 +225,7 @@ export const submitRegistration = createAsyncThunk<
   { tokens: AuthTokens; userId: number; skillId: number },
   void,
   { state: { registration: RegistrationState }; rejectValue: string }
->('registration/submit', async (_, { getState, rejectWithValue }) => {
+>('registration/submit', async (_, { getState, rejectWithValue, dispatch }) => {
   try {
     const { formData } = getState().registration;
 
@@ -235,7 +248,24 @@ export const submitRegistration = createAsyncThunk<
       },
     });
 
-    // Сохраняем токены и userId
+    // 1) Обновляем Redux store (источник истины для UI)
+    // passwordHash уходит в action.meta, persistMiddleware использует его для DeltaStorage.addUser
+    dispatch(addUser(response.user, response.passwordHash));
+
+    const createdSkill: Skill = {
+      id: response.skillId,
+      subcategoryId: formData.skill.skillSubcategoryId ?? 0,
+      userId: response.user.id,
+      title: formData.skill.skillTitle,
+      description: formData.skill.skillDescription,
+      createdAt: new Date().toISOString(),
+      images: formData.skill.skillImages,
+      likesReceived: [],
+    };
+
+    dispatch(addSkill(createdSkill));
+
+    // 2) Сохраняем токены и userId
     localStorage.setItem('auth_tokens', JSON.stringify(response.tokens));
     localStorage.setItem('currentUserId', String(response.user.id));
 

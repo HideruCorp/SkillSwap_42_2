@@ -3,4 +3,5 @@ export type SectionHeaderProps = {
   onAction?: () => void;
   actionLabel?: string; // например "Смотреть все"
   className?: string;
+  extraAction?: React.ReactNode; // дополнительный элемент (например, кнопка сортировки)
 };

@@ -15,6 +15,7 @@ import UserInfo from './userInfo/UserInfo';
 import { useDispatch, useSelector } from '../../services/store';
 import { selectTextSearch } from '../../services/slices/filtersSlice/selectors';
 import { setTextSearch } from '../../services/slices/filtersSlice';
+import { logout, useAuthState } from '@features/auth';
 
 // TODO: Заменить на ID авторизованного пользователя
 const CURRENT_USER_ID = 1;
@@ -24,7 +25,8 @@ const SEARCH_DEBOUNCE_DELAY = 1500;
 function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [authenticated] = useState(false);
+  // const [authenticated] = useState(false);
+  const { isAuthenticated, currentUser } = useAuthState();
 
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
@@ -61,16 +63,12 @@ function Header() {
   };
 
   const handleLogout = () => {
-    // TODO: Добавить логику выхода из аккаунта
+    dispatch(logout());
     setIsProfileMenuOpen(false);
   };
 
-  const handleLoginClick = () => {
-    navigate('/login');
-  };
-
-  const handleRegisterClick = () => {
-    navigate('/register');
+  const handleAuthClick = () => {
+    navigate('/auth');
   };
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,11 +86,11 @@ function Header() {
         <AllSkillsDropdown />
       </nav>
       <SearchInput value={localSearchValue} onChange={handleSearchChange} />
-      {!authenticated && <ThemeToggler />}
+      {!isAuthenticated && <ThemeToggler />}
       <div
-        className={`${styles['profile-panel']} ${authenticated && styles['profile-panel--authenticated']}`}
+        className={`${styles['profile-panel']} ${isAuthenticated && styles['profile-panel--authenticated']}`}
       >
-        {authenticated ? (
+        {isAuthenticated ? (
           <>
             <div className={styles['profile-icons']}>
               <ThemeToggler />
@@ -110,7 +108,9 @@ function Header() {
               <Favorites />
             </div>
             <Dropdown
-              trigger={<UserInfo userName="Мария" />}
+              trigger={
+                <UserInfo userName={currentUser?.name!} userAvatarUrl={currentUser?.avatarUrl} />
+              }
               align="right"
               isOpen={isProfileMenuOpen}
               onToggle={handleToggleProfileMenu}
@@ -124,16 +124,16 @@ function Header() {
         ) : (
           <>
             <Button
-              type="default"
+              type="secondary"
               className={styles['sign-in']}
               title="Войти"
-              onClick={handleLoginClick}
+              onClick={handleAuthClick}
             />
             <Button
               type="primary"
               className={styles['sign-up']}
               title="Зарегистрироваться"
-              onClick={handleRegisterClick}
+              onClick={handleAuthClick}
             />
           </>
         )}

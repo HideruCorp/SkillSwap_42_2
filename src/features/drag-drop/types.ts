@@ -1,4 +1,5 @@
-export interface FileWithPreview extends File {
+export interface FileWithPreview {
+  file: File;
   preview?: string;
   id: string;
   name: string;

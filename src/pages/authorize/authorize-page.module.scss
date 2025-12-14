@@ -1,0 +1,14 @@
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as m;
+
+.header {
+  @include m.text-h2;
+
+  text-align: center;
+}
+
+.authorize {
+  @include m.flex($align: center, $justify: center);
+
+  width: 100%;
+}

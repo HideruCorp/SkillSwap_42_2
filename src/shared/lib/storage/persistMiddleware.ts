@@ -1,6 +1,7 @@
 import type { Middleware, UnknownAction } from '@reduxjs/toolkit';
+import type { Gender } from '@shared/types';
 import DeltaStorage from './deltaStorage';
-import type { StoredUser, StoredSkill } from './types';
+import type { StoredUser, StoredSkill, StoredRequest, StoredExchange } from './types';
 
 /**
  * Типы payload для разных actions
@@ -39,38 +40,81 @@ interface FavoritePayload {
   userId: number;
 }
 
+interface RequestPayload {
+  id: number;
+  requestedSkill: number;
+  fromUser: number;
+  status: string;
+  createdAt: string;
+}
+
+interface ExchangePayload {
+  id: number;
+  requestId: number;
+  skills: [number, number];
+  status: string;
+  createdAt: string;
+  completedAt?: string;
+}
+
+type ActionWithPayloadAndMeta = UnknownAction & {
+  payload?: unknown;
+  meta?: unknown;
+};
+
 /**
  * Обработчики для персистенции разных actions
  */
-const persistHandlers: Record<string, (payload: unknown) => Promise<void>> = {
+const persistHandlers: Record<string, (action: ActionWithPayloadAndMeta) => Promise<void>> = {
   // ==================== USERS ====================
 
-  'users/addUser': async (payload) => {
-    const user = payload as UserPayload;
-    // Получаем существующего пользователя с passwordHash из IndexedDB
-    // (он был создан через authApi.register)
-    const existing = await DeltaStorage.getUserById(user.id);
-    if (!existing) {
-      // Если пользователя нет (edge case), создаём без пароля
-      // Это не должно происходить при нормальном flow
-      console.warn('User not found in IndexedDB during persist:', user.id);
+  /**
+   * Теперь users/addUser действительно добавляет пользователя в IndexedDB.
+   * passwordHash берём из action.meta.passwordHash.
+   */
+  'users/addUser': async (action) => {
+    const user = action.payload as UserPayload;
+    const meta = action.meta as { passwordHash?: string } | undefined;
+    const passwordHash = meta?.passwordHash;
+
+    if (!user) {
+      // eslint-disable-next-line no-console
+      console.warn('[persistMiddleware] users/addUser skipped: empty payload');
+      return;
     }
+
+    if (!passwordHash) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        `[persistMiddleware] users/addUser skipped: passwordHash missing for userId=${user.id}`
+      );
+      return;
+    }
+
+    const storedUser: StoredUser = {
+      ...user,
+      gender: user.gender as Gender,
+      email: user.email.toLowerCase(),
+      passwordHash,
+    };
+
+    await DeltaStorage.addUser(storedUser);
   },
 
-  'users/updateUser': async (payload) => {
-    const { id, changes } = payload as UpdatePayload<UserPayload>;
+  'users/updateUser': async (action) => {
+    const { id, changes } = action.payload as UpdatePayload<UserPayload>;
     await DeltaStorage.updateUser(id, changes as Partial<StoredUser>);
   },
 
-  'users/deleteUser': async (payload) => {
-    const id = payload as number;
+  'users/deleteUser': async (action) => {
+    const id = action.payload as number;
     await DeltaStorage.deleteUser(id);
   },
 
   // ==================== SKILLS ====================
 
-  'skills/addSkill': async (payload) => {
-    const skill = payload as SkillPayload;
+  'skills/addSkill': async (action) => {
+    const skill = action.payload as SkillPayload;
     const storedSkill: StoredSkill = {
       id: skill.id,
       subcategoryId: skill.subcategoryId,
@@ -84,20 +128,20 @@ const persistHandlers: Record<string, (payload: unknown) => Promise<void>> = {
     await DeltaStorage.addSkill(storedSkill);
   },
 
-  'skills/updateSkill': async (payload) => {
-    const { id, changes } = payload as UpdatePayload<SkillPayload>;
+  'skills/updateSkill': async (action) => {
+    const { id, changes } = action.payload as UpdatePayload<SkillPayload>;
     await DeltaStorage.updateSkill(id, changes as Partial<StoredSkill>);
   },
 
-  'skills/deleteSkill': async (payload) => {
-    const id = payload as number;
+  'skills/deleteSkill': async (action) => {
+    const id = action.payload as number;
     await DeltaStorage.deleteSkill(id);
   },
 
   // ==================== FAVORITES ====================
 
-  'skills/addFavorite': async (payload) => {
-    const { skillId, userId } = payload as FavoritePayload;
+  'skills/addFavorite': async (action) => {
+    const { skillId, userId } = action.payload as FavoritePayload;
     const skill = await DeltaStorage.getSkillById(skillId);
 
     if (skill) {
@@ -109,8 +153,8 @@ const persistHandlers: Record<string, (payload: unknown) => Promise<void>> = {
     }
   },
 
-  'skills/removeFavorite': async (payload) => {
-    const { skillId, userId } = payload as FavoritePayload;
+  'skills/removeFavorite': async (action) => {
+    const { skillId, userId } = action.payload as FavoritePayload;
     const skill = await DeltaStorage.getSkillById(skillId);
 
     if (skill) {
@@ -120,16 +164,53 @@ const persistHandlers: Record<string, (payload: unknown) => Promise<void>> = {
     }
   },
 
-  // ==================== SESSION ====================
+  // ==================== REQUESTS ====================
 
-  'session/updateUser': async (payload) => {
-    // Обновление текущего пользователя
-    const changes = payload as Partial<UserPayload>;
-    const userId = localStorage.getItem('currentUserId');
+  'requests/addRequest': async (action) => {
+    const request = action.payload as RequestPayload;
+    const storedRequest: StoredRequest = {
+      id: request.id,
+      requestedSkill: request.requestedSkill,
+      fromUser: request.fromUser,
+      status: request.status as StoredRequest['status'],
+      createdAt: request.createdAt,
+    };
+    await DeltaStorage.addRequest(storedRequest);
+  },
 
-    if (userId) {
-      await DeltaStorage.updateUser(Number(userId), changes as Partial<StoredUser>);
-    }
+  'requests/updateRequest': async (action) => {
+    const { id, changes } = action.payload as UpdatePayload<RequestPayload>;
+    await DeltaStorage.updateRequest(id, changes as Partial<StoredRequest>);
+  },
+
+  'requests/deleteRequest': async (action) => {
+    const id = action.payload as number;
+    await DeltaStorage.deleteRequest(id);
+  },
+
+  // ==================== EXCHANGES ====================
+
+  'exchanges/addExchange': async (action) => {
+    const exchange = action.payload as ExchangePayload;
+    const storedExchange: StoredExchange = {
+      id: exchange.id,
+      requestId: exchange.requestId,
+      skills: exchange.skills,
+      status: exchange.status as StoredExchange['status'],
+      createdAt: exchange.createdAt,
+      completedAt: exchange.completedAt,
+    };
+    await DeltaStorage.addExchange(storedExchange);
+  },
+
+  'exchanges/updateExchange': async (action) => {
+    const { id, changes } = action.payload as UpdatePayload<ExchangePayload>;
+    await DeltaStorage.updateExchange(id, changes as Partial<StoredExchange>);
+  },
+
+  'exchanges/deleteExchange': async (action) => {
+    const id = action.payload as number;
+    await DeltaStorage.deleteExchange(id);
   },
 };
 
@@ -144,7 +225,7 @@ export const persistMiddleware: Middleware = () => (next) => (action) => {
   const result = next(action);
 
   // Проверяем, нужно ли персистить
-  const typedAction = action as UnknownAction;
+  const typedAction = action as ActionWithPayloadAndMeta;
   const actionType = typedAction.type as string;
 
   // Пропускаем initialize actions — они не должны персиститься
@@ -156,8 +237,12 @@ export const persistMiddleware: Middleware = () => (next) => (action) => {
 
   if (handler && typedAction.payload !== undefined) {
     // Асинхронно сохраняем, не блокируя UI
-    handler(typedAction.payload).catch((error) => {
-      console.error(`[persistMiddleware] Failed to persist ${actionType}:`, error);
+    handler(typedAction).catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error(
+        `[persistMiddleware] Failed to persist ${actionType} with payload ${typedAction.payload}:`,
+        error
+      );
     });
   }
 

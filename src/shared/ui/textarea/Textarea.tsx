@@ -5,11 +5,12 @@ interface TextareaProps {
   value?: string;
   placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  className?: string;
 }
 
-export default function Textarea({ value, placeholder, onChange }: TextareaProps) {
+export default function Textarea({ value, placeholder, onChange, className }: TextareaProps) {
   return (
-    <div className="textarea__wrapper">
+    <div className={`textarea__wrapper ${className}`}>
       <textarea
         className="textarea__input"
         value={value}

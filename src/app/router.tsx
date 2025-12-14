@@ -1,23 +1,25 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
+import Modal from '@features/modal/Modal';
 import {
+  AboutPage,
+  AuthorizePage,
   Catalog,
-  LoginPage,
-  RegisterPage,
-  ProfilePage,
+  NotFoundPage,
+  PrivacyPage,
+  ProfileExchangesPage,
   ProfileFavoritesPage,
+  ProfilePage,
   ProfileRequestsPage,
   ProfileSkillsPage,
-  ProfileExchangesPage,
-  SkillPage,
-  AboutPage,
-  NotFoundPage,
   ServerErrorPage,
-  PrivacyPage,
+  SkillPage,
   TermsPage,
 } from '@pages/index';
-import Modal from '@features/modal/Modal';
 import ModalExchange from '@widgets/modals/modal-exchange/ModalExchange';
 import ModalOfferSuccess from '@widgets/modals/modal-offer-success/ModalOfferSuccess';
+import { Route, Routes, useLocation } from 'react-router-dom';
+
+import ProfileEditForm from '@pages/profile/profileEditForm/ProfileEditForm';
+import ProtectedRoute from './routes/ProtectedRoute';
 
 function AppRouter() {
   const location = useLocation();
@@ -34,25 +36,57 @@ function AppRouter() {
       <Route path="/skill/:id" element={<SkillPage />} />
       <Route path="/about" element={<AboutPage />} />
 
-      {/*
-        Страницы авторизации - защищены от авторизованных юзеров
-        TODO: <PrivateRoute forUnauthorized><LoginPage /></PrivateRoute>
-        - перебрасывают на прошлую страницу, или на `/`
-      */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage step={1}/>} />
-      <Route path="/register/step2" element={<RegisterPage step={2}/>} />
-      <Route path="/register/step3" element={<RegisterPage step={3}/>} />
+      <Route
+        path="/auth"
+        element={
+          <ProtectedRoute forUnauthorized>
+            <AuthorizePage />
+          </ProtectedRoute>
+        }
+      />
 
-      {/*
-        Профиль пользователя - защищен от неавторизованных юзеров
-        TODO: <PrivateRoute><ProfilePage /></PrivateRoute>
-      */}
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/profile/favorites" element={<ProfileFavoritesPage />} />
-      <Route path="/profile/requests" element={<ProfileRequestsPage />} />
-      <Route path="/profile/skills" element={<ProfileSkillsPage />} />
-      <Route path="/profile/exchanges" element={<ProfileExchangesPage />} />
+      <Route element={<ProtectedRoute />}>
+        <Route
+          path="/profile"
+          element={
+            <ProfilePage>
+              <ProfileEditForm />
+            </ProfilePage>
+          }
+        />
+        <Route
+          path="/profile/favorites"
+          element={
+            <ProfilePage>
+              <ProfileFavoritesPage />
+            </ProfilePage>
+          }
+        />
+        <Route
+          path="/profile/requests"
+          element={
+            <ProfilePage>
+              <ProfileRequestsPage />
+            </ProfilePage>
+          }
+        />
+        <Route
+          path="/profile/skills"
+          element={
+            <ProfilePage>
+              <ProfileSkillsPage />
+            </ProfilePage>
+          }
+        />
+        <Route
+          path="/profile/exchanges"
+          element={
+            <ProfilePage>
+              <ProfileExchangesPage />
+            </ProfilePage>
+          }
+        />
+      </Route>
 
       {/* модалки */}
       <Route

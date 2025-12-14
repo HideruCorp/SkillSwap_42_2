@@ -1,19 +1,17 @@
 import styles from './profile-page.module.scss';
+import SideBar from './sideBar/SideBar';
+import type { ReactElement } from 'react';
 
-/**
- * ProfilePage - страница "Личные данные" в профиле пользователя
- * Реализует вкладку "Личные данные" в разделе профиля
- *
- * Роут: /profile
- *
- * className={styles['profile__some-bem--specific']}
- */
+interface ProfilePageProps {
+  children: ReactElement | string;
+}
 
-function ProfilePage() {
+function ProfilePage({ children }: ProfilePageProps) {
   return (
     <section className={styles.profile}>
-      <h1>Личные данные</h1>
-      <p>Страница личных данных пользователя</p>
+      <SideBar />
+
+      {children}
     </section>
   );
 }

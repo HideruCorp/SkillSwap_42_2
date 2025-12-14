@@ -1,14 +1,17 @@
 import type { User } from '@entities/user';
-import type { StoredUser, StoredSkill } from '@shared/lib/storage/types';
-import DeltaStorage from '@shared/lib/storage';
-import { hashPassword, verifyPassword, generateNumericId } from '@shared/lib/crypto';
+import { hashPassword, verifyPassword } from '@shared/lib/crypto';
+import type { StoredUser } from '@shared/lib/storage';
+import DeltaStorage, { loadStoredUserByEmail, loadUserById } from '@shared/lib/storage';
+import generateNumericId from '@shared/lib/utils';
 import type {
+  AuthTokens,
   LoginCredentials,
   LoginResponse,
   RegisterRequest,
   RegisterResponse,
-  AuthTokens,
 } from '../model/types';
+
+type RegisterResponseWithPasswordHash = RegisterResponse & { passwordHash: string };
 
 /**
  * Генерация mock JWT токенов
@@ -42,7 +45,7 @@ const authApi = {
       setTimeout(r, 500);
     });
 
-    const stored = await DeltaStorage.getUserByEmail(credentials.email);
+    const stored = await loadStoredUserByEmail(credentials.email);
 
     if (!stored) {
       throw new Error('Пользователь с таким email не найден');
@@ -61,9 +64,11 @@ const authApi = {
   },
 
   /**
-   * Регистрация (все данные приходят с 3-го шага wizard)
+   * Регистрация:
+   * - НЕ пишет в IndexedDB напрямую
+   * - возвращает passwordHash, чтобы users/addUser мог быть персистнут через persistMiddleware
    */
-  async register(data: RegisterRequest): Promise<RegisterResponse> {
+  async register(data: RegisterRequest): Promise<RegisterResponseWithPasswordHash> {
     await new Promise((r) => {
       setTimeout(r, 500);
     });
@@ -81,7 +86,7 @@ const authApi = {
     const userId = generateNumericId();
     const skillId = generateNumericId();
 
-    // Создаём пользователя
+    // Формируем пользователя для Redux (без сохранения в IndexedDB здесь)
     const storedUser: StoredUser = {
       id: userId,
       email: data.email.toLowerCase(),
@@ -96,26 +101,11 @@ const authApi = {
       skillInterests: data.skillInterests,
     };
 
-    // Создаём навык (images уже Data URLs после сжатия)
-    const storedSkill: StoredSkill = {
-      id: skillId,
-      subcategoryId: data.skill.subcategoryId,
-      userId,
-      title: data.skill.title,
-      description: data.skill.description,
-      createdAt: new Date().toISOString(),
-      images: data.skill.images, // Data URL строки
-      likesReceived: [],
-    };
-
-    // Сохраняем в IndexedDB
-    await DeltaStorage.addUser(storedUser);
-    await DeltaStorage.addSkill(storedSkill);
-
     return {
       tokens: generateTokens(userId),
       user: toPublicUser(storedUser),
       skillId,
+      passwordHash,
     };
   },
 
@@ -123,7 +113,7 @@ const authApi = {
    * Проверка email
    */
   async checkEmailAvailability(email: string): Promise<boolean> {
-    const existing = await DeltaStorage.getUserByEmail(email);
+    const existing = await loadStoredUserByEmail(email);
     return !existing;
   },
 
@@ -131,8 +121,7 @@ const authApi = {
    * Получить пользователя по ID
    */
   async getUserById(userId: number): Promise<User | null> {
-    const stored = await DeltaStorage.getUserById(userId);
-    return stored ? toPublicUser(stored) : null;
+    return loadUserById(userId);
   },
 
   /**
