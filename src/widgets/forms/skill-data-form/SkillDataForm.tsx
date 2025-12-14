@@ -1,5 +1,5 @@
 import { fetchCategories } from '@api/categoriesApi';
-import { DragDrop } from '@features/drag-drop';
+import { DragDrop, type FileWithPreview } from '@features/drag-drop';
 import { useStepSkillData } from '@features/auth';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDebounce } from '@shared/hooks/useDebounce';
@@ -21,7 +21,7 @@ export type ThirdStepFormData = {
   category: OptionType[];
   subcategory: OptionType[];
   description: string;
-  images: File[];
+  images: FileWithPreview[];
 };
 
 interface SkillDataFormProps {
@@ -59,6 +59,7 @@ function SkillDataForm({ onSubmitSuccess }: SkillDataFormProps) {
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Watch для отслеживания изменений
   const selectedCategory = watch('category');
@@ -94,12 +95,13 @@ function SkillDataForm({ onSubmitSuccess }: SkillDataFormProps) {
     fetchData();
   }, []);
 
-  // Инициализация подкатегории из стора при загрузке категорий
+  // Инициализация категории и подкатегории из стора при загрузке данных
   useEffect(() => {
     if (
       skillData.skillSubcategoryId !== null &&
       subcategories.length > 0 &&
-      categories.length > 0
+      categories.length > 0 &&
+      !isInitialized
     ) {
       const storedSubcategory = subcategories.find((sc) => sc.id === skillData.skillSubcategoryId);
       if (storedSubcategory) {
@@ -112,16 +114,10 @@ function SkillDataForm({ onSubmitSuccess }: SkillDataFormProps) {
         setValue('subcategory', [
           { title: storedSubcategory.name, value: String(storedSubcategory.id) },
         ]);
+        setIsInitialized(true);
       }
     }
-  }, [skillData.skillSubcategoryId, subcategories, categories, setValue]);
-
-  // Очищаем подкатегорию при изменении категории
-  useEffect(() => {
-    if (selectedCategory && selectedCategory.length > 0) {
-      setValue('subcategory', []);
-    }
-  }, [selectedCategory, setValue]);
+  }, [skillData.skillSubcategoryId, subcategories, categories, setValue, isInitialized]);
 
   // Синхронизация debounced skillName со стором
   useEffect(() => {
@@ -154,7 +150,9 @@ function SkillDataForm({ onSubmitSuccess }: SkillDataFormProps) {
     const syncImages = async () => {
       if (watchedImages && watchedImages.length > 0) {
         try {
-          const dataUrls = await filesToDataUrls(watchedImages);
+          // Извлекаем File объекты из FileWithPreview
+          const files = watchedImages.map((item) => item.file);
+          const dataUrls = await filesToDataUrls(files);
           updateSkillData({ skillImages: dataUrls });
         } catch (error) {
           console.error('Ошибка при конвертации изображений:', error);
@@ -219,7 +217,8 @@ function SkillDataForm({ onSubmitSuccess }: SkillDataFormProps) {
 
       // Конвертируем изображения
       if (data.images.length > 0) {
-        const dataUrls = await filesToDataUrls(data.images);
+        const files = data.images.map((item) => item.file);
+        const dataUrls = await filesToDataUrls(files);
         updateSkillData({ skillImages: dataUrls });
       }
 
