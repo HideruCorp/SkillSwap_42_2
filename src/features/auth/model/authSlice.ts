@@ -13,9 +13,19 @@ function getStoredTokens(): Nullable<AuthTokens> {
     const tokens: AuthTokens = JSON.parse(data);
     if (tokens.expiresAt < Date.now()) {
       localStorage.removeItem('auth_tokens');
+      localStorage.removeItem('currentUserId');
       return null;
     }
     return tokens;
+  } catch {
+    return null;
+  }
+}
+
+function getStoredUserId(): number | null {
+  try {
+    const rawId = localStorage.getItem('currentUserId');
+    return rawId ? Number(rawId) : null;
   } catch {
     return null;
   }
@@ -27,12 +37,15 @@ function saveTokens(tokens: AuthTokens): void {
 
 function clearTokens(): void {
   localStorage.removeItem('auth_tokens');
+  localStorage.removeItem('currentUserId');
 }
 
 // ============ INITIAL STATE ============
 
 const initialState: AuthState = {
   tokens: getStoredTokens(),
+  currentUserId: getStoredUserId(),
+  checked: false,
   isLoggingIn: false,
   isRegistering: false,
   loginError: null,
@@ -40,6 +53,23 @@ const initialState: AuthState = {
 };
 
 // ============ ASYNC THUNKS ============
+
+/**
+ * Bootstrap auth при старте приложения
+ * Проверяет валидность сохранённых токенов и userId
+ */
+export const bootstrapAuth = createAsyncThunk('auth/bootstrap', async () => {
+  const tokens = getStoredTokens();
+  const rawId = localStorage.getItem('currentUserId');
+  const currentUserId = rawId ? Number(rawId) : null;
+
+  if (!tokens || tokens.expiresAt < Date.now() || !currentUserId) {
+    clearTokens();
+    return { tokens: null, currentUserId: null };
+  }
+
+  return { tokens, currentUserId };
+});
 
 export const login = createAsyncThunk<
   { tokens: AuthTokens; userId: number },
@@ -59,7 +89,6 @@ export const login = createAsyncThunk<
 export const logout = createAsyncThunk('auth/logout', async () => {
   await authApi.logout();
   clearTokens();
-  localStorage.removeItem('currentUserId');
 });
 
 // ============ SLICE ============
@@ -71,6 +100,13 @@ const authSlice = createSlice({
     setTokens(state, action: PayloadAction<AuthTokens>) {
       state.tokens = action.payload;
       saveTokens(action.payload);
+    },
+    setCurrentUserId(state, action: PayloadAction<number>) {
+      state.currentUserId = action.payload;
+      localStorage.setItem('currentUserId', String(action.payload));
+    },
+    setAuthChecked(state, action: PayloadAction<boolean>) {
+      state.checked = action.payload;
     },
     clearAuthError(state) {
       state.loginError = null;
@@ -85,6 +121,12 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Bootstrap
+      .addCase(bootstrapAuth.fulfilled, (state, action) => {
+        state.tokens = action.payload.tokens;
+        state.currentUserId = action.payload.currentUserId;
+        state.checked = true;
+      })
       // Login
       .addCase(login.pending, (state) => {
         state.isLoggingIn = true;
@@ -93,6 +135,8 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.isLoggingIn = false;
         state.tokens = action.payload.tokens;
+        state.currentUserId = action.payload.userId;
+        state.checked = true;
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoggingIn = false;
@@ -101,11 +145,15 @@ const authSlice = createSlice({
       // Logout
       .addCase(logout.fulfilled, (state) => {
         state.tokens = null;
+        state.currentUserId = null;
+        // checked остаётся true — мы знаем, что пользователь вышел
       });
   },
   selectors: {
     selectTokens: (state) => state.tokens,
-    selectIsLoggedIn: (state) => state.tokens !== null,
+    selectCurrentUserId: (state) => state.currentUserId,
+    selectAuthChecked: (state) => state.checked,
+    selectIsLoggedIn: (state) => state.tokens !== null && state.currentUserId !== null,
     selectIsLoggingIn: (state) => state.isLoggingIn,
     selectLoginError: (state) => state.loginError,
     selectIsRegistering: (state) => state.isRegistering,
@@ -113,9 +161,19 @@ const authSlice = createSlice({
   },
 });
 
-export const { setTokens, clearAuthError, setLoginError, setRegisterError } = authSlice.actions;
+export const {
+  setTokens,
+  setCurrentUserId,
+  setAuthChecked,
+  clearAuthError,
+  setLoginError,
+  setRegisterError,
+} = authSlice.actions;
+
 export const {
   selectTokens,
+  selectCurrentUserId,
+  selectAuthChecked,
   selectIsLoggedIn,
   selectIsLoggingIn,
   selectLoginError,

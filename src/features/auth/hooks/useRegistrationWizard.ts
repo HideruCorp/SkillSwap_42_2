@@ -6,6 +6,9 @@ import {
   resetRegistration,
   clearError,
   submitRegistration,
+  setTokens,
+  setCurrentUserId,
+  setAuthChecked,
   selectCurrentStep,
   selectFormData,
   selectIsSubmitting,
@@ -37,7 +40,17 @@ const useRegistrationWizard = () => {
 
   const handleSubmitRegistration = useCallback(async () => {
     const result = await dispatch(submitRegistration());
-    return submitRegistration.fulfilled.match(result);
+
+    if (submitRegistration.fulfilled.match(result)) {
+      // Синхронизируем auth state после успешной регистрации
+      const { tokens, userId } = result.payload;
+      dispatch(setTokens(tokens));
+      dispatch(setCurrentUserId(userId));
+      dispatch(setAuthChecked(true));
+      return true;
+    }
+
+    return false;
   }, [dispatch]);
 
   const handleReset = useCallback(() => {

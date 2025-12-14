@@ -8,14 +8,20 @@ export {
   useStepUserData,
   useStepSkillData,
   useLogin,
+  useAuthState,
 } from './hooks';
 
 // Model
 export {
   authReducer,
   registrationReducer,
+  authListener,
   login,
   logout,
+  bootstrapAuth,
+  setTokens,
+  setCurrentUserId,
+  setAuthChecked,
   submitStep,
   submitRegistration,
   checkEmailAvailability,
@@ -27,10 +33,16 @@ export {
   clearStepErrors,
   clearError,
   resetRegistration,
+  clearAuthError,
+  // Selectors
   selectTokens,
+  selectCurrentUserId,
+  selectAuthChecked,
   selectIsLoggedIn,
   selectIsLoggingIn,
   selectLoginError,
+  selectIsAuthenticated,
+  selectCurrentUser,
   selectCurrentStep,
   selectFormData,
   selectCredentials,
