@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams  } from 'react-router-dom';
 import { SkillGallery } from '@/widgets/skillGallery';
+import ModalOfferSuccessUnauth from '@widgets/modals/modal-offer-success-unauth/ModalOfferSuccessUnauth'
 import { SkillDescriptionUI } from '@shared/ui/skill-description';
 import { UserSkillCard } from '@shared/ui/user-skill-card';
 import type { UserSkillCardProps } from '@shared/ui/user-skill-card/types';
@@ -16,6 +17,10 @@ import { Skill as SkillWidget } from '@/widgets/skill';
 import SectionSimilarOffers from '@/shared/ui/section-similar-offers';
 import buildUserCards from '@entities/user/buildUserCards';
 import type { UserCardProps } from '@/shared/ui/user-card/types';
+import Modal from '@features/modal/Modal';
+import { useSelector } from '@/services/store';
+import { selectAllSkills } from '@entities/skill/model/skillsSlice';
+import { selectAllUsers } from '@entities/user'
 
 function SkillPage() {
   const { id } = useParams<{ id: string }>();
@@ -31,9 +36,16 @@ function SkillPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [offers, setOffers] = useState<UserCardProps[]>([]);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const allSkills = useSelector(selectAllSkills);
+  const allUsers = useSelector(selectAllUsers);
 
   useEffect(() => {
+    if (searchParams.get('registerSuccess') ){
+      setIsOpenModal(true)
+    }
     let mounted = true;
 
     const loadData = async () => {
@@ -49,13 +61,13 @@ function SkillPage() {
 
         if (!mounted) return;
 
-        const currentSkill = skillsData.find((s) => s.id === Number(id));
+        const currentSkill = allSkills.find((s) => s.id === Number(id));
         if (!currentSkill) {
           setError('Навык не найден');
           return;
         }
 
-        const creator = await fetchUserById(currentSkill.userId);
+        const creator = allUsers.find((s) => s.id === Number(currentSkill.userId));
         if (!creator) {
           setError('Пользователь не найден');
           return;
@@ -145,6 +157,14 @@ function SkillPage() {
       mounted = false;
     };
   }, [id]);
+
+  const modalClose = () => {
+    const params = new URLSearchParams(window.location.search);
+    params.delete('registerSuccess');
+    setSearchParams(params);
+    setIsOpenModal(false)
+  }
+
   if (isLoading) {
     return (
       <section className={styles.skill}>
@@ -214,6 +234,11 @@ function SkillPage() {
         onLikeClick={handleLike}
         onDetailsClick={handleDetails}
       />
+      {isOpenModal && (
+        <Modal onClose={modalClose} >
+          <ModalOfferSuccessUnauth onClose={modalClose} />
+        </Modal>
+      )}
     </>
   );
 }
