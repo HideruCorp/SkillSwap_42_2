@@ -1,104 +1,77 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import InputUI from '@shared/ui/Input/InputUI';
 import DatePickerUI from '@shared/ui/date-picker/DatePickerUI';
 import DropdownListUI from '@shared/ui/dropdown-list/DropdownListUI';
 import AvatarPicker from '@features/avatar-picker/AvatarPicker';
 import Button from '@shared/ui/button/Button';
+import useStepUserData from '@features/auth/hooks/useStepUserData';
+import { fetchCities } from '@api/citiesApi';
+import { fetchCategories } from '@api/categoriesApi';
+import { compressImage } from '@shared/lib/image/compressImage';
+import type { City, Category, Subcategory } from '@shared/types';
+import type { OptionType } from '@shared/ui/dropdown-list';
 import styles from './second-step-form.module.scss';
 
-interface SecondStepFormData {
-  avatar: File | null;
-  name: string;
-  birthDate: Date | undefined;
-  gender: string;
-  city: string;
-  category: string;
-  subcategory: string;
-}
-
 interface SecondStepFormProps {
-  onSubmit: (data: SecondStepFormData) => void;
-  onBack: () => void;
-  initialData?: Partial<SecondStepFormData>;
+  onSubmit?: () => void;
+  onBack?: () => void;
 }
 
-const genderOptions = [
+const genderOptions: OptionType[] = [
   { value: 'male', title: 'Мужской' },
   { value: 'female', title: 'Женский' },
-  { value: 'other', title: 'Другой' },
-  { value: 'not_specified', title: 'Не указан' },
+  { value: 'all', title: 'Не указан' },
 ];
 
-const cityOptions = [
-  { value: 'moscow', title: 'Москва' },
-  { value: 'spb', title: 'Санкт-Петербург' },
-  { value: 'ekb', title: 'Екатеринбург' },
-  { value: 'kazan', title: 'Казань' },
-  { value: 'novosibirsk', title: 'Новосибирск' },
-  { value: 'not_specified', title: 'Не указан' },
-];
+export function SecondStepForm({ onSubmit, onBack }: SecondStepFormProps) {
+  const { userData, errors: storeErrors, isSubmitting, updateUserData, submitStep, prevStep, clearErrors } = useStepUserData();
 
-const categoryOptions = [
-  { value: 'it', title: 'IT и программирование' },
-  { value: 'design', title: 'Дизайн' },
-  { value: 'marketing', title: 'Маркетинг' },
-  { value: 'languages', title: 'Иностранные языки' },
-  { value: 'music', title: 'Музыка' },
-  { value: 'sport', title: 'Спорт' },
-  { value: 'cooking', title: 'Кулинария' },
-];
+  const [cities, setCities] = useState<City[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<number | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [birthDate, setBirthDate] = useState<Date | undefined>(
+    userData.dateOfBirth ? new Date(userData.dateOfBirth) : undefined
+  );
 
-const subcategoryOptions: Record<string, Array<{ value: string; title: string }>> = {
-  it: [
-    { value: 'web', title: 'Веб-разработка' },
-    { value: 'mobile', title: 'Мобильная разработка' },
-    { value: 'data', title: 'Анализ данных' },
-    { value: 'ai', title: 'Искусственный интеллект' },
-  ],
-  design: [
-    { value: 'uiux', title: 'UI/UX дизайн' },
-    { value: 'graphic', title: 'Графический дизайн' },
-    { value: 'motion', title: 'Motion дизайн' },
-  ],
-  languages: [
-    { value: 'english', title: 'Английский' },
-    { value: 'spanish', title: 'Испанский' },
-    { value: 'chinese', title: 'Китайский' },
-  ],
-  music: [
-    { value: 'guitar', title: 'Гитара' },
-    { value: 'piano', title: 'Фортепиано' },
-    { value: 'vocals', title: 'Вокал' },
-  ],
-  sport: [
-    { value: 'yoga', title: 'Йога' },
-    { value: 'fitness', title: 'Фитнес' },
-    { value: 'running', title: 'Бег' },
-  ],
-  cooking: [
-    { value: 'baking', title: 'Выпечка' },
-    { value: 'asian', title: 'Азиатская кухня' },
-    { value: 'vegetarian', title: 'Вегетарианская кухня' },
-  ],
-  marketing: [
-    { value: 'smm', title: 'SMM' },
-    { value: 'seo', title: 'SEO' },
-    { value: 'copywriting', title: 'Копирайтинг' },
-  ],
-};
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [citiesData, categoriesData] = await Promise.all([fetchCities(), fetchCategories()]);
+        setCities(citiesData);
+        setCategories(categoriesData.categories);
+        setSubcategories(categoriesData.subcategories);
+      } catch (error) {
+        console.error('Ошибка при загрузке данных:', error);
+      }
+    };
 
-export function SecondStepForm({ onSubmit, onBack, initialData = {} }: SecondStepFormProps) {
-  const [formData, setFormData] = useState<SecondStepFormData>({
-    avatar: initialData.avatar || null,
-    name: initialData.name || '',
-    birthDate: initialData.birthDate,
-    gender: initialData.gender || 'not_specified',
-    city: initialData.city || 'not_specified',
-    category: initialData.category || '',
-    subcategory: initialData.subcategory || '',
-  });
+    loadData();
+  }, []);
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  useEffect(() => {
+    if (userData.dateOfBirth) {
+      const date = new Date(userData.dateOfBirth);
+      if (!isNaN(date.getTime())) {
+        setBirthDate(date);
+      }
+    } else {
+      setBirthDate(undefined);
+    }
+  }, [userData.dateOfBirth]);
+
+  useEffect(() => {
+    if (userData.skillInterests.length > 0 && subcategories.length > 0) {
+      const firstInterestId = userData.skillInterests[0];
+      const subcategory = subcategories.find((sc) => sc.id === firstInterestId);
+      if (subcategory) {
+        setSelectedCategoryId(subcategory.categoryId);
+        setSelectedSubcategoryId(subcategory.id);
+      }
+    }
+  }, [userData.skillInterests, subcategories]);
 
   useEffect(() => {
     const handleDropdownPosition = () => {
@@ -141,100 +114,180 @@ export function SecondStepForm({ onSubmit, onBack, initialData = {} }: SecondSte
     };
   }, []);
 
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
+  const cityOptions: OptionType[] = useMemo(
+    () => cities.map((city) => ({ value: String(city.id), title: city.name })),
+    [cities]
+  );
 
-    if (!formData.name.trim()) {
-      newErrors.name = 'Введите ваше имя';
-    }
+  const categoryOptions: OptionType[] = useMemo(
+    () => categories.map((cat) => ({ value: String(cat.id), title: cat.name })),
+    [categories]
+  );
 
-    if (formData.birthDate) {
-      const today = new Date();
-      const minDate = new Date();
-      minDate.setFullYear(today.getFullYear() - 100);
-      const maxDate = new Date();
+  const filteredSubcategories = useMemo(() => {
+    if (!selectedCategoryId) return [];
+    return subcategories.filter((sc) => sc.categoryId === selectedCategoryId);
+  }, [subcategories, selectedCategoryId]);
 
-      if (formData.birthDate < minDate) {
-        newErrors.birthDate = 'Введите корректную дату рождения';
-      } else if (formData.birthDate > maxDate) {
-        newErrors.birthDate = 'Нельзя выбрать будущую дату';
+  const subcategoryOptions: OptionType[] = useMemo(
+    () => filteredSubcategories.map((sc) => ({ value: String(sc.id), title: sc.name })),
+    [filteredSubcategories]
+  );
+
+  const selectedCityOption = useMemo(() => {
+    if (userData.cityId === null) return [];
+    return cityOptions.filter((opt) => opt.value === String(userData.cityId));
+  }, [cityOptions, userData.cityId]);
+
+  const selectedGenderOption = useMemo(() => {
+    return genderOptions.filter((opt) => opt.value === userData.gender);
+  }, [userData.gender]);
+
+  const selectedCategoryOption = useMemo(() => {
+    if (selectedCategoryId === null) return [];
+    return categoryOptions.filter((opt) => opt.value === String(selectedCategoryId));
+  }, [categoryOptions, selectedCategoryId]);
+
+  const selectedSubcategoryOption = useMemo(() => {
+    if (selectedSubcategoryId === null) return [];
+    return subcategoryOptions.filter((opt) => opt.value === String(selectedSubcategoryId));
+  }, [subcategoryOptions, selectedSubcategoryId]);
+
+  const handleNameChange = useCallback(
+    (value: string) => {
+      updateUserData({ name: value });
+      if (storeErrors?.name) {
+        clearErrors();
       }
-    }
+    },
+    [updateUserData, storeErrors, clearErrors]
+  );
 
-    if (!formData.category) {
-      newErrors.category = 'Выберите категорию';
-    }
+  const handleBirthDateChange = useCallback(
+    (date: Date | undefined) => {
+      setBirthDate(date);
+      const dateString = date ? date.toISOString() : '';
+      updateUserData({ dateOfBirth: dateString });
+      if (storeErrors?.dateOfBirth) {
+        clearErrors();
+      }
+    },
+    [updateUserData, storeErrors, clearErrors]
+  );
 
-    if (formData.category && !formData.subcategory) {
-      newErrors.subcategory = 'Выберите подкатегорию';
-    }
+  const handleGenderChange = useCallback(
+    (selected: OptionType[]) => {
+      if (selected.length > 0) {
+        const gender = selected[0].value as 'male' | 'female' | 'all';
+        updateUserData({ gender });
+        if (storeErrors?.gender) {
+          clearErrors();
+        }
+      }
+    },
+    [updateUserData, storeErrors, clearErrors]
+  );
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handleCityChange = useCallback(
+    (selected: OptionType[]) => {
+      if (selected.length > 0) {
+        const cityId = parseInt(selected[0].value, 10);
+        updateUserData({ cityId });
+        if (storeErrors?.cityId) {
+          clearErrors();
+        }
+      } else {
+        updateUserData({ cityId: null });
+      }
+    },
+    [updateUserData, storeErrors, clearErrors]
+  );
+
+  const handleCategoryChange = useCallback(
+    (selected: OptionType[]) => {
+      if (selected.length > 0) {
+        const categoryId = parseInt(selected[0].value, 10);
+        setSelectedCategoryId(categoryId);
+        setSelectedSubcategoryId(null);
+        updateUserData({ skillInterests: [] });
+      } else {
+        setSelectedCategoryId(null);
+        setSelectedSubcategoryId(null);
+        updateUserData({ skillInterests: [] });
+      }
+      if (storeErrors?.skillInterests) {
+        clearErrors();
+      }
+    },
+    [updateUserData, storeErrors, clearErrors]
+  );
+
+  const handleSubcategoryChange = useCallback(
+    (selected: OptionType[]) => {
+      if (selected.length > 0) {
+        const subcategoryId = parseInt(selected[0].value, 10);
+        setSelectedSubcategoryId(subcategoryId);
+        updateUserData({ skillInterests: [subcategoryId] });
+      } else {
+        setSelectedSubcategoryId(null);
+        updateUserData({ skillInterests: [] });
+      }
+      if (storeErrors?.skillInterests) {
+        clearErrors();
+      }
+    },
+    [updateUserData, storeErrors, clearErrors]
+  );
+
+  const handleAvatarChange = useCallback(
+    async (file: File | null) => {
+      setAvatarFile(file);
+      if (file) {
+        try {
+          const avatarUrl = await compressImage(file);
+          updateUserData({ avatarUrl });
+        } catch (error) {
+          console.error('Ошибка при обработке аватара:', error);
+        }
+      } else {
+        updateUserData({ avatarUrl: '' });
+      }
+      if (storeErrors?.avatarUrl) {
+        clearErrors();
+      }
+    },
+    [updateUserData, storeErrors, clearErrors]
+  );
+
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      const success = await submitStep();
+      if (success && onSubmit) {
+        onSubmit();
+      }
+    },
+    [submitStep, onSubmit]
+  );
+
+  const handleBack = useCallback(() => {
+    prevStep();
+    if (onBack) {
+      onBack();
+    }
+  }, [prevStep, onBack]);
+
+  const getFieldError = (fieldName: keyof typeof storeErrors): string => {
+    return storeErrors?.[fieldName] || '';
   };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (validateForm()) {
-      onSubmit(formData);
-    }
-  };
-
-  const handleInputChange = (field: keyof SecondStepFormData) => (value: string | Date | undefined | File | null) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value,
-    }));
-
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-
-    if (field === 'category' && value !== formData.category) {
-      setFormData(prev => ({
-        ...prev,
-        subcategory: '',
-      }));
-    }
-  };
-
-  const handleCategoryChange = (selected: Array<{ value: string; title: string }>) => {
-    if (Array.isArray(selected) && selected.length > 0) {
-      handleInputChange('category')(selected[0].value || '');
-    }
-  };
-
-  const handleGenderChange = (selected: Array<{ value: string; title: string }>) => {
-    if (Array.isArray(selected) && selected.length > 0) {
-      handleInputChange('gender')(selected[0].value || 'not_specified');
-    }
-  };
-
-  const handleCityChange = (selected: Array<{ value: string; title: string }>) => {
-    if (Array.isArray(selected) && selected.length > 0) {
-      handleInputChange('city')(selected[0].value || 'not_specified');
-    }
-  };
-
-  const handleSubcategoryChange = (selected: Array<{ value: string; title: string }>) => {
-    if (Array.isArray(selected) && selected.length > 0) {
-      handleInputChange('subcategory')(selected[0].value || '');
-    }
-  };
-
-  const availableSubcategories = formData.category
-    ? subcategoryOptions[formData.category] || []
-    : [];
 
   return (
     <div className={styles.formContainer}>
       <form className={styles.form} onSubmit={handleSubmit}>
-
         <div className={styles.avatarSection}>
           <AvatarPicker
-            onAvatarChange={handleInputChange('avatar')}
-            initialAvatarUrl={null}
+            onAvatarChange={handleAvatarChange}
+            initialAvatarUrl={userData.avatarUrl || undefined}
             size={100}
           />
         </div>
@@ -242,10 +295,10 @@ export function SecondStepForm({ onSubmit, onBack, initialData = {} }: SecondSte
         <div className={styles.fieldWrapper}>
           <label className={styles.label}>Имя</label>
           <InputUI
-            value={formData.name}
-            onChange={handleInputChange('name')}
+            value={userData.name}
+            onChange={handleNameChange}
             placeholder="Введите ваше имя"
-            error={errors.name}
+            error={getFieldError('name')}
           />
         </div>
 
@@ -254,10 +307,10 @@ export function SecondStepForm({ onSubmit, onBack, initialData = {} }: SecondSte
             <label className={styles.label}>Дата рождения</label>
             <div className={styles.datePickerWrapper}>
               <DatePickerUI
-                value={formData.birthDate}
-                onChange={handleInputChange('birthDate')}
+                value={birthDate}
+                onChange={handleBirthDateChange}
                 placeholder="ДД.ММ.ГГГГ"
-                error={errors.birthDate}
+                error={getFieldError('dateOfBirth')}
                 maxDate={new Date()}
               />
             </div>
@@ -269,7 +322,7 @@ export function SecondStepForm({ onSubmit, onBack, initialData = {} }: SecondSte
               <DropdownListUI
                 type="list"
                 options={genderOptions}
-                selected={genderOptions.filter(opt => opt.value === formData.gender)}
+                selected={selectedGenderOption}
                 onChange={handleGenderChange}
                 placeholder="Не указан"
               />
@@ -283,11 +336,12 @@ export function SecondStepForm({ onSubmit, onBack, initialData = {} }: SecondSte
             <DropdownListUI
               type="list"
               options={cityOptions}
-              selected={cityOptions.filter(opt => opt.value === formData.city)}
+              selected={selectedCityOption}
               onChange={handleCityChange}
-              placeholder="Не указан"
+              placeholder="Выберите город"
             />
           </div>
+          {getFieldError('cityId') && <span className={styles.errorText}>{getFieldError('cityId')}</span>}
         </div>
 
         <div className={styles.fieldWrapper}>
@@ -296,12 +350,11 @@ export function SecondStepForm({ onSubmit, onBack, initialData = {} }: SecondSte
             <DropdownListUI
               type="list"
               options={categoryOptions}
-              selected={categoryOptions.filter(opt => opt.value === formData.category)}
+              selected={selectedCategoryOption}
               onChange={handleCategoryChange}
               placeholder="Выберите категорию"
             />
           </div>
-          {errors.category && <span className={styles.errorText}>{errors.category}</span>}
         </div>
 
         <div className={styles.fieldWrapper}>
@@ -309,14 +362,16 @@ export function SecondStepForm({ onSubmit, onBack, initialData = {} }: SecondSte
           <div className={styles.dropdownWrapper}>
             <DropdownListUI
               type="list"
-              options={availableSubcategories}
-              selected={availableSubcategories.filter(opt => opt.value === formData.subcategory)}
+              options={subcategoryOptions}
+              selected={selectedSubcategoryOption}
               onChange={handleSubcategoryChange}
-              placeholder="Выберите подкатегорию"
-              disabled={!formData.category}
+              placeholder={!selectedCategoryId ? 'Сначала выберите категорию' : 'Выберите подкатегорию'}
+              disabled={!selectedCategoryId}
             />
           </div>
-          {errors.subcategory && <span className={styles.errorText}>{errors.subcategory}</span>}
+          {getFieldError('skillInterests') && (
+            <span className={styles.errorText}>{getFieldError('skillInterests')}</span>
+          )}
         </div>
 
         <div className={styles.buttonsSection}>
@@ -324,14 +379,15 @@ export function SecondStepForm({ onSubmit, onBack, initialData = {} }: SecondSte
             <Button
               type="default"
               title="Назад"
-              onClick={onBack}
+              onClick={handleBack}
               className={styles.backButton}
             />
             <Button
               type="primary"
-              title="Продолжить"
+              title={isSubmitting ? 'Обработка...' : 'Продолжить'}
               onClick={handleSubmit}
               className={styles.submitButton}
+              disabled={isSubmitting}
             />
           </div>
         </div>

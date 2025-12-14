@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import RegisterLayout from '@widgets/registerLayout/RegisterLayout';
 import ComponentWithImg from '@widgets/componentWithImg/ComponentWithImg';
 import Input from '@shared/ui/Input/InputUI';
@@ -6,11 +7,13 @@ import Button from '@shared/ui/button/Button';
 import { SocialButton } from '@shared/ui/social-button';
 import { Divider } from '@shared/ui/divider';
 import { ProgressBar } from '@widgets/progress-bar/ProgressBar';
+import { selectCurrentStep } from '@features/auth/model';
+import useStepCredentials from '@features/auth/hooks/useStepCredentials';
 import styles from './register-page.module.scss';
 import lightBulbImg from '@shared/assets/img/light-Bulb.svg';
 import userInfoImg from '@shared/assets/img/user-Info.svg';
 import schoolBoardImg from '@shared/assets/img/school-Board.svg';
-import ThirdStepForm from '@widgets/forms/third-step-form';
+import SkillDataForm from '@widgets/forms/skill-data-form';
 import SecondStepForm from '@widgets/forms/second-step-form/SecondStepForm';
 
 const imgAndText = [
@@ -32,7 +35,8 @@ const imgAndText = [
 ];
 
 function RegisterPage() {
-  const [currentStep, setCurrentStep] = useState(1);
+  const currentStep = useSelector(selectCurrentStep);
+  const { updateCredentials, submitStep, errors, isSubmitting } = useStepCredentials();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formError, setFormError] = useState('');
@@ -48,6 +52,7 @@ function RegisterPage() {
 
   const handleEmailChange = (value: string) => {
     setEmail(value);
+    updateCredentials({ email: value });
     if (formError) {
       setFormError('');
     }
@@ -55,12 +60,13 @@ function RegisterPage() {
 
   const handlePasswordChange = (value: string) => {
     setPassword(value);
+    updateCredentials({ password: value });
     if (formError) {
       setFormError('');
     }
   };
 
-  const handleSubmit = (e?: React.FormEvent) => {
+  const handleSubmit = async (e?: React.FormEvent) => {
     if (e) {
       e.preventDefault();
     }
@@ -77,8 +83,12 @@ function RegisterPage() {
       return;
     }
 
-    // TODO: Отправить данные для авторизации
-    console.log('Отправка данных авторизации', { email, password });
+    updateCredentials({ email, password });
+    const success = await submitStep();
+    if (!success && errors) {
+      const errorMessage = errors.email || errors.password || 'Ошибка валидации';
+      setFormError(errorMessage);
+    }
   };
 
   const handleGoogleAuth = () => {
@@ -121,25 +131,25 @@ function RegisterPage() {
               />
             </div>
 
-            {formError && <div className={styles.formError}>{formError}</div>}
+            {(formError || errors?.email || errors?.password) && (
+              <div className={styles.formError}>
+                {formError || errors?.email || errors?.password}
+              </div>
+            )}
 
             <div className={styles.submitButton}>
-              <Button type="primary" title="Далее" onClick={() => handleSubmit()} />
+              <Button
+                type="primary"
+                title={isSubmitting ? 'Обработка...' : 'Далее'}
+                onClick={() => handleSubmit()}
+                disabled={isSubmitting}
+              />
             </div>
           </form>
           ) : currentStep === 2 ? (
-            <div>
-              <SecondStepForm
-                onSubmit={(data) => {
-                  console.log('Данные второго шага:', data);
-                  setCurrentStep(3);
-                }}
-                onBack={() => setCurrentStep(1)}
-                initialData={{}}
-              />
-            </div>
+            <SecondStepForm />
           ) : (
-            <ThirdStepForm setCurrentStep={setCurrentStep} />
+            <SkillDataForm onSubmitSuccess={() => {}} />
           )
         }
         rightPart={
