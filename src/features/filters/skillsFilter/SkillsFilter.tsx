@@ -122,6 +122,7 @@ function SkillsFilter({ selectedSkills, onSelectionChange }: SkillsFilterProps) 
   };
 
   const toggleSkillSelection = (skillId: number) => {
+    // Просто добавляем/убираем выбранный навык (категорию или подкатегорию)
     const updatedSelection = selectedSkills.includes(skillId)
       ? selectedSkills.filter((id) => id !== skillId)
       : [...selectedSkills, skillId];

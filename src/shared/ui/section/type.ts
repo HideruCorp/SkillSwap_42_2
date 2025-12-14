@@ -10,4 +10,5 @@ export type SectionUIProps = {
   onDetailsClick?: (id: number) => void;
   triggerRef?: (node: HTMLDivElement | null) => void;
   hasMore?: boolean;
+  headerExtra?: React.ReactNode; // дополнительный элемент в заголовке
 };

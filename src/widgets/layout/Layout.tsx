@@ -12,9 +12,12 @@ interface LayoutProps {
 const cx = classNames.bind(styles);
 
 function Layout({ children }: LayoutProps) {
-  // так как разметка для главной страницы и для страницы авторизации отличается, добавлено условие
   const location = useLocation();
-  const isAuthPage = ['/auth', '/error', '/*'].some((path) => location.pathname.includes(path));
+  const isAuthPage =
+    location.pathname === '/login' ||
+    location.pathname === '/register' ||
+    location.pathname.startsWith('/register/') ||
+    ['/auth', '/error'].some((path) => location.pathname.includes(path));
 
   return (
     <div className={styles.container}>

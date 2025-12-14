@@ -23,6 +23,14 @@
     padding-block-start: 10px;
   }
 
+  &__controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
   @media (width <= 768px) {
     flex-direction: column;
 
