@@ -5,10 +5,13 @@ import Input from '@shared/ui/Input/InputUI';
 import Button from '@shared/ui/button/Button';
 import { SocialButton } from '@shared/ui/social-button';
 import { Divider } from '@shared/ui/divider';
+import { ProgressBar } from '@widgets/progress-bar/ProgressBar';
 import styles from './register-page.module.scss';
 import lightBulbImg from '@shared/assets/img/light-Bulb.svg';
 import userInfoImg from '@shared/assets/img/user-Info.svg';
 import schoolBoardImg from '@shared/assets/img/school-Board.svg';
+import ThirdStepForm from '@widgets/forms/third-step-form';
+import SecondStepForm from '@widgets/forms/second-step-form/SecondStepForm';
 
 const imgAndText = [
   {
@@ -90,7 +93,8 @@ function RegisterPage() {
     <section className={styles.register}>
       <RegisterLayout
         leftPart={
-          <form className={styles.form} onSubmit={handleSubmit}>
+          currentStep === 1 ? (
+            <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.socialButtons}>
               <SocialButton provider="google" onClick={handleGoogleAuth} />
               <SocialButton provider="apple" onClick={handleAppleAuth} />
@@ -123,6 +127,20 @@ function RegisterPage() {
               <Button type="primary" title="Далее" onClick={() => handleSubmit()} />
             </div>
           </form>
+          ) : currentStep === 2 ? (
+            <div>
+              <SecondStepForm
+                onSubmit={(data) => {
+                  console.log('Данные второго шага:', data);
+                  setCurrentStep(3);
+                }}
+                onBack={() => setCurrentStep(1)}
+                initialData={{}}
+              />
+            </div>
+          ) : (
+            <ThirdStepForm setCurrentStep={setCurrentStep} />
+          )
         }
         rightPart={
           <ComponentWithImg
