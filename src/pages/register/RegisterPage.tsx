@@ -1,13 +1,10 @@
 import RegisterLayout from '@widgets/registerLayout/RegisterLayout';
 import ComponentWithImg from '@widgets/componentWithImg/ComponentWithImg';
-import { useState, type PropsWithChildren } from 'react';
+import { useState } from 'react';
 import styles from './register-page.module.scss';
 import { ProgressBar } from '@widgets/progress-bar/ProgressBar';
 import ThirdStepForm from '@widgets/forms/third-step-form';
-
-/*
-className={styles['register__some-bem--specific']}
-*/
+import SecondStepForm from '@widgets/forms/second-step-form/SecondStepForm';
 
 const imgAndText = [
   {
@@ -46,10 +43,19 @@ function RegisterPage({ step }: RegisterPageProps) {
       <RegisterLayout
         header={<ProgressBar currentStep={currentStep} totalSteps={3} />}
         leftPart={
-          step === 1 ? (
+          currentStep === 1 ? (
             <div>Сюда вставить форму Регистрация 1 Шаг</div>
-          ) : step === 2 ? (
-            <div>Сюда вставить форму второго шага</div>
+          ) : currentStep === 2 ? (
+            <div>
+              <SecondStepForm
+                onSubmit={(data) => {
+                  console.log('Данные второго шага:', data);
+                  setCurrentStep(3);
+                }}
+                onBack={() => setCurrentStep(1)}
+                initialData={{}}
+              />
+            </div>
           ) : (
             <ThirdStepForm setCurrentStep={setCurrentStep} />
           )
