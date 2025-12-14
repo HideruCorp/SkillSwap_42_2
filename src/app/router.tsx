@@ -1,26 +1,25 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
+import Modal from '@features/modal/Modal';
 import {
-  Catalog,
+  AboutPage,
   AuthorizePage,
-  ProfilePage,
+  Catalog,
+  NotFoundPage,
+  PrivacyPage,
+  ProfileExchangesPage,
   ProfileFavoritesPage,
+  ProfilePage,
   ProfileRequestsPage,
   ProfileSkillsPage,
-  ProfileExchangesPage,
-  SkillPage,
-  AboutPage,
-  NotFoundPage,
   ServerErrorPage,
-  PrivacyPage,
+  SkillPage,
   TermsPage,
 } from '@pages/index';
-import Modal from '@features/modal/Modal';
 import ModalExchange from '@widgets/modals/modal-exchange/ModalExchange';
 import ModalOfferSuccess from '@widgets/modals/modal-offer-success/ModalOfferSuccess';
+import { Route, Routes, useLocation } from 'react-router-dom';
 
-import { ProtectedRoute } from './routes/ProtectedRoute';
 import ProfileEditForm from '@pages/profile/profileEditForm/ProfileEditForm';
-
+import ProtectedRoute from './routes/ProtectedRoute';
 
 function AppRouter() {
   const location = useLocation();

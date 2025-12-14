@@ -1,17 +1,12 @@
+import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RegisterLayout from '@widgets/registerLayout/RegisterLayout';
 import Button from '@shared/ui/button/Button';
 import ProgressBar from '@widgets/progress-bar/ProgressBar';
 import ComponentWithImg from '@widgets/componentWithImg/ComponentWithImg';
-import ThirdStepForm from '@widgets/forms/third-step-form';
+import SkillDataForm from '@widgets/forms/skill-data-form';
 import CredentialsForm, { type CredentialsFormData } from '@widgets/forms/credentials-form';
-import {
-  useRegistrationWizard,
-  useStepCredentials,
-  useLogin,
-  prevStep,
-  type RegistrationStep,
-} from '@features/auth';
+import { useRegistrationWizard, useStepCredentials, useLogin, prevStep } from '@features/auth';
 import { useDispatch } from '../../services/store';
 import styles from './authorize-page.module.scss';
 
@@ -38,7 +33,7 @@ function AuthorizePage() {
   const dispatch = useDispatch();
 
   // Хуки для работы с registration wizard
-  const { currentStep, goToStep } = useRegistrationWizard();
+  const { currentStep, goToStep, submitRegistration } = useRegistrationWizard();
   const { updateCredentials, submitStep, checkEmail, isSubmitting } = useStepCredentials();
   const { loginUser, isLoading, loginError, clearLoginError } = useLogin();
 
@@ -91,13 +86,18 @@ function AuthorizePage() {
     </div>
   );
 
+  // Обработчик успешного завершения третьего шага
+  const handleSkillDataSubmitSuccess = useCallback(async () => {
+    // TODO: #191 skill preview modal
+    const result = await submitRegistration();
+    if (result.success && result.skillId) {
+      navigate(`/skill/${result.skillId}?registerSuccess=true`);
+    }
+  }, [submitRegistration, navigate]);
+
   // Рендер формы третьего шага (skillData)
   const renderSkillDataForm = () => (
-    <ThirdStepForm
-      setCurrentStep={(step) => {
-        goToStep(step as RegistrationStep);
-      }}
-    />
+    <SkillDataForm onSubmitSuccess={handleSkillDataSubmitSuccess} />
   );
 
   // Выбор контента в зависимости от шага
