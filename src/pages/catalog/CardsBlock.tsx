@@ -7,6 +7,7 @@ import getUsersMock from '../../services/mockApi/users';
 import getSkillsMock from '../../services/mockApi/skills';
 import getCitiesMock from '../../services/mockApi/cities';
 import getCategoriesMock from '../../services/mockApi/categories';
+import { useFavorites } from '@features/favorites/hooks/useFavorites';
 import './CardsBlock.scss';
 import { calculateAge, getCategoryColorBySubcategoryId } from '../../shared/helpers';
 
@@ -42,12 +43,13 @@ type RawCategoriesJson = {
 };
 
 export function CardsBlock({
-  title,
-  startIndex = 0,
-  showButton = true,
-}: CardsBlockProps): JSX.Element {
+                             title,
+                             startIndex = 0,
+                             showButton = true,
+                           }: CardsBlockProps): JSX.Element {
   const [cards, setCards] = useState<UserCardProps[]>([]);
   const [loading, setLoading] = useState(true);
+  const { toggleFavorite, isFavorite } = useFavorites();
 
   useEffect(() => {
     let mounted = true;
@@ -73,13 +75,6 @@ export function CardsBlock({
         const categories = rawCategories?.categories || [];
         const subcategories = rawCategories?.subcategories || [];
 
-        // const getCategoryColorBySubcategoryId = (subcategoryId: number): string => {
-        //   const subcategory = subcategories.find((sc) => sc.id === subcategoryId);
-        //   if (!subcategory) return '#EEE7F7';
-        //   const category = categories.find((c) => c.id === subcategory.categoryId);
-        //   return category?.color || '#EEE7F7';
-        // };
-
         const mapped: UserCardProps[] = rawUsers.map((u) => {
           const id = typeof u.id === 'number' ? u.id : Number(u.id);
 
@@ -87,7 +82,6 @@ export function CardsBlock({
           const canTeach: SkillTag[] = userSkillsRaw.map((skill) => ({
             id: String(skill.id),
             text: skill.title,
-
             bgColor: getCategoryColorBySubcategoryId(
               skill.subcategoryId || 0,
               categories,
@@ -98,21 +92,22 @@ export function CardsBlock({
           const wantsToLearn: SkillTag[] =
             Array.isArray(u.skillInterests) && u.skillInterests.length > 0
               ? u.skillInterests
-                  .map((sid) => {
-                    const subcategory = subcategories.find((sc) => sc.id === sid);
-                    if (!subcategory) return null;
-                    return {
-                      id: String(sid),
-                      text: subcategory.name,
-                      bgColor: getCategoryColorBySubcategoryId(sid, categories, subcategories),
-                    };
-                  })
-                  .filter((tag): tag is SkillTag => tag !== null)
+                .map((sid) => {
+                  const subcategory = subcategories.find((sc) => sc.id === sid);
+                  if (!subcategory) return null;
+                  return {
+                    id: String(sid),
+                    text: subcategory.name,
+                    bgColor: getCategoryColorBySubcategoryId(sid, categories, subcategories),
+                  };
+                })
+                .filter((tag): tag is SkillTag => tag !== null)
               : [];
 
           const age = u.dateOfBirth ? calculateAge(u.dateOfBirth) : 0;
 
           return {
+            id,
             name: u.name ?? 'Без имени',
             city:
               (typeof u.cityId === 'number' && rawCities?.find((c) => c.id === u.cityId)?.name) ||
@@ -125,7 +120,6 @@ export function CardsBlock({
         });
 
         if (!mounted) return;
-        // Берем 3 карточки начиная с startIndex
         setCards(mapped.slice(startIndex, startIndex + 3));
       } catch (err) {
         // TODO: handle error properly
@@ -140,6 +134,10 @@ export function CardsBlock({
       mounted = false;
     };
   }, [startIndex]);
+
+  const handleLikeClick = (userId: number) => {
+    toggleFavorite(userId);
+  };
 
   return (
     <div className="cards-block">
@@ -167,20 +165,18 @@ export function CardsBlock({
       ) : (
         <div className="cards-block__grid">
           {cards.map((userProps, idx) => {
-            // Используем комбинацию индекса и startIndex для уникальности ключа
-            // так как у UserCardProps нет уникального id
             const uniqueKey = `${startIndex}-${idx}-${userProps.name}`;
+            const isLiked = isFavorite(userProps.id);
+
             return (
               <UserCard
                 key={uniqueKey}
-                // eslint-disable-next-line react/jsx-props-no-spreading
                 {...userProps}
                 onDetailsClick={() => {
                   // TODO: implement details navigation
                 }}
-                onLikeClick={() => {
-                  // TODO: implement like functionality
-                }}
+                onLikeClick={handleLikeClick}
+                isLiked={isLiked}
               />
             );
           })}
