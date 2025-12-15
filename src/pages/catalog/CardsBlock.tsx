@@ -1,4 +1,3 @@
-// src/pages/catalog/CardsBlock.tsx
 import { useEffect, useState, type JSX } from 'react';
 import UserCard from '@shared/ui/user-card/UserCard';
 import type { UserCardProps } from '@shared/ui/user-card/types';
@@ -8,7 +7,7 @@ import getUsersMock from '../../services/mockApi/users';
 import getSkillsMock from '../../services/mockApi/skills';
 import getCitiesMock from '../../services/mockApi/cities';
 import getCategoriesMock from '../../services/mockApi/categories';
-import { useFavorites } from '@features/favorites/hooks/useFavorites'; // ИМПОРТ ХУКА ДЛЯ ИЗБРАННОГО
+import { useFavorites } from '@features/favorites/hooks/useFavorites';
 import './CardsBlock.scss';
 import { calculateAge, getCategoryColorBySubcategoryId } from '../../shared/helpers';
 
@@ -50,8 +49,6 @@ export function CardsBlock({
                            }: CardsBlockProps): JSX.Element {
   const [cards, setCards] = useState<UserCardProps[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // === ИСПОЛЬЗУЕМ ХУК ИЗБРАННОГО ===
   const { toggleFavorite, isFavorite } = useFavorites();
 
   useEffect(() => {
@@ -110,7 +107,7 @@ export function CardsBlock({
           const age = u.dateOfBirth ? calculateAge(u.dateOfBirth) : 0;
 
           return {
-            id, // ВАЖНО: передаем id для работы с избранным
+            id,
             name: u.name ?? 'Без имени',
             city:
               (typeof u.cityId === 'number' && rawCities?.find((c) => c.id === u.cityId)?.name) ||
@@ -123,7 +120,6 @@ export function CardsBlock({
         });
 
         if (!mounted) return;
-        // Берем 3 карточки начиная с startIndex
         setCards(mapped.slice(startIndex, startIndex + 3));
       } catch (err) {
         // TODO: handle error properly
@@ -139,10 +135,7 @@ export function CardsBlock({
     };
   }, [startIndex]);
 
-  // === ОБРАБОТЧИК НАЖАТИЯ НА ЛАЙК ===
   const handleLikeClick = (userId: number) => {
-    console.log('CardsBlock: Нажата кнопка лайка для пользователя ID:', userId);
-    console.log('CardsBlock: Вызываем toggleFavorite');
     toggleFavorite(userId);
   };
 
@@ -172,25 +165,18 @@ export function CardsBlock({
       ) : (
         <div className="cards-block__grid">
           {cards.map((userProps, idx) => {
-            // Используем комбинацию индекса и startIndex для уникальности ключа
             const uniqueKey = `${startIndex}-${idx}-${userProps.name}`;
-
-            // Проверяем состояние лайка для этой карточки
             const isLiked = isFavorite(userProps.id);
-
-            // Отладочная информация в консоль
-            console.log(`CardsBlock: Карточка ${userProps.name} (ID: ${userProps.id}): isLiked = ${isLiked}`);
 
             return (
               <UserCard
                 key={uniqueKey}
                 {...userProps}
                 onDetailsClick={() => {
-                  console.log('CardsBlock: Подробнее для пользователя:', userProps.id);
                   // TODO: implement details navigation
                 }}
-                onLikeClick={handleLikeClick} // ПЕРЕДАЕМ ОБРАБОТЧИК ЛАЙКА
-                isLiked={isLiked} // ПЕРЕДАЕМ СОСТОЯНИЕ ЛАЙКА
+                onLikeClick={handleLikeClick}
+                isLiked={isLiked}
               />
             );
           })}

@@ -1,3 +1,4 @@
+// src/features/favorites/hooks/useFavorites.ts
 import { useState, useEffect, useCallback } from 'react';
 
 export const useFavorites = () => {
@@ -9,14 +10,14 @@ export const useFavorites = () => {
     setIsLoading(true);
     try {
       const saved = localStorage.getItem('skillswap_favorites');
-      console.log('Загружаем избранное из localStorage:', saved);
-
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
           setFavorites(parsed);
-          console.log('Избранное загружено:', parsed);
+          console.log('📋 Загружен полный список избранного:', parsed);
         }
+      } else {
+        console.log('📋 Список избранного пуст');
       }
     } catch (error) {
       console.error('Ошибка загрузки избранного:', error);
@@ -28,35 +29,31 @@ export const useFavorites = () => {
   // Сохранение в localStorage
   useEffect(() => {
     if (favorites.length > 0) {
-      console.log('Сохраняем избранное в localStorage:', favorites);
       localStorage.setItem('skillswap_favorites', JSON.stringify(favorites));
     } else {
-      console.log('🗑Очищаем избранное в localStorage');
       localStorage.removeItem('skillswap_favorites');
     }
   }, [favorites]);
 
   const toggleFavorite = useCallback((userId: number) => {
-    console.log('Toggle favorite для пользователя:', userId);
-    console.log('Текущие избранные:', favorites);
-
     setFavorites(prev => {
+      let newFavorites: number[];
+
       if (prev.includes(userId)) {
-        const newFavorites = prev.filter(id => id !== userId);
-        console.log('🗑Удаляем из избранного. Новый список:', newFavorites);
-        return newFavorites;
+        newFavorites = prev.filter(id => id !== userId);
       } else {
-        const newFavorites = [...prev, userId];
-        console.log('❤Добавляем в избранное. Новый список:', newFavorites);
-        return newFavorites;
+        newFavorites = [...prev, userId];
       }
+
+      console.log('📋 Полный список избранного после изменения:', newFavorites);
+      console.log('📊 Всего избранных:', newFavorites.length);
+
+      return newFavorites;
     });
-  }, [favorites]);
+  }, []);
 
   const isFavorite = useCallback((userId: number) => {
-    const result = favorites.includes(userId);
-    console.log(`Проверка пользователя ${userId}: ${result ? 'В избранном' : 'Не в избранном'}`);
-    return result;
+    return favorites.includes(userId);
   }, [favorites]);
 
   return {
