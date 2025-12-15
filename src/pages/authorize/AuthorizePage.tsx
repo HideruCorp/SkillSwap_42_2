@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RegisterLayout from '@widgets/registerLayout/RegisterLayout';
 import Button from '@shared/ui/button/Button';
@@ -7,7 +7,9 @@ import ComponentWithImg from '@widgets/componentWithImg/ComponentWithImg';
 import SkillDataForm from '@widgets/forms/skill-data-form';
 import SecondStepForm from '@widgets/forms/second-step-form/SecondStepForm';
 import CredentialsForm, { type CredentialsFormData } from '@widgets/forms/credentials-form';
+import ModalSuggestion from '@widgets/modals/modal-suggestion/ModalSuggestion'
 import { useRegistrationWizard, useStepCredentials, useLogin, prevStep } from '@features/auth';
+import Modal from '@features/modal/Modal';
 import { useDispatch } from '../../services/store';
 import styles from './authorize-page.module.scss';
 
@@ -32,6 +34,7 @@ const imgAndText = [
 function AuthorizePage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   // Хуки для работы с registration wizard
   const { currentStep, goToStep, submitRegistration } = useRegistrationWizard();
@@ -71,8 +74,12 @@ function AuthorizePage() {
   const renderUserDataForm = () => <SecondStepForm />;
 
   // Обработчик успешного завершения третьего шага
-  const handleSkillDataSubmitSuccess = useCallback(async () => {
-    // TODO: #191 skill preview modal
+  const handleSkillDataSubmitSuccess = () => {
+    setIsOpenModal(true)
+  };
+
+  // Обработчик успешного завершения регистрации
+  const handleRegistretionSubmitSuccess = useCallback(async () => {
     const result = await submitRegistration();
     if (result.success && result.skillId) {
       navigate(`/skill/${result.skillId}?registerSuccess=true`);
@@ -97,6 +104,7 @@ function AuthorizePage() {
   };
 
   return (
+    <>
     <section className={styles.authorize}>
       <RegisterLayout
         header={<ProgressBar currentStep={currentStep} totalSteps={3} />}
@@ -110,6 +118,12 @@ function AuthorizePage() {
         }
       />
     </section>
+    {isOpenModal && (
+        <Modal onClose={() => setIsOpenModal(false)} >
+          <ModalSuggestion submit={handleRegistretionSubmitSuccess} onClose={() => setIsOpenModal(false)} />
+        </Modal>
+    )}
+  </>
   );
 }
 

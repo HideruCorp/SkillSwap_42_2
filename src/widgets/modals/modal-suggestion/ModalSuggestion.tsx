@@ -1,27 +1,41 @@
 import Button from '@shared/ui/button/Button';
+import type { Category, Subcategory } from '@shared/types';
 import styles from './ModalSuggestion.module.scss';
 import editIcon from '../../../shared/assets/img/edit.svg';
 import SkillGallery from '../../skillGallery/SkillGallery';
+import { selectSkillData } from '@features/auth/model/registrationSlice'
+import { fetchCategories } from '@api/categoriesApi'
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+
 
 interface ModalSuggestionProps {
-  title: string;
-  categories: string;
-  subcategories: string;
-  description: string;
-  images: string[];
-  onEdit: () => void;
-  onDone: () => void;
+  onClose: () => void;
+  submit: () => void;
 }
 
-function ModalSuggestion({
-  title,
-  categories,
-  subcategories,
-  description,
-  images,
-  onEdit,
-  onDone,
-}: ModalSuggestionProps) {
+function ModalSuggestion( {submit, onClose}: ModalSuggestionProps) {
+  const skill = useSelector(selectSkillData)
+  const [categories, setCategories] = useState<Category[]>([]);
+    const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+
+    useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await fetchCategories();
+        setCategories(result.categories);
+        setSubcategories(result.subcategories);
+      } catch (error) {
+        console.error('Ошибка при загрузке категорий:', error);
+      }
+    };
+    fetchData();
+  }, []);
+  
+  const { skillTitle, skillSubcategoryId, skillDescription, skillImages, } = skill;
+  const subcategory = subcategories.filter((subcategory) => subcategory.id === skillSubcategoryId)[0];
+  const category = categories.filter((category) => category.id === subcategory.categoryId)[0];
+  
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Ваше предложение</h2>
@@ -29,17 +43,19 @@ function ModalSuggestion({
       <div className={styles.grid}>
         <div className={styles.left}>
           <div>
-            <h1 className={styles.scilTitle}>{title}</h1>
-            <p className={styles.categories}>
-              {categories} / {subcategories}
-            </p>
+            <h1 className={styles.scilTitle}>{skillTitle}</h1>
+            {subcategories.length !== 0  && (
+              <p className={styles.categories}>
+                {category.name} / {subcategory.name}
+              </p>
+            )}
           </div>
-          <p className={styles.description}>{description}</p>
+          <p className={styles.description}>{skillDescription}</p>
           <div className={styles.buttons}>
             <Button
               className={styles.button}
               type="tertiary"
-              onClick={onEdit}
+              onClick={ onClose }
               title="Редактировать"
               iconRight={
                 <img
@@ -53,10 +69,10 @@ function ModalSuggestion({
                 />
               }
             />
-            <Button className={styles.button} type="primary" onClick={onDone} title="Готово" />
+            <Button className={styles.button} type="primary" onClick={ submit } title="Готово" />
           </div>
         </div>
-        <SkillGallery images={images} />
+        <SkillGallery images={skillImages} />
       </div>
     </div>
   );
