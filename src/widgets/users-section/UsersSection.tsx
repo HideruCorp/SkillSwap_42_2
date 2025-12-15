@@ -1,3 +1,4 @@
+// src/widgets/users-section/UsersSection.tsx
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import type { JSX } from 'react';
 import SectionUI from '@shared/ui/section/SectionUI';
@@ -11,6 +12,7 @@ import { paginate } from '@entities/user/paginate';
 import getSkillsMock from '../../services/mockApi/skills';
 import getCitiesMock from '../../services/mockApi/cities';
 import getCategoriesMock from '../../services/mockApi/categories';
+import { useFavorites } from '@features/favorites/hooks/useFavorites'; // ИМПОРТ ХУКА ДЛЯ ИЗБРАННОГО
 import { useSelector } from '../../services/store';
 import SortButton from '@widgets/sort-button';
 
@@ -29,21 +31,24 @@ type Props = {
 };
 
 export default function UsersSection({
-  title,
-  mode,
-  previewLimit = 3,
-  infinite = false,
-  showAllButton = false,
-  className,
-  showCount = false,
-  showSortButton = false,
-}: Props): JSX.Element {
+                                       title,
+                                       mode,
+                                       previewLimit = 3,
+                                       infinite = false,
+                                       showAllButton = false,
+                                       className,
+                                       showCount = false,
+                                       showSortButton = false,
+                                     }: Props): JSX.Element {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [aux, setAux] = useState<{ rawSkills: any[]; rawCities: any[]; rawCategories: any } | null>(
     null
   );
   const PAGE_SIZE = 10;
+
+  // === ИСПОЛЬЗУЕМ ХУК ИЗБРАННОГО ===
+  const { toggleFavorite, isFavorite } = useFavorites();
 
   // Получаем фильтры из Redux store
   const skillType = useSelector((state) => state.filters.skillType);
@@ -78,32 +83,32 @@ export default function UsersSection({
     };
   }, []);
 
-// --------------------------------------------
-// 1b. Загружаем вспомогательные данные (skills/cities/categories)
-// --------------------------------------------
-useEffect(() => {
-let mounted = true;
-(async () => {
-try {
-const [skillsRes, citiesRes, categoriesRes] = await Promise.all([
-getSkillsMock(),
-getCitiesMock(),
-getCategoriesMock(),
-]);
-if (!mounted) return;
-const rawSkills = Array.isArray(skillsRes) ? skillsRes : (skillsRes.skills ?? []);
-const rawCities = Array.isArray(citiesRes) ? citiesRes : (citiesRes.cities ?? []);
-const rawCategories = categoriesRes;
-setAux({ rawSkills, rawCities, rawCategories });
-} catch (e) {
-// eslint-disable-next-line no-console
-console.error('Ошибка загрузки вспомогательных данных', e);
-}
-})();
-return () => {
-mounted = false;
-};
-}, []);
+  // --------------------------------------------
+  // 1b. Загружаем вспомогательные данные (skills/cities/categories)
+  // --------------------------------------------
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const [skillsRes, citiesRes, categoriesRes] = await Promise.all([
+          getSkillsMock(),
+          getCitiesMock(),
+          getCategoriesMock(),
+        ]);
+        if (!mounted) return;
+        const rawSkills = Array.isArray(skillsRes) ? skillsRes : (skillsRes.skills ?? []);
+        const rawCities = Array.isArray(citiesRes) ? citiesRes : (citiesRes.cities ?? []);
+        const rawCategories = categoriesRes;
+        setAux({ rawSkills, rawCities, rawCategories });
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Ошибка загрузки вспомогательных данных', e);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   // --------------------------------------------
   // 2. Применяем фильтры
@@ -127,11 +132,10 @@ mounted = false;
 
   // --------------------------------------------
   // 2b. Применяем сортировку к отфильтрованным пользователям
-  // Сортировка из Redux применяется ко всем секциям
   // --------------------------------------------
   const sortedFilteredUsers = useMemo<User[]>(() => {
     if (!aux || filteredUsers.length === 0) return filteredUsers;
-    
+
     // Применяем сортировку из Redux ко всем секциям
     return sortFilteredUsers(filteredUsers, sortBy, aux.rawSkills);
   }, [filteredUsers, sortBy, aux]);
@@ -142,7 +146,7 @@ mounted = false;
   const allCards = useMemo<UserCardProps[]>(() => {
     if (!aux) return [];
     return buildUserCards(sortedFilteredUsers, aux.rawSkills, aux.rawCities, aux.rawCategories);
-   }, [sortedFilteredUsers, aux]);
+  }, [sortedFilteredUsers, aux]);
 
   // --------------------------------------------
   // 4. Preview (если infinite = false)
@@ -162,13 +166,13 @@ mounted = false;
 
     setPage(0);
     setVisibleCards(paginate(allCards, 0, PAGE_SIZE)); // первая пачка
-   }, [allCards, infinite]);
+  }, [allCards, infinite]);
 
   const loadMore = useCallback(() => {
     if (!infinite) return;
 
-   const nextPage = page + 1;
-   const nextSlice = paginate(allCards, nextPage, PAGE_SIZE);
+    const nextPage = page + 1;
+    const nextSlice = paginate(allCards, nextPage, PAGE_SIZE);
 
     if (nextSlice.length > 0) {
       setVisibleCards((prev) => [...prev, ...nextSlice]);
@@ -187,6 +191,13 @@ mounted = false;
   // 6. Какая карточная выборка используется
   // --------------------------------------------
   const cards = infinite ? visibleCards : previewCards;
+
+  // обработчик лайка
+  const handleLikeClick = useCallback((userId: number) => {
+    console.log('UsersSection: Нажата кнопка лайка для пользователя ID:', userId);
+    console.log('UsersSection: Вызываем toggleFavorite');
+    toggleFavorite(userId);
+  }, [toggleFavorite]);
 
   // --------------------------------------------
   // 7. Кнопка «Смотреть все» (только если разрешена)
@@ -218,6 +229,9 @@ mounted = false;
       triggerRef={infinite ? targetRef : undefined}
       hasMore={hasMore}
       headerExtra={showSortButton ? <SortButton /> : undefined}
+      // === ПЕРЕДАЕМ ОБРАБОТЧИК И ФУНКЦИЮ ДЛЯ ИЗБРАННОГО ===
+      onLikeClick={handleLikeClick}
+      isFavorite={isFavorite}
     />
   );
 }

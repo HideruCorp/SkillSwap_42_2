@@ -1,3 +1,4 @@
+// src/pages/catalog/CardsBlock.tsx
 import { useEffect, useState, type JSX } from 'react';
 import UserCard from '@shared/ui/user-card/UserCard';
 import type { UserCardProps } from '@shared/ui/user-card/types';
@@ -7,6 +8,7 @@ import getUsersMock from '../../services/mockApi/users';
 import getSkillsMock from '../../services/mockApi/skills';
 import getCitiesMock from '../../services/mockApi/cities';
 import getCategoriesMock from '../../services/mockApi/categories';
+import { useFavorites } from '@features/favorites/hooks/useFavorites'; // ИМПОРТ ХУКА ДЛЯ ИЗБРАННОГО
 import './CardsBlock.scss';
 import { calculateAge, getCategoryColorBySubcategoryId } from '../../shared/helpers';
 
@@ -42,12 +44,15 @@ type RawCategoriesJson = {
 };
 
 export function CardsBlock({
-  title,
-  startIndex = 0,
-  showButton = true,
-}: CardsBlockProps): JSX.Element {
+                             title,
+                             startIndex = 0,
+                             showButton = true,
+                           }: CardsBlockProps): JSX.Element {
   const [cards, setCards] = useState<UserCardProps[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // === ИСПОЛЬЗУЕМ ХУК ИЗБРАННОГО ===
+  const { toggleFavorite, isFavorite } = useFavorites();
 
   useEffect(() => {
     let mounted = true;
@@ -73,13 +78,6 @@ export function CardsBlock({
         const categories = rawCategories?.categories || [];
         const subcategories = rawCategories?.subcategories || [];
 
-        // const getCategoryColorBySubcategoryId = (subcategoryId: number): string => {
-        //   const subcategory = subcategories.find((sc) => sc.id === subcategoryId);
-        //   if (!subcategory) return '#EEE7F7';
-        //   const category = categories.find((c) => c.id === subcategory.categoryId);
-        //   return category?.color || '#EEE7F7';
-        // };
-
         const mapped: UserCardProps[] = rawUsers.map((u) => {
           const id = typeof u.id === 'number' ? u.id : Number(u.id);
 
@@ -87,7 +85,6 @@ export function CardsBlock({
           const canTeach: SkillTag[] = userSkillsRaw.map((skill) => ({
             id: String(skill.id),
             text: skill.title,
-
             bgColor: getCategoryColorBySubcategoryId(
               skill.subcategoryId || 0,
               categories,
@@ -98,21 +95,22 @@ export function CardsBlock({
           const wantsToLearn: SkillTag[] =
             Array.isArray(u.skillInterests) && u.skillInterests.length > 0
               ? u.skillInterests
-                  .map((sid) => {
-                    const subcategory = subcategories.find((sc) => sc.id === sid);
-                    if (!subcategory) return null;
-                    return {
-                      id: String(sid),
-                      text: subcategory.name,
-                      bgColor: getCategoryColorBySubcategoryId(sid, categories, subcategories),
-                    };
-                  })
-                  .filter((tag): tag is SkillTag => tag !== null)
+                .map((sid) => {
+                  const subcategory = subcategories.find((sc) => sc.id === sid);
+                  if (!subcategory) return null;
+                  return {
+                    id: String(sid),
+                    text: subcategory.name,
+                    bgColor: getCategoryColorBySubcategoryId(sid, categories, subcategories),
+                  };
+                })
+                .filter((tag): tag is SkillTag => tag !== null)
               : [];
 
           const age = u.dateOfBirth ? calculateAge(u.dateOfBirth) : 0;
 
           return {
+            id, // ВАЖНО: передаем id для работы с избранным
             name: u.name ?? 'Без имени',
             city:
               (typeof u.cityId === 'number' && rawCities?.find((c) => c.id === u.cityId)?.name) ||
@@ -141,6 +139,13 @@ export function CardsBlock({
     };
   }, [startIndex]);
 
+  // === ОБРАБОТЧИК НАЖАТИЯ НА ЛАЙК ===
+  const handleLikeClick = (userId: number) => {
+    console.log('CardsBlock: Нажата кнопка лайка для пользователя ID:', userId);
+    console.log('CardsBlock: Вызываем toggleFavorite');
+    toggleFavorite(userId);
+  };
+
   return (
     <div className="cards-block">
       <div className={`cards-block__header ${!showButton ? 'cards-block__header--no-button' : ''}`}>
@@ -168,19 +173,24 @@ export function CardsBlock({
         <div className="cards-block__grid">
           {cards.map((userProps, idx) => {
             // Используем комбинацию индекса и startIndex для уникальности ключа
-            // так как у UserCardProps нет уникального id
             const uniqueKey = `${startIndex}-${idx}-${userProps.name}`;
+
+            // Проверяем состояние лайка для этой карточки
+            const isLiked = isFavorite(userProps.id);
+
+            // Отладочная информация в консоль
+            console.log(`CardsBlock: Карточка ${userProps.name} (ID: ${userProps.id}): isLiked = ${isLiked}`);
+
             return (
               <UserCard
                 key={uniqueKey}
-                // eslint-disable-next-line react/jsx-props-no-spreading
                 {...userProps}
                 onDetailsClick={() => {
+                  console.log('CardsBlock: Подробнее для пользователя:', userProps.id);
                   // TODO: implement details navigation
                 }}
-                onLikeClick={() => {
-                  // TODO: implement like functionality
-                }}
+                onLikeClick={handleLikeClick} // ПЕРЕДАЕМ ОБРАБОТЧИК ЛАЙКА
+                isLiked={isLiked} // ПЕРЕДАЕМ СОСТОЯНИЕ ЛАЙКА
               />
             );
           })}
