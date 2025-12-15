@@ -1,5 +1,6 @@
 import { SkillTagListUI } from '@shared/ui/skill-tag-list';
 import Button from '@shared/ui/button/Button';
+import { useNavigate } from 'react-router-dom';
 import styles from './user-card.module.scss';
 import type { UserCardProps } from './types';
 
@@ -11,10 +12,11 @@ function UserCard({
   canTeach,
   wantsToLearn,
   avatarUrl,
-  onDetailsClick,
   onLikeClick,
   isLiked = false,
 }: UserCardProps) {
+  const navigate = useNavigate();
+
   const getAgeSuffix = (years: number): string => {
     if (years % 10 === 1 && years % 100 !== 11) return 'год';
     if ([2, 3, 4].includes(years % 10) && ![12, 13, 14].includes(years % 100)) return 'года';
@@ -64,7 +66,7 @@ function UserCard({
         <Button
           className={styles.detailsButton}
           title="Подробнее"
-          onClick={() => onDetailsClick?.(id)}
+          onClick={() => navigate(`/skill/${Number(canTeach[0].id)}`)}
           type="default"
         />
       </div>
