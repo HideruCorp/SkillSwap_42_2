@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate, useSearchParams  } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { SkillGallery } from '@/widgets/skillGallery';
-import ModalOfferSuccessUnauth from '@widgets/modals/modal-offer-success-unauth/ModalOfferSuccessUnauth'
+import ModalOfferSuccessUnauth from '@widgets/modals/modal-offer-success-unauth/ModalOfferSuccessUnauth';
 import { SkillDescriptionUI } from '@shared/ui/skill-description';
 import { UserSkillCard } from '@shared/ui/user-skill-card';
 import type { UserSkillCardProps } from '@shared/ui/user-skill-card/types';
@@ -20,7 +20,9 @@ import type { UserCardProps } from '@/shared/ui/user-card/types';
 import Modal from '@features/modal/Modal';
 import { useSelector } from '@/services/store';
 import { selectAllSkills } from '@entities/skill/model/skillsSlice';
-import { selectAllUsers } from '@entities/user'
+import { selectAllUsers } from '@entities/user';
+// Импортируем селектор текущего пользователя
+import { selectCurrentUser } from '@features/auth';
 
 function SkillPage() {
   const { id } = useParams<{ id: string }>();
@@ -41,10 +43,12 @@ function SkillPage() {
   const navigate = useNavigate();
   const allSkills = useSelector(selectAllSkills);
   const allUsers = useSelector(selectAllUsers);
+  // Получаем текущего авторизованного пользователя
+  const currentUser = useSelector(selectCurrentUser);
 
   useEffect(() => {
-    if (searchParams.get('registerSuccess') ){
-      setIsOpenModal(true)
+    if (searchParams.get('registerSuccess')) {
+      setIsOpenModal(true);
     }
     let mounted = true;
 
@@ -136,9 +140,8 @@ function SkillPage() {
         if (mounted) {
           const cities = Array.isArray(citiesData) ? citiesData : citiesData.cities;
           const mappedOffers = buildUserCards(rawCreators, skillsData, cities, categoriesData);
-          setOffers(mappedOffers.slice(0, 12)); // можно изменить, если нужно
+          setOffers(mappedOffers.slice(0, 12));
         }
-        // --- end similar offers ---
       } catch (err) {
         if (mounted) {
           setError('Ошибка загрузки данных');
@@ -162,8 +165,8 @@ function SkillPage() {
     const params = new URLSearchParams(window.location.search);
     params.delete('registerSuccess');
     setSearchParams(params);
-    setIsOpenModal(false)
-  }
+    setIsOpenModal(false);
+  };
 
   if (isLoading) {
     return (
@@ -195,10 +198,12 @@ function SkillPage() {
     );
   }
 
+  // Проверяем, является ли текущий пользователь владельцем навыка
+  const isOwner = currentUser && skill ? currentUser.id === skill.userId : false;
+
   // handlers for similar offers section
   const handleLike = (userId: number) => {
     // TODO: интеграция с favorites
-    // eslint-disable-next-line no-console
     console.log('Like user', userId);
   };
 
@@ -212,7 +217,8 @@ function SkillPage() {
       <SkillWidget
         skill={skill}
         skillDescription={skillDescription}
-        isLiked={false} // TODO: интеграция с localStorage favorites
+        isLiked={false}
+        isOwner={isOwner} // Передаем флаг владельца
         onLike={(skillId) => {
           // TODO: добавить/удалить из favorites в localStorage
           console.log('Like skill', skillId);
@@ -235,7 +241,7 @@ function SkillPage() {
         onDetailsClick={handleDetails}
       />
       {isOpenModal && (
-        <Modal onClose={modalClose} >
+        <Modal onClose={modalClose}>
           <ModalOfferSuccessUnauth onClose={modalClose} />
         </Modal>
       )}

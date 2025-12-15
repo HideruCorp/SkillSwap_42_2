@@ -19,9 +19,19 @@ export interface SkillProps {
   onLike: (skillId: number) => void;
   onShare: (skillId: number) => void;
   onMoreDetails: (skillId: number) => void;
+  // Добавляем проп для проверки владельца
+  isOwner?: boolean;
 }
 
-function Skill({ skill, skillDescription, isLiked, onLike, onShare, onMoreDetails }: SkillProps) {
+function Skill({
+  skill,
+  skillDescription,
+  isLiked,
+  onLike,
+  onShare,
+  onMoreDetails,
+  isOwner = false,
+}: SkillProps) {
   return (
     <div className={styles.skillCard}>
       <div className={styles.buttonBlock}>
@@ -57,7 +67,14 @@ function Skill({ skill, skillDescription, isLiked, onLike, onShare, onMoreDetail
               description={skillDescription.description}
             />
           </div>
-          <Button title="Подробнее" onClick={() => onMoreDetails(skill.id)} type="default" />
+          {/* Кнопка "Предложить обмен" показывается только если пользователь НЕ владелец */}
+          {!isOwner && (
+            <Button
+              title="Предложить обмен"
+              onClick={() => onMoreDetails(skill.id)}
+              type="default"
+            />
+          )}
         </div>
         <SkillGallery images={skill.images} title={skill.title} />
       </div>
