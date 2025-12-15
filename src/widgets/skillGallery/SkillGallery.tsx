@@ -14,8 +14,8 @@ function SkillGallery({ images, title = 'Изображение' }: SkillGallery
     return <div className={styles.placeholder}>Нет изображений</div>;
   }
 
-  const galleryImages = images.map((img) => {
-    const src = img.startsWith('http') ? img : `/skills/${img}`;
+  const galleryImages: ReactImageGalleryItem[] = images.map((img) => {
+    const src = img.startsWith('http') || img.startsWith('data:image') ? img : `/skills/${img}`;
     return {
       original: src,
       thumbnail: src,
@@ -24,7 +24,7 @@ function SkillGallery({ images, title = 'Изображение' }: SkillGallery
     };
   });
 
-  const totalImages = images.length;
+  const totalImages = galleryImages.length;
   const visibleThumbnails = 3;
   const remainingCount = totalImages > visibleThumbnails ? totalImages - visibleThumbnails : 0;
 
@@ -34,7 +34,7 @@ function SkillGallery({ images, title = 'Изображение' }: SkillGallery
 
     return (
       <div className={styles.thumbnailWrapper}>
-        <img src={item.thumbnail} alt={item.thumbnailAlt} />
+        <img src={String(item.thumbnail)} alt={String(item.thumbnailAlt ?? '')} />
         {isLastVisible && remainingCount > 0 && (
           <div className={styles.overlay}>+{remainingCount}</div>
         )}
@@ -42,33 +42,45 @@ function SkillGallery({ images, title = 'Изображение' }: SkillGallery
     );
   };
 
+  const hasMany = galleryImages.length > 1;
+  const rootClassName = `${styles.skillGallery} ${!hasMany ? styles.single : ''}`;
+
   return (
-    <div className={styles.skillGallery}>
+    <div className={rootClassName}>
       <ImageGallery
         items={galleryImages}
         renderThumbInner={renderThumbInner}
-        renderLeftNav={(onClick) => (
-          <button type="button" onClick={onClick} className={styles.leftArrow}>
+        renderLeftNav={(onClick, disabled) => (
+          <button
+            type="button"
+            onClick={onClick}
+            className={styles.leftArrow}
+            aria-label="Предыдущее изображение"
+            disabled={disabled}
+          >
             <ArrowLeft />
           </button>
         )}
-        renderRightNav={(onClick) => (
-          <button type="button" onClick={onClick} className={styles.rightArrow}>
+        renderRightNav={(onClick, disabled) => (
+          <button
+            type="button"
+            onClick={onClick}
+            className={styles.rightArrow}
+            aria-label="Следующее изображение"
+            disabled={disabled}
+          >
             <ArrowRight />
           </button>
         )}
         showPlayButton={false}
         showFullscreenButton={false}
+        showThumbnails={hasMany}
+        showNav={hasMany}
         thumbnailPosition="right"
-        showNav
         showBullets={false}
       />
     </div>
   );
 }
-
-SkillGallery.defaultProps = {
-  title: 'Изображение',
-};
 
 export default SkillGallery;

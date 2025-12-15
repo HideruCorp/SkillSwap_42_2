@@ -54,7 +54,7 @@ const authApi = {
     const isValid = await verifyPassword(credentials.password, stored.passwordHash);
 
     if (!isValid) {
-      throw new Error('Неверный пароль');
+      throw new Error('Неверный логин или пароль');
     }
 
     return {
