@@ -1,31 +1,32 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RegisterLayout from '@widgets/registerLayout/RegisterLayout';
-import Button from '@shared/ui/button/Button';
 import ProgressBar from '@widgets/progress-bar/ProgressBar';
 import ComponentWithImg from '@widgets/componentWithImg/ComponentWithImg';
-import SkillDataForm from '@widgets/forms/skill-data-form';
-import SecondStepForm from '@widgets/forms/second-step-form/SecondStepForm';
-import CredentialsForm, { type CredentialsFormData } from '@widgets/forms/credentials-form';
-import ModalSuggestion from '@widgets/modals/modal-suggestion/ModalSuggestion'
-import { useRegistrationWizard, useStepCredentials, useLogin, prevStep } from '@features/auth';
+import ModalSuggestion from '@widgets/modals/modal-suggestion/ModalSuggestion';
+import { useRegistrationWizard, resetRegistration } from '@features/auth';
+import lightBulb from '@shared/assets/img/light-Bulb.svg';
+import userInfo from '@shared/assets/img/user-Info.svg';
+import schoolBoard from '@shared/assets/img/school-Board.svg';
 import Modal from '@features/modal/Modal';
 import { useDispatch } from '../../services/store';
 import styles from './authorize-page.module.scss';
 
+import { CredentialsStep, UserDataStep, SkillDataStep } from './steps';
+
 const imgAndText = [
   {
-    img: 'src/shared/assets/img/light-Bulb.svg',
+    img: lightBulb,
     title: 'Добро пожаловать в SkillSwap!',
     text: 'Войдите или зарегистрируйтесь, чтобы обмениваться знаниями и навыками',
   },
   {
-    img: 'src/shared/assets/img/user-Info.svg',
+    img: userInfo,
     title: 'Расскажите немного о себе',
     text: 'Это поможет другим людям лучше вас узнать, чтобы выбрать для обмена',
   },
   {
-    img: 'src/shared/assets/img/school-Board.svg',
+    img: schoolBoard,
     title: 'Укажите, чем вы готовы поделиться',
     text: 'Так другие люди смогут увидеть ваши предложения и предложить вам обмен!',
   },
@@ -36,49 +37,16 @@ function AuthorizePage() {
   const dispatch = useDispatch();
   const [isOpenModal, setIsOpenModal] = useState(false);
 
-  // Хуки для работы с registration wizard
-  const { currentStep, goToStep, submitRegistration } = useRegistrationWizard();
-  const { updateCredentials, submitStep, checkEmail, isSubmitting } = useStepCredentials();
-  const { loginUser, isLoading, loginError, clearLoginError } = useLogin();
+  // Оркестратор регистрации
+  const { currentStep, submitRegistration } = useRegistrationWizard();
 
-  const handleCredentialsSubmit = async (data: CredentialsFormData) => {
-    const { email, password } = data;
-    clearLoginError();
+  // Очистка состояния регистрации при размонтировании
+  useEffect(() => {
+    return () => {
+      dispatch(resetRegistration());
+    };
+  }, [dispatch]);
 
-    // Проверяем, существует ли email
-    const isEmailAvailable = await checkEmail(email);
-
-    if (!isEmailAvailable) {
-      // Email существует — пытаемся войти
-      const success = await loginUser(email, password);
-      if (success) {
-        navigate('/');
-      }
-    } else {
-      // Email не существует — начинаем регистрацию
-      updateCredentials({ email, password });
-      await submitStep();
-    }
-  };
-
-  // Рендер формы первого шага (credentials)
-  const renderCredentialsForm = () => (
-    <CredentialsForm
-      onSubmit={handleCredentialsSubmit}
-      isLoading={isLoading || isSubmitting}
-      error={loginError}
-    />
-  );
-
-  // Рендер формы второго шага (userData)
-  const renderUserDataForm = () => <SecondStepForm />;
-
-  // Обработчик успешного завершения третьего шага
-  const handleSkillDataSubmitSuccess = () => {
-    setIsOpenModal(true)
-  };
-
-  // Обработчик успешного завершения регистрации
   const handleRegistretionSubmitSuccess = useCallback(async () => {
     const result = await submitRegistration();
     if (result.success && result.skillId) {
@@ -86,44 +54,42 @@ function AuthorizePage() {
     }
   }, [submitRegistration, navigate]);
 
-  // Рендер формы третьего шага (skillData)
-  const renderSkillDataForm = () => (
-    <SkillDataForm onSubmitSuccess={handleSkillDataSubmitSuccess} />
-  );
-
-  // Выбор контента в зависимости от шага
-  const renderForm = () => {
+  const renderStep = () => {
     switch (currentStep) {
       case 2:
-        return renderUserDataForm();
+        return <UserDataStep />;
       case 3:
-        return renderSkillDataForm();
+        return <SkillDataStep onStepCompleted={() => setIsOpenModal(true)} />;
       default:
-        return renderCredentialsForm();
+        return <CredentialsStep onLoginSuccess={() => navigate('/')} />;
     }
   };
 
   return (
     <>
-    <section className={styles.authorize}>
-      <RegisterLayout
-        header={<ProgressBar currentStep={currentStep} totalSteps={3} />}
-        leftPart={renderForm()}
-        rightPart={
-          <ComponentWithImg
-            img={imgAndText[currentStep - 1].img}
-            title={imgAndText[currentStep - 1].title}
-            text={imgAndText[currentStep - 1].text}
+      <section className={styles.authorize}>
+        <RegisterLayout
+          header={<ProgressBar currentStep={currentStep} totalSteps={3} />}
+          leftPart={renderStep()}
+          rightPart={
+            <ComponentWithImg
+              img={imgAndText[currentStep - 1].img}
+              title={imgAndText[currentStep - 1].title}
+              text={imgAndText[currentStep - 1].text}
+            />
+          }
+        />
+      </section>
+
+      {isOpenModal && (
+        <Modal className={styles.suggestion} onClose={() => setIsOpenModal(false)}>
+          <ModalSuggestion
+            submit={handleRegistretionSubmitSuccess}
+            onClose={() => setIsOpenModal(false)}
           />
-        }
-      />
-    </section>
-    {isOpenModal && (
-        <Modal onClose={() => setIsOpenModal(false)} >
-          <ModalSuggestion submit={handleRegistretionSubmitSuccess} onClose={() => setIsOpenModal(false)} />
         </Modal>
-    )}
-  </>
+      )}
+    </>
   );
 }
 

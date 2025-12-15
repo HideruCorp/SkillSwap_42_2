@@ -1,9 +1,5 @@
-import { fetchCategories } from '@api/categoriesApi';
 import { DragDrop, type FileWithPreview } from '@features/drag-drop';
-import { useStepSkillData } from '@features/auth';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useDebounce } from '@shared/hooks/useDebounce';
-import { filesToDataUrls } from '@shared/lib/image/compressImage';
 import { ThirdStepValidationSchema } from '@shared/lib/validationSchema';
 import type { Category, Subcategory } from '@shared/types';
 import { InputUI } from '@shared/ui/Input';
@@ -14,8 +10,6 @@ import { useEffect, useMemo, useState, useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import styles from './skill-data-form.module.scss';
 
-const DEBOUNCE_DELAY = 300;
-
 export type ThirdStepFormData = {
   skillName: string;
   category: OptionType[];
@@ -24,21 +18,60 @@ export type ThirdStepFormData = {
   images: FileWithPreview[];
 };
 
+export type SkillDataFormSubmitPayload = {
+  skillTitle: string;
+  skillDescription: string;
+  skillSubcategoryId: number | null;
+  images: FileWithPreview[];
+};
+
+export type SkillDataFormExternalErrors = Partial<
+  Record<'skillName' | 'category' | 'subcategory' | 'description' | 'images', string>
+>;
+
 interface SkillDataFormProps {
-  onSubmitSuccess: () => void;
+  /** Начальные значения из wizard store */
+  initialValues: {
+    skillTitle: string;
+    skillDescription: string;
+    skillSubcategoryId: number | null;
+  };
+
+  /** Справочники (загружает контейнер) */
+  categories: Category[];
+  subcategories: Subcategory[];
+
+  /** Статусы */
+  isSubmitting?: boolean;
+
+  /** Ошибки “снаружи” (например, из redux stepErrors) */
+  externalErrors?: SkillDataFormExternalErrors;
+
+  /** Навигация */
+  onPrev: () => void;
+
+  /** Сабмит шага (контейнер сделает updateSkillData + submitStep + onSubmitSuccess и т.д.) */
+  onSubmit: (payload: SkillDataFormSubmitPayload) => Promise<void> | void;
+
+  /**
+   * Опционально: уведомление контейнера об изменениях (для синхронизации со стором/сброса ошибок)
+   * Важно: не делайте здесь тяжёлые операции (конвертацию файлов) — лучше в контейнере на submit.
+   */
+  onChange?: (
+    patch: Partial<Omit<SkillDataFormSubmitPayload, 'images'> & { images: FileWithPreview[] }>
+  ) => void;
 }
 
-function SkillDataForm({ onSubmitSuccess }: SkillDataFormProps) {
-  const {
-    skillData,
-    errors: storeErrors,
-    isSubmitting,
-    updateSkillData,
-    submitStep,
-    prevStep,
-    clearErrors,
-  } = useStepSkillData();
-
+function SkillDataForm({
+  initialValues,
+  categories,
+  subcategories,
+  isSubmitting = false,
+  externalErrors,
+  onPrev,
+  onSubmit,
+  onChange,
+}: SkillDataFormProps) {
   const {
     handleSubmit,
     formState: { errors },
@@ -48,31 +81,19 @@ function SkillDataForm({ onSubmitSuccess }: SkillDataFormProps) {
   } = useForm<ThirdStepFormData>({
     resolver: yupResolver(ThirdStepValidationSchema),
     defaultValues: {
-      skillName: skillData.skillTitle,
+      skillName: initialValues.skillTitle,
       category: [],
       subcategory: [],
-      description: skillData.skillDescription,
+      description: initialValues.skillDescription,
       images: [],
     },
     mode: 'onChange',
   });
 
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Watch для отслеживания изменений
   const selectedCategory = watch('category');
-  const watchedSkillName = watch('skillName');
-  const watchedDescription = watch('description');
-  const watchedSubcategory = watch('subcategory');
-  const watchedImages = watch('images');
 
-  // Debounced значения для синхронизации со стором
-  const debouncedSkillName = useDebounce(watchedSkillName, DEBOUNCE_DELAY);
-  const debouncedDescription = useDebounce(watchedDescription, DEBOUNCE_DELAY);
-
-  // Получаем ID выбранной категории
   const selectedCategoryId = useMemo(() => {
     if (selectedCategory && selectedCategory.length > 0) {
       return parseInt(selectedCategory[0].value, 10);
@@ -80,100 +101,31 @@ function SkillDataForm({ onSubmitSuccess }: SkillDataFormProps) {
     return null;
   }, [selectedCategory]);
 
-  // Загрузка категорий
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await fetchCategories();
-        setCategories(result.categories);
-        setSubcategories(result.subcategories);
-      } catch (error) {
-        console.error('Ошибка при загрузке категорий:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Инициализация категории и подкатегории из стора при загрузке данных
+  // Инициализация категории/подкатегории из initialValues.skillSubcategoryId
   useEffect(() => {
     if (
-      skillData.skillSubcategoryId !== null &&
+      initialValues.skillSubcategoryId !== null &&
       subcategories.length > 0 &&
       categories.length > 0 &&
       !isInitialized
     ) {
-      const storedSubcategory = subcategories.find((sc) => sc.id === skillData.skillSubcategoryId);
-      if (storedSubcategory) {
-        // Установить категорию
-        const parentCategory = categories.find((cat) => cat.id === storedSubcategory.categoryId);
-        if (parentCategory) {
-          setValue('category', [{ title: parentCategory.name, value: String(parentCategory.id) }]);
-        }
-        // Установить подкатегорию
-        setValue('subcategory', [
-          { title: storedSubcategory.name, value: String(storedSubcategory.id) },
-        ]);
-        setIsInitialized(true);
+      const storedSubcategory = subcategories.find(
+        (sc) => sc.id === initialValues.skillSubcategoryId
+      );
+      if (!storedSubcategory) return;
+
+      const parentCategory = categories.find((cat) => cat.id === storedSubcategory.categoryId);
+      if (parentCategory) {
+        setValue('category', [{ title: parentCategory.name, value: String(parentCategory.id) }]);
       }
+
+      setValue('subcategory', [
+        { title: storedSubcategory.name, value: String(storedSubcategory.id) },
+      ]);
+      setIsInitialized(true);
     }
-  }, [skillData.skillSubcategoryId, subcategories, categories, setValue, isInitialized]);
+  }, [initialValues.skillSubcategoryId, subcategories, categories, setValue, isInitialized]);
 
-  // Синхронизация debounced skillName со стором
-  useEffect(() => {
-    if (debouncedSkillName !== skillData.skillTitle) {
-      updateSkillData({ skillTitle: debouncedSkillName });
-    }
-  }, [debouncedSkillName, skillData.skillTitle, updateSkillData]);
-
-  // Синхронизация debounced description со стором
-  useEffect(() => {
-    if (debouncedDescription !== skillData.skillDescription) {
-      updateSkillData({ skillDescription: debouncedDescription });
-    }
-  }, [debouncedDescription, skillData.skillDescription, updateSkillData]);
-
-  // Синхронизация подкатегории со стором
-  useEffect(() => {
-    const subcategoryId =
-      watchedSubcategory && watchedSubcategory.length > 0
-        ? parseInt(watchedSubcategory[0].value, 10)
-        : null;
-
-    if (subcategoryId !== skillData.skillSubcategoryId) {
-      updateSkillData({ skillSubcategoryId: subcategoryId });
-    }
-  }, [watchedSubcategory, skillData.skillSubcategoryId, updateSkillData]);
-
-  // Синхронизация изображений со стором
-  useEffect(() => {
-    const syncImages = async () => {
-      if (watchedImages && watchedImages.length > 0) {
-        try {
-          // Извлекаем File объекты из FileWithPreview
-          const files = watchedImages.map((item) => item.file);
-          const dataUrls = await filesToDataUrls(files);
-          updateSkillData({ skillImages: dataUrls });
-        } catch (error) {
-          console.error('Ошибка при конвертации изображений:', error);
-        }
-      } else {
-        updateSkillData({ skillImages: [] });
-      }
-    };
-
-    syncImages();
-  }, [watchedImages, updateSkillData]);
-
-  // Очистка ошибок стора при изменении данных формы
-  useEffect(() => {
-    if (storeErrors) {
-      clearErrors();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watchedSkillName, watchedDescription, watchedSubcategory, watchedImages]);
-
-  // Преобразование категорий в опции dropdown
   const categoryOptions = useMemo(
     () =>
       categories.map((cat) => ({
@@ -183,15 +135,11 @@ function SkillDataForm({ onSubmitSuccess }: SkillDataFormProps) {
     [categories]
   );
 
-  // Фильтруем подкатегории в зависимости от выбранной категории
   const filteredSubcategories = useMemo(() => {
-    if (!selectedCategoryId || selectedCategoryId === 0) {
-      return [];
-    }
+    if (!selectedCategoryId || selectedCategoryId === 0) return [];
     return subcategories.filter((sc) => sc.categoryId === selectedCategoryId);
   }, [subcategories, selectedCategoryId]);
 
-  // Преобразуем отфильтрованные подкатегории в OptionType
   const subcategoryOptions = useMemo(
     () =>
       filteredSubcategories.map((sc) => ({
@@ -201,57 +149,45 @@ function SkillDataForm({ onSubmitSuccess }: SkillDataFormProps) {
     [filteredSubcategories]
   );
 
-  const handlePrevStep = useCallback(() => {
-    prevStep();
-  }, [prevStep]);
+  const getFieldError = useCallback(
+    (fieldName: keyof ThirdStepFormData | 'subcategory') => {
+      const formError =
+        fieldName === 'subcategory'
+          ? errors.subcategory?.message
+          : errors[fieldName as keyof ThirdStepFormData]?.message;
 
-  const onSubmit = useCallback(
-    async (data: ThirdStepFormData) => {
-      // Синхронизируем все данные перед отправкой
-      updateSkillData({
-        skillTitle: data.skillName,
-        skillDescription: data.description,
-        skillSubcategoryId:
-          data.subcategory.length > 0 ? parseInt(data.subcategory[0].value, 10) : null,
-      });
+      const external =
+        fieldName === 'subcategory'
+          ? externalErrors?.subcategory
+          : externalErrors?.[fieldName as keyof SkillDataFormExternalErrors];
 
-      // Конвертируем изображения
-      if (data.images.length > 0) {
-        const files = data.images.map((item) => item.file);
-        const dataUrls = await filesToDataUrls(files);
-        updateSkillData({ skillImages: dataUrls });
-      }
-
-      const success = await submitStep();
-      if (success) {
-        onSubmitSuccess();
-      }
+      return formError || external || '';
     },
-    [updateSkillData, submitStep, onSubmitSuccess]
+    [errors, externalErrors]
   );
 
-  // Объединяем ошибки из react-hook-form и стора
-  const getFieldError = (
-    fieldName: 'skillName' | 'category' | 'subcategory' | 'description' | 'images'
-  ) => {
-    // Маппинг полей формы на поля стора
-    const storeFieldMap: Record<string, string> = {
-      skillName: 'skillTitle',
-      subcategory: 'skillSubcategoryId',
-      description: 'skillDescription',
-      images: 'skillImages',
-    };
+  const handlePrevStep = useCallback(() => {
+    onPrev();
+  }, [onPrev]);
 
-    const formError = errors[fieldName]?.message;
-    const storeField = storeFieldMap[fieldName] as keyof typeof storeErrors;
-    const storeError = storeErrors?.[storeField];
+  const handleInternalSubmit = useCallback(
+    async (data: ThirdStepFormData) => {
+      const skillSubcategoryId =
+        data.subcategory.length > 0 ? parseInt(data.subcategory[0].value, 10) : null;
 
-    return formError || storeError || '';
-  };
+      await onSubmit({
+        skillTitle: data.skillName,
+        skillDescription: data.description,
+        skillSubcategoryId,
+        images: data.images,
+      });
+    },
+    [onSubmit]
+  );
 
   return (
     <div className={styles.container}>
-      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+      <form className={styles.form} onSubmit={handleSubmit(handleInternalSubmit)}>
         {/* Название навыка */}
         <div className={styles.input}>
           <Controller
@@ -264,7 +200,10 @@ function SkillDataForm({ onSubmitSuccess }: SkillDataFormProps) {
                 type="text"
                 message={getFieldError('skillName')}
                 value={field.value}
-                onChange={field.onChange}
+                onChange={(value) => {
+                  field.onChange(value);
+                  onChange?.({ skillTitle: value });
+                }}
               />
             )}
           />
@@ -284,7 +223,10 @@ function SkillDataForm({ onSubmitSuccess }: SkillDataFormProps) {
                 onChange={(value: OptionType[]) => {
                   field.onChange(value);
                   setValue('subcategory', []);
+                  // Сбрасываем subcategoryId в контейнер
+                  onChange?.({ skillSubcategoryId: null });
                 }}
+                groupId="skill-data-form"
                 placeholder="Выберите категорию навыка"
               />
             )}
@@ -303,7 +245,16 @@ function SkillDataForm({ onSubmitSuccess }: SkillDataFormProps) {
                 options={subcategoryOptions}
                 type="list"
                 selected={field.value || []}
-                onChange={field.onChange}
+                onChange={(value) => {
+                  field.onChange(value);
+
+                  const subcategoryId =
+                    value && value.length > 0 ? parseInt(value[0].value, 10) : null;
+
+                  onChange?.({ skillSubcategoryId: subcategoryId });
+                }}
+                groupId="skill-data-form"
+                disabled={!selectedCategoryId}
                 placeholder={
                   !selectedCategoryId
                     ? 'Сначала выберите категорию'
@@ -327,7 +278,10 @@ function SkillDataForm({ onSubmitSuccess }: SkillDataFormProps) {
               <Textarea
                 value={field.value}
                 placeholder="Коротко опишите, чему можете научить"
-                onChange={(e) => field.onChange(e.target.value)}
+                onChange={(e) => {
+                  field.onChange(e.target.value);
+                  onChange?.({ skillDescription: e.target.value });
+                }}
               />
             )}
           />
@@ -339,7 +293,14 @@ function SkillDataForm({ onSubmitSuccess }: SkillDataFormProps) {
           <Controller
             name="images"
             control={control}
-            render={({ field }) => <DragDrop onFilesChange={(files) => field.onChange(files)} />}
+            render={({ field }) => (
+              <DragDrop
+                onFilesChange={(files) => {
+                  field.onChange(files);
+                  onChange?.({ images: files });
+                }}
+              />
+            )}
           />
           <span className={styles.error}>{getFieldError('images')}</span>
         </div>

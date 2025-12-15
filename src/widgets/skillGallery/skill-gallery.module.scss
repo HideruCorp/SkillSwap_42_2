@@ -3,50 +3,93 @@
 @use '@shared/styles/mixins' as *;
 @use '@shared/styles/variables' as *;
 
+$main-size: 324px;
+$thumb-size: 92px;
+$gap: 24px;
+$thumb-gap: 22px;
+
 .skillGallery {
   margin-left: auto;
-  // max-width: 900px;
   position: relative;
+  width: calc(#{$main-size} + #{$gap} + #{$thumb-size});
+  max-width: 100%;
 
-  // Переопределяем стили библиотеки под наш дизайн
   :global {
-    .image-gallery-slide img {
-        width: 324px;
-        height: 324px;
-        object-fit: cover;
-      }
+    .image-gallery {
+      width: 100%;
+    }
 
-    .image-gallery-content .image-gallery-slide-wrapper {
-        // width: 324px;
-        width: 324px;
-        height: 324px;
-      }
+    /* Фиксируем раскладку: основное изображение слева, превью колонкой справа */
+    .image-gallery-content {
+      display: flex;
+      align-items: flex-start;
+      gap: $gap;
+    }
+
+    .image-gallery-slide-wrapper {
+      order: 1;
+      position: relative; /* важно: стрелки позиционируются относительно этого блока */
+      flex: 0 0 $main-size;
+      width: $main-size;
+      height: $main-size;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .image-gallery-swipe,
+    .image-gallery-slides,
+    .image-gallery-slide {
+      height: 100%;
+    }
+
+    .image-gallery-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+      display: block;
+    }
 
     .image-gallery-thumbnails-wrapper {
-        margin-left: 24px;
-        height: 324px;
-      }
+      order: 2;
+      flex: 0 0 $thumb-size;
+      width: $thumb-size;
+      height: $main-size;
+      margin: 0; /* не даём margin-left из старых правок уводить колонку */
+    }
+
+    .image-gallery-thumbnails {
+      height: 100%;
+      overflow: hidden; /* скрываем лишние превью */
+    }
 
     .image-gallery-thumbnails-container {
       display: flex !important;
       flex-direction: column !important;
       justify-content: flex-start;
-      height: 100%;
-      gap: 22px;
-      }  
+      gap: $thumb-gap;
+
+      /* react-image-gallery часто двигает контейнер transform’ом — нам тут не нужно */
+      transform: none !important;
+    }
 
     .image-gallery-thumbnail {
-      width: 92px;
-      height: 92px;
+      width: $thumb-size;
+      height: $thumb-size;
       flex-shrink: 0;
-      border: 0 solid transparent;
+      box-sizing: border-box;
+
+      border: 2px solid transparent;
       border-radius: 8px;
       overflow: hidden;
 
-      * {
-      width: 100%;
-      height: 100%;
-    }
+      &:hover {
+        border-color: #abd27a;
+      }
+
+      &.active {
+        border-color: #abd27a;
+      }
 
       img {
         width: 100%;
@@ -54,92 +97,86 @@
         object-fit: cover;
         display: block;
       }
-
-      &:hover {
-        border-color: #abd27a;
-      }
     }
 
-    .image-gallery-image {
-      border-radius: 12px;
-    }
-
-    .image-gallery-left-nav,
-    .image-gallery-right-nav {
-      background: rgb(255 255 255 / 85%);
-      border-radius: 8px;
-      width: 44px;
-      height: 44px;
-      padding: 0;
-
-      &:hover {
-        background: rgb(255 255 255 / 100%);
-      }
+    /* Показываем только первые 3 превью (на 3-м рисуем +N оверлей в JSX) */
+    .image-gallery-thumbnails-container > .image-gallery-thumbnail:nth-child(n + 4) {
+      display: none;
     }
   }
+}
+
+/* Когда картинка одна — нет колонки превью, делаем ширину ровно под main */
+.single {
+  width: $main-size;
 }
 
 .placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 300px;
+  width: $main-size;
+  height: $main-size;
   background: #f9faf7;
   border-radius: 12px;
   color: #9ca197;
   font-size: 16px;
 }
 
+.leftArrow,
+.rightArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgb(255 255 255 / 85%);
+  border: none;
+  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  cursor: pointer;
+  z-index: 10;
+
+  &:hover {
+    background: rgb(255 255 255 / 100%);
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+}
+
 .leftArrow {
-    left: 12px;
-  }
+  left: 12px;
+}
 
-  .rightArrow {
-    right: 12px;
-  }
+.rightArrow {
+  right: 12px;
+}
 
-.leftArrow,.rightArrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    z-index: 10;
-    padding: 8px;
+.thumbnailWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
 
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-
-  
-
-  .thumbnailWrapper {
-    position: relative;
+  img {
     width: 100%;
     height: 100%;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    
+    object-fit: cover;
+    display: block;
   }
+}
 
-  .overlay {
-    position: absolute;
-    inset: 0;
-    background: rgb(255 255 255 / 50%);
-    color: $color-text;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgb(255 255 255 / 50%);
+  color: $color-text;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
 
-    @include text-body;
-
-    border-radius: 8px;
-  }
+  @include text-body;
+}

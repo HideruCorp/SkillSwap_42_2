@@ -16,6 +16,7 @@ const START_YEAR = currentYear - 50;
 const END_YEAR = currentYear;
 
 export function DatePickerUI({
+  name,
   value,
   onChange,
   placeholder = 'дд.мм.гггг',
@@ -104,6 +105,7 @@ export function DatePickerUI({
           <div className={inputWrapperClass}>
             <input
               ref={inputRef}
+              name={name}
               type="text"
               className={styles.input}
               value={inputValue}

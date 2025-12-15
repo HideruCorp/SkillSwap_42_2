@@ -1,13 +1,11 @@
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { InputUI } from '@shared/ui/Input/index';
 import Button from '@shared/ui/button/Button';
 import { SocialButton } from '@shared/ui/social-button';
 import { Divider } from '@shared/ui/divider';
 import { CredentialsValidationSchema, getPasswordStrength } from '@shared/lib/validationSchema';
-import { useStepCredentials } from '@features/auth';
-import { useDebounce } from '@shared/hooks/useDebounce';
 import styles from './credentials-form.module.scss';
 
 export interface CredentialsFormData {
@@ -15,57 +13,90 @@ export interface CredentialsFormData {
   password: string;
 }
 
+export interface CredentialsFormErrors {
+  email?: string;
+  password?: string;
+  root?: string;
+}
+
 interface CredentialsFormProps {
+  /** Начальные значения формы */
+  defaultValues: CredentialsFormData;
+  /** Обработчик отправки формы */
   onSubmit: (data: CredentialsFormData) => Promise<void>;
+  /** Callback при изменении email */
+  onChange: (data: Partial<CredentialsFormData>) => void;
+  /** Флаг загрузки (блокирует форму) */
   isLoading?: boolean;
-  error?: string;
+  /** Флаг проверки email */
+  isCheckingEmail?: boolean;
+  /** Является ли пользователь новым (null = не определено) */
+  isNewUser: boolean | null;
+  /** Внешние ошибки (например, от сервера) */
+  errors?: CredentialsFormErrors;
 }
 
 const doNothing = () => {};
 
-const EMAIL_CHECK_DELAY = 500;
-
-function CredentialsForm({ onSubmit, isLoading = false, error }: CredentialsFormProps) {
-  const { credentials, updateCredentials, checkEmail, isCheckingEmail, isSubmitting } =
-    useStepCredentials();
-  const [isNewUser, setIsNewUser] = useState<boolean | null>(null);
+function CredentialsForm({
+  defaultValues,
+  onSubmit,
+  onChange,
+  isLoading = false,
+  isCheckingEmail = false,
+  isNewUser,
+  errors: externalErrors,
+}: CredentialsFormProps) {
+  const isFirstRender = useRef(true);
 
   const {
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors: formErrors },
     setError,
+    clearErrors,
     watch,
+    reset,
   } = useForm<CredentialsFormData>({
     resolver: yupResolver(CredentialsValidationSchema),
-    defaultValues: {
-      email: credentials.email || '',
-      password: credentials.password || '',
-    },
+    defaultValues,
     mode: 'onBlur',
   });
 
-  const emailValue = watch('email');
+  // Синхронизация формы с внешними defaultValues при перемонтировании
+  // (когда пользователь вернулся на шаг 1)
+  useEffect(() => {
+    // Пропускаем первый рендер — defaultValues уже применены
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    // При последующих рендерах синхронизируем с пропсами
+    // Это нужно если компонент перемонтировался
+    reset(defaultValues, { keepErrors: false });
+  }, [defaultValues, reset]);
+
   const passwordValue = watch('password');
   const passwordStrength = getPasswordStrength(passwordValue || '');
-  const debouncedEmail = useDebounce(emailValue, EMAIL_CHECK_DELAY);
 
-  // Проверяем email при изменении debounced значения
+  // Синхронизация внешних ошибок с react-hook-form
   useEffect(() => {
-    const checkEmailAvailability = async () => {
-      if (!debouncedEmail || errors.email) {
-        setIsNewUser(null);
-        return;
-      }
-      const isAvailable = await checkEmail(debouncedEmail);
-      setIsNewUser(isAvailable);
-    };
+    if (externalErrors?.email) {
+      setError('email', { message: externalErrors.email });
+    } else {
+      clearErrors('email');
+    }
 
-    checkEmailAvailability();
-  }, [debouncedEmail, checkEmail, errors.email]);
+    if (externalErrors?.password) {
+      setError('password', { message: externalErrors.password });
+    } else {
+      clearErrors('password');
+    }
+  }, [externalErrors, setError, clearErrors]);
 
   const getPasswordMessage = () => {
-    if (errors.password) return undefined;
+    if (formErrors.password || externalErrors?.password) return undefined;
     // Показываем оценку пароля только для новых пользователей
     if (isNewUser && passwordValue && passwordStrength.label) {
       return passwordStrength.label;
@@ -73,17 +104,12 @@ function CredentialsForm({ onSubmit, isLoading = false, error }: CredentialsForm
     return undefined;
   };
 
-  // Показываем внешнюю ошибку (например, "Неверный пароль")
-  useEffect(() => {
-    if (error) {
-      setError('email', { message: error });
-    }
-  }, [error, setError]);
+  const getEmailMessage = () => {
+    if (isCheckingEmail) return 'Проверка email...';
+    return undefined;
+  };
 
   const handleFormSubmit = async (data: CredentialsFormData) => {
-    // Сохраняем credentials в Redux store
-    updateCredentials({ email: data.email, password: data.password });
-    // Вызываем **внешний обработчик** onSubmit, нужно потому что сейчас на кнопку далее подвязаны два варианта действий - вход или регистрация
     await onSubmit(data);
   };
 
@@ -105,10 +131,13 @@ function CredentialsForm({ onSubmit, isLoading = false, error }: CredentialsForm
               label="Email"
               type="email"
               value={field.value}
-              onChange={field.onChange}
+              onChange={(value) => {
+                field.onChange(value);
+                onChange({ email: value });
+              }}
               placeholder="Введите email"
-              error={errors.email?.message}
-              message={isCheckingEmail ? 'Проверка email...' : undefined}
+              error={formErrors.email?.message || externalErrors?.email}
+              message={getEmailMessage()}
             />
           )}
         />
@@ -122,23 +151,28 @@ function CredentialsForm({ onSubmit, isLoading = false, error }: CredentialsForm
               name="password"
               type="password"
               value={field.value}
-              onChange={field.onChange}
+              onChange={(value) => {
+                field.onChange(value);
+                onChange({ password: value });
+              }}
               placeholder="Введите пароль"
-              error={errors.password?.message}
+              error={formErrors.password?.message || externalErrors?.password}
               message={getPasswordMessage()}
             />
           )}
         />
       </div>
 
-      {errors.root && <div className={styles.formError}>{errors.root.message}</div>}
+      {(externalErrors?.root || formErrors.root) && (
+        <div className={styles.formError}>{externalErrors?.root || formErrors.root?.message}</div>
+      )}
 
       <div className={styles.submitButton}>
         <Button
           htmlType="submit"
           type="primary"
-          title={isLoading || isSubmitting ? 'Обработка...' : 'Далее'}
-          disabled={isLoading || isSubmitting}
+          title={isLoading ? 'Обработка...' : 'Далее'}
+          disabled={isLoading || isCheckingEmail}
         />
       </div>
     </form>

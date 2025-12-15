@@ -1,4 +1,5 @@
 export interface DatePickerProps {
+  name?: string;
   /** Выбранная дата */
   value?: Date | undefined;
   /** Callback при изменении даты */
