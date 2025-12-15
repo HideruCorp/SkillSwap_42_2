@@ -3,10 +3,10 @@ import UserCard from '@shared/ui/user-card/UserCard';
 import type { UserCardProps } from '@shared/ui/user-card/types';
 import type { SkillTag } from '@shared/ui/skill-tag-list/type';
 import Button from '@shared/ui/button/Button';
-import getUsersMock from '../../services/mockApi/users';
-import getSkillsMock from '../../services/mockApi/skills';
-import getCitiesMock from '../../services/mockApi/cities';
-import getCategoriesMock from '../../services/mockApi/categories';
+import usersApi from '@entities/user/api/usersApi';
+import skillsApi from '@entities/skill/api/skillsApi';
+import cityApi from '@entities/city/api/citiesApi';
+import categoryApi from '@entities/category/api/categoriesApi';
 import { useFavorites } from '@features/favorites/hooks/useFavorites';
 import './CardsBlock.scss';
 import { calculateAge, getCategoryColorBySubcategoryId } from '../../shared/helpers';
@@ -56,24 +56,15 @@ export function CardsBlock({
 
     (async () => {
       try {
-        const [usersRes, skillsRes, citiesRes, categoriesRes] = await Promise.all([
-          getUsersMock(),
-          getSkillsMock(),
-          getCitiesMock(),
-          getCategoriesMock(),
+        const [rawUsers, rawSkills, rawCities, categoriesData] = await Promise.all([
+          usersApi.getUsers(),
+          skillsApi.getSkills(),
+          cityApi.getCities(),
+          categoryApi.getAll(),
         ]);
 
-        const rawUsers: RawUser[] = Array.isArray(usersRes) ? usersRes : (usersRes.users ?? []);
-        const rawSkills: RawSkill[] = Array.isArray(skillsRes)
-          ? skillsRes
-          : (skillsRes.skills ?? []);
-        const rawCities: RawCity[] = Array.isArray(citiesRes)
-          ? citiesRes
-          : (citiesRes.cities ?? []);
-        const rawCategories: RawCategoriesJson = categoriesRes;
-
-        const categories = rawCategories?.categories || [];
-        const subcategories = rawCategories?.subcategories || [];
+        const categories = categoriesData?.categories || [];
+        const subcategories = categoriesData?.subcategories || [];
 
         const mapped: UserCardProps[] = rawUsers.map((u) => {
           const id = typeof u.id === 'number' ? u.id : Number(u.id);
@@ -149,7 +140,7 @@ export function CardsBlock({
             onClick={() => {
               // TODO: implement navigation to full list
             }}
-            type="default"
+            type="tertiary"
           />
         )}
       </div>

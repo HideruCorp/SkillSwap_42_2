@@ -1,6 +1,6 @@
 import type { User } from '@shared/types';
 import type { RawSkill } from '@features/infinite-scroll/types';
-import type { SortOption } from '../../services/slices/sortSlice/sortSlice';
+import type { SortOption } from '@features/sort';
 
 // Вспомогательная функция для вычисления возраста
 function calcAge(dateOfBirth: string): number {

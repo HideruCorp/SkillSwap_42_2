@@ -6,7 +6,7 @@ import {
 } from '@entities/request';
 import { useRequestsApi } from '@features/requests';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from '../../services/store';
+import { useDispatch, useSelector } from '@app/store';
 import styles from './profile-requests-page.module.scss';
 
 /**

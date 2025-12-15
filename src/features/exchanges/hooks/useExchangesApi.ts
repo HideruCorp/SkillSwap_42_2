@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { addExchange } from '@entities/exchange';
 import type { Exchange } from '@shared/types';
 import generateNumericId from '@shared/lib/utils';
-import { useDispatch } from '../../../services/store';
+import { useDispatch } from '@app/store';
 import type { CreateExchangePayload } from '../model/types';
 
 /**

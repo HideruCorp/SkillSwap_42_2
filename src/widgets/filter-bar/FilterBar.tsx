@@ -1,11 +1,11 @@
 import { useEffect, useState, useMemo } from 'react';
 
-import { fetchCategories } from '@api/categoriesApi';
-import { fetchCities } from '@api/citiesApi';
+import categoryApi from '@entities/category/api/categoriesApi';
+import cityApi from '@entities/city/api/citiesApi';
 import type { Subcategory, City, TSkillType, Gender, Category } from '@shared/types';
 import FilterItem from '@shared/ui/filter-item/FilterItem';
 
-import { useDispatch, useSelector } from '../../services/store';
+import { useDispatch, useSelector } from '@app/store';
 import {
   filtersSlice,
   setSkillType,
@@ -13,7 +13,7 @@ import {
   setCities,
   setSubcategories,
   setTextSearch,
-} from '../../services/slices/filtersSlice';
+} from '@features/filters';
 
 import styles from './filter-bar.module.scss';
 
@@ -47,7 +47,7 @@ function FilterBar() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [categoriesRes, citiesRes] = await Promise.all([fetchCategories(), fetchCities()]);
+        const [categoriesRes, citiesRes] = await Promise.all([categoryApi.getAll(), cityApi.getCities()]);
         // Сохраняем полный объект с categories и subcategories
         setCategoriesData({
           categories: categoriesRes.categories,

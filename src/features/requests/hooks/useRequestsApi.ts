@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { addRequest } from '@entities/request';
 import type { Request } from '@shared/types';
 import generateNumericId from '@shared/lib/utils';
-import { useDispatch } from '../../../services/store';
+import { useDispatch } from '@app/store';
 import type { CreateRequestPayload } from '../model/types';
 
 /**

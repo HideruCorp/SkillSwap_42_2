@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from '../../../services/store';
+import { useDispatch, useSelector } from '@app/store';
 import { login, clearAuthError, selectIsLoggingIn, selectLoginError } from '../model';
 
 /**

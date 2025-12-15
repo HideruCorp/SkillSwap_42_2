@@ -7,7 +7,7 @@ import {
   selectNotificationsLoading,
   selectAllNotifications,
 } from '@entities/notification';
-import { useDispatch, useSelector } from '../../../services/store';
+import { useDispatch, useSelector } from '@app/store';
 import {
   selectNewNotificationsByUserId,
   selectViewedNotificationsByUserId,

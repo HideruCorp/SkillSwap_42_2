@@ -14,13 +14,11 @@ import exchangesReducer from '@entities/exchange';
 
 // Feature reducers
 import { authReducer, registrationReducer, authListener } from '@features/auth';
+import filtersReducer from '@features/filters';
+import sortReducer from '@features/sort';
 
 // Middleware
 import persistMiddleware from '@shared/lib/storage/persistMiddleware';
-
-// TODO: переместить в  @features
-import filtersReducer from './slices/filtersSlice/filtersSlice';
-import sortReducer from './slices/sortSlice/sortSlice';
 
 export const rootReducer = combineReducers({
   // Entities

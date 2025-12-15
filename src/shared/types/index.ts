@@ -101,4 +101,3 @@ export interface CategoriesResponse {
 export interface CitiesResponse {
   cities: City[];
 }
-
