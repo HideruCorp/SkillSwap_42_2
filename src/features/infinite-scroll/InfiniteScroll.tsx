@@ -122,7 +122,7 @@ export default function InfiniteScroll(): JSX.Element {
               key={userProps.id}
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...userProps}
-              onDetailsClick={() => console.log('Подробнее:', userProps.id)}
+              // onDetailsClick={() => console.log('Подробнее:', userProps)}
               onLikeClick={() => console.log('Like:', userProps.id)}
             />
           ))}
