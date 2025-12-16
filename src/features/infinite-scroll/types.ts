@@ -13,6 +13,7 @@ export type RawSkill = {
   subcategoryId?: number;
   userId: number;
   title: string;
+  likesReceived: number[];
 };
 
 export type RawCity = { id: number; name: string };
