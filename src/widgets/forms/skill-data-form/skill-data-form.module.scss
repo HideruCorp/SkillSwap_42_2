@@ -42,5 +42,6 @@
 .error {
   display: block;
   margin-block-start: 4px;
-  font-size: 13px;
+  @include text-caption;
+  color: $color-error;
 }
