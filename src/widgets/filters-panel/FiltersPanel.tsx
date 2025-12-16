@@ -5,7 +5,7 @@ import { RadioGroupUI } from '@shared/ui/radiogroup';
 import type { TSkillType, Gender } from '@shared/types';
 import CrossIcon from '@shared/assets/img/cross.svg?react';
 
-import { useDispatch, useSelector } from '../../services/store';
+import { useDispatch, useSelector } from '@app/store';
 import {
   setSkillType,
   setGender,
@@ -16,7 +16,7 @@ import {
   selectGender,
   selectCities,
   selectSubcategories,
-} from '../../services/slices/filtersSlice';
+} from '@features/filters';
 
 import styles from './filters-panel.module.scss';
 

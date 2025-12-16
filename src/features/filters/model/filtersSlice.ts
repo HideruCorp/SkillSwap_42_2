@@ -52,4 +52,12 @@ export const filtersSlice = createSlice({
 export const { setSkillType, setGender, setCities, setSubcategories, setTextSearch, resetFilters } =
   filtersSlice.actions;
 
+export const {
+  selectSkillType,
+  selectGender,
+  selectCities,
+  selectSubcategories,
+  selectTextSearch,
+} = filtersSlice.selectors;
+
 export default filtersSlice.reducer;

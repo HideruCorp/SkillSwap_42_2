@@ -6,7 +6,7 @@ import { initializeUsers } from '@entities/user/model/usersSlice';
 import { initializeSkills } from '@entities/skill/model/skillsSlice';
 import { bootstrapAuth } from '@features/auth';
 import AppRouter from './router';
-import { useDispatch } from '../services/store';
+import { useDispatch } from '@app/store';
 
 function App() {
   const dispatch = useDispatch();

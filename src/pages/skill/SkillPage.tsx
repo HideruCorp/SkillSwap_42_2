@@ -1,28 +1,26 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { SkillGallery } from '@/widgets/skillGallery';
 import ModalOfferSuccessUnauth from '@widgets/modals/modal-offer-success-unauth/ModalOfferSuccessUnauth';
-import { SkillDescriptionUI } from '@shared/ui/skill-description';
 import { UserSkillCard } from '@shared/ui/user-skill-card';
 import type { UserSkillCardProps } from '@shared/ui/user-skill-card/types';
 import type { SkillTag } from '@shared/ui/skill-tag-list/type';
-import { fetchSkills } from '@api/skillsApi';
-import { fetchUserById } from '@api/usersApi';
-import { fetchCategories } from '@api/categoriesApi';
-import getCitiesMock from '@/services/mockApi/cities';
+import skillsApi from '@entities/skill/api/skillsApi';
+import usersApi from '@entities/user/api/usersApi';
+import categoryApi from '@entities/category/api/categoriesApi';
+import cityApi from '@entities/city/api/citiesApi';
 import type { Skill, User, City } from '@shared/types';
 import { calculateAge, getCategoryColorBySubcategoryId } from '@shared/helpers';
-import styles from './skill-page.module.scss';
-import { Skill as SkillWidget } from '@/widgets/skill';
-import SectionSimilarOffers from '@/shared/ui/section-similar-offers';
+import { Skill as SkillWidget } from '@widgets/skill';
+import SectionSimilarOffers from '@shared/ui/section-similar-offers';
 import buildUserCards from '@entities/user/buildUserCards';
-import type { UserCardProps } from '@/shared/ui/user-card/types';
+import type { UserCardProps } from '@shared/ui/user-card/types';
 import Modal from '@features/modal/Modal';
-import { useSelector } from '@/services/store';
 import { selectAllSkills } from '@entities/skill/model/skillsSlice';
 import { selectAllUsers } from '@entities/user';
 // Импортируем селектор текущего пользователя
 import { selectCurrentUser } from '@features/auth';
+import { useSelector } from '@app/store';
+import styles from './skill-page.module.scss';
 
 function SkillPage() {
   const { id } = useParams<{ id: string }>();
@@ -58,9 +56,9 @@ function SkillPage() {
         setError(null);
 
         const [skillsData, categoriesData, citiesData] = await Promise.all([
-          fetchSkills(),
-          fetchCategories(),
-          getCitiesMock(),
+          skillsApi.getSkills(),
+          categoryApi.getAll(),
+          cityApi.getCities(),
         ]);
 
         if (!mounted) return;
@@ -78,7 +76,7 @@ function SkillPage() {
         }
 
         const { categories, subcategories } = categoriesData;
-        const cities = Array.isArray(citiesData) ? citiesData : citiesData.cities;
+        const cities = citiesData;
 
         const userSkills = skillsData.filter((s) => s.userId === creator.id);
         const canTeach: SkillTag[] = userSkills.map((skill) => ({
@@ -134,12 +132,11 @@ function SkillPage() {
 
         // ограничение до 12 уникальных предложений
         const creatorIds = Array.from(new Set(similarSkills.map((s) => s.userId))).slice(0, 12);
-        const creators = await Promise.all(creatorIds.map((uid) => fetchUserById(uid)));
+        const creators = await Promise.all(creatorIds.map((uid) => usersApi.getUserById(uid)));
         const rawCreators = creators.filter((c): c is User => c !== null);
 
         if (mounted) {
-          const cities = Array.isArray(citiesData) ? citiesData : citiesData.cities;
-          const mappedOffers = buildUserCards(rawCreators, skillsData, cities, categoriesData);
+          const mappedOffers = buildUserCards(rawCreators, skillsData, citiesData, categoriesData);
           setOffers(mappedOffers.slice(0, 12));
         }
       } catch (err) {

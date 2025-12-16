@@ -1,5 +1,5 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit';
-import type { AppDispatch } from '@/services/store';
+import type { AppDispatch } from '@app/store';
 import { login, logout, bootstrapAuth } from './authSlice';
 
 /**

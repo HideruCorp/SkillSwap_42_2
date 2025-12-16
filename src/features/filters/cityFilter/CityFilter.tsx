@@ -1,35 +1,33 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
-
 import { CheckboxUI } from '@shared/ui/checkbox/CheckboxUI';
 import ChevronUp from '@shared/assets/img/chevron-Up.svg?react';
 import ChevronDown from '@shared/assets/img/chevron-Down.svg?react';
+import cityApi from '@entities/city/api/citiesApi';
 import styles from './city-filter.module.scss';
 import type { ICity, CityFilterProps } from './type';
 
 export function CityFilter({ selectedCities, onSelectionChange }: CityFilterProps) {
-  const [citiesData, setCitiesData] = useState<any>(null);
+  const [cities, setCities] = useState<ICity[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(false);
 
   // Загрузка данных при монтировании
   useEffect(() => {
-    fetch('/db/city.json')
-      .then((res) => res.json())
+    cityApi
+      .getCities()
       .then((data) => {
-        setCitiesData(data);
+        setCities(data);
         setLoading(false);
       })
       .catch((err) => {
-        console.error('Ошибка загрузки city.json:', err);
+        console.error('Ошибка загрузки городов:', err);
         setLoading(false);
       });
   }, []);
 
   const cityNames = useMemo(() => {
-    if (!citiesData) return [];
-    return citiesData.cities.map((city: ICity) => city.name);
-  }, [citiesData]);
+    return cities.map((city) => city.name);
+  }, [cities]);
 
   const visibleCities = expanded ? cityNames : cityNames.slice(0, 5);
 
@@ -41,7 +39,7 @@ export function CityFilter({ selectedCities, onSelectionChange }: CityFilterProp
   };
 
   // Показать loader пока данные загружаются
-  if (loading || !citiesData) {
+  if (loading) {
     return (
       <section className={styles.filterContainer}>
         <h2 className={styles.sectionTitle}>Город</h2>

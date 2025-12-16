@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { useDebouncedCallback } from '@shared/hooks/useDebounce';
-import { useDispatch, useSelector } from '../../../services/store';
+import { useDispatch, useSelector } from '@app/store';
 import type { StepCredentials } from '../model';
 import {
   updateCredentials,

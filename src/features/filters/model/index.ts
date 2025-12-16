@@ -7,10 +7,4 @@ export {
   setTextSearch,
   resetFilters,
 } from './filtersSlice';
-export {
-  selectSkillType,
-  selectGender,
-  selectCities,
-  selectSubcategories,
-  selectTextSearch,
-} from './selectors';
+export type { default as FiltersState } from './filtersSlice';

@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 import type { User } from '@shared/types';
-import type { RootState } from '@/services/store';
+import type { RootState } from '@app/store';
 
 // ============ BASE SELECTORS ============
 

@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
-import type { RootState } from '../../../services/store';
+import type { RootState } from '@app/store';
 import type { Notification, NotificationsState } from './types';
 
 // Базовые селекторы (не требуют мемоизации - просто возвращают ссылку)

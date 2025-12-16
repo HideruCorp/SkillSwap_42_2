@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import Dropdown from '@shared/ui/dropdown/Dropdown';
 import Button from '@shared/ui/button/Button';
-import { useDispatch, useSelector } from '../../services/store';
-import { setSortBy } from '../../services/slices/sortSlice/sortSlice';
-import type { SortOption } from '../../services/slices/sortSlice/sortSlice';
+import { useDispatch, useSelector } from '@app/store';
+import { setSortBy } from '@features/sort';
+import type { SortOption } from '@features/sort';
 import SortIcon from '@shared/assets/img/sort.svg?react';
 import styles from './sort-button.module.scss';
 

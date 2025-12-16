@@ -8,7 +8,7 @@ import Button from '@shared/ui/button/Button';
 import { InputUI } from '@shared/ui/Input';
 import type { City } from '@shared/types';
 import { useEffect, useState, type SyntheticEvent } from 'react';
-import { fetchCities } from '@api/citiesApi';
+import cityApi from '@entities/city/api/citiesApi';
 import { useAuthState } from '@features/auth';
 
 const sex: OptionType[] = [
@@ -33,7 +33,7 @@ function ProfileEditForm() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const citiesRes = await fetchCities();
+        const citiesRes = await cityApi.getCities();
         setCities(citiesRes);
         const userCity = citiesRes.find((city) => city.id === currentUser?.cityId);
         setSelectedCity({

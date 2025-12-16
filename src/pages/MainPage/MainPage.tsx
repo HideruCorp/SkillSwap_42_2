@@ -2,7 +2,7 @@ import React, { useMemo, type JSX } from 'react';
 import UsersSection from '../../widgets/users-section/UsersSection';
 import InfiniteScroll from '../../features/infinite-scroll/InfiniteScroll';
 import styles from './main-page.module.scss';
-import { useSelector } from '../../services/store';
+import { useSelector } from '@app/store';
 
 export default function MainPage(): JSX.Element {
   // Проверяем, есть ли активные фильтры

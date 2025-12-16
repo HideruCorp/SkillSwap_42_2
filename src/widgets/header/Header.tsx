@@ -7,15 +7,14 @@ import Dropdown from '@shared/ui/dropdown';
 import ProfileMenu from '@widgets/header/profile/profile-menu';
 import { NotificationIcon, NotificationPanel, useNotifications } from '@features/notifications';
 import { useDebounce } from '@shared/hooks/useDebounce';
+import { useDispatch, useSelector } from '@app/store';
+import { selectTextSearch, setTextSearch } from '@features/filters';
+import { logout, useAuthState } from '@features/auth';
 import styles from './header.module.scss';
 import ThemeToggler from './theme-toggler/ThemeToggler';
 import AllSkillsDropdown from './all-skills-dropdown/AllSkillsDropdown';
 import Favorites from './favorites/Favorites';
 import UserInfo from './userInfo/UserInfo';
-import { useDispatch, useSelector } from '../../services/store';
-import { selectTextSearch } from '../../services/slices/filtersSlice/selectors';
-import { setTextSearch } from '../../services/slices/filtersSlice';
-import { logout, useAuthState } from '@features/auth';
 
 // TODO: Заменить на ID авторизованного пользователя
 const CURRENT_USER_ID = 1;

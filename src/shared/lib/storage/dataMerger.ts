@@ -1,4 +1,6 @@
 import type { User, Skill } from '@shared/types';
+import usersApi from '@entities/user/api/usersApi'; // Импортируем из нового места
+import skillsApi from '@entities/skill/api/skillsApi';
 import type { StoredUser, StoredSkill } from './types';
 import DeltaStorage from './deltaStorage';
 
@@ -25,16 +27,7 @@ export async function loadMergedData(): Promise<{
   skills: Skill[];
 }> {
   // 1. Загружаем mock-данные
-  const [mockUsersRes, mockSkillsRes] = await Promise.all([
-    fetch('/db/users.json').catch(() => ({ json: () => ({ users: [] }) })),
-    fetch('/db/skills.json').catch(() => ({ json: () => ({ skills: [] }) })),
-  ]);
-
-  const mockUsersData = await (mockUsersRes as Response).json();
-  const mockSkillsData = await (mockSkillsRes as Response).json();
-
-  const mockUsers: User[] = mockUsersData.users || [];
-  const mockSkills: Skill[] = mockSkillsData.skills || [];
+  const [mockUsers, mockSkills] = await Promise.all([usersApi.getUsers(), skillsApi.getSkills()]);
 
   // 2. Загружаем дельты из IndexedDB
   const [storedUsers, storedSkills] = await Promise.all([
@@ -69,14 +62,8 @@ export async function loadUserById(id: number): Promise<User | null> {
     return toPublicUser(stored);
   }
 
-  // Fallback на mock
-  try {
-    const response = await fetch('/db/users.json');
-    const data = await response.json();
-    return data.users?.find((u: User) => u.id === id) || null;
-  } catch {
-    return null;
-  }
+  // Fallback на mock через API
+  return usersApi.getUserById(id);
 }
 
 /**
@@ -88,13 +75,8 @@ export async function loadSkillById(id: number): Promise<Skill | null> {
     return toPublicSkill(stored);
   }
 
-  try {
-    const response = await fetch('/db/skills.json');
-    const data = await response.json();
-    return data.skills?.find((s: Skill) => s.id === id) || null;
-  } catch {
-    return null;
-  }
+  // Fallback на mock через API
+  return skillsApi.getSkillById(id);
 }
 
 /**
@@ -113,13 +95,6 @@ export async function loadStoredUserByEmail(email: string): Promise<StoredUser |
     return stored;
   }
 
-  // Fallback на mock
-  try {
-    const response = await fetch('/db/users.json');
-    const data = await response.json();
-    const user = data.users?.find((u: StoredUser) => u.email.toLowerCase() === normalizedEmail);
-    return user || null;
-  } catch {
-    return null;
-  }
+  // Fallback на mock через API
+  return usersApi.getStoredUserByEmail(normalizedEmail);
 }

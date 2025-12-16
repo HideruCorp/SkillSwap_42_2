@@ -2,13 +2,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import SectionUI from '@shared/ui/section/SectionUI';
 import useInfiniteScroll from '@features/infinite-scroll/useInfiniteScroll';
 import type { UserCardProps } from '@shared/ui/user-card/types';
-import { fetchUsers } from '@api/usersApi'; 
+import usersApi from '@entities/user/api/usersApi';
+import skillsApi from '@entities/skill/api/skillsApi';
+import cityApi from '@entities/city/api/citiesApi';
+import categoryApi from '@entities/category/api/categoriesApi';
 import buildUserCards from '@entities/user/buildUserCards';
 import { sortUsersBy } from '@entities/user/sortUsers';
 import { paginate } from '@entities/user/paginate';
-import getSkillsMock from '../../services/mockApi/skills';
-import getCitiesMock from '../../services/mockApi/cities';
-import getCategoriesMock from '../../services/mockApi/categories';
 
 export type SectionType = 'popular' | 'new' | 'recommended';
 
@@ -31,17 +31,12 @@ function Section({ type, title, actionLabel, onAction }: SectionProps) {
     let mounted = true;
     (async () => {
       try {
-        const [usersRes, skillsRes, citiesRes, categoriesRes] = await Promise.all([
-          fetchUsers(),
-          getSkillsMock(),
-          getCitiesMock(),
-          getCategoriesMock(),
+        const [rawUsers, rawSkills, rawCities, categoriesData] = await Promise.all([
+          usersApi.getUsers(),
+          skillsApi.getSkills(),
+          cityApi.getCities(),
+          categoryApi.getAll(),
         ]);
-
-        const rawUsers = usersRes;
-        const rawSkills = Array.isArray(skillsRes) ? skillsRes : (skillsRes.skills ?? []);
-        const rawCities = Array.isArray(citiesRes) ? citiesRes : (citiesRes.cities ?? []);
-        const rawCategories = categoriesRes;
 
         if (!mounted) return;
 
@@ -50,7 +45,7 @@ function Section({ type, title, actionLabel, onAction }: SectionProps) {
         (window as any).__SECTION_AUX__ = {
           rawSkills,
           rawCities,
-          rawCategories,
+          rawCategories: categoriesData,
         };
 
         setAllRawUsers(rawUsers);

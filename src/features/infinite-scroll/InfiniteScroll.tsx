@@ -1,24 +1,19 @@
 import { useCallback, useEffect, useRef, useState, type JSX } from 'react';
-import useInfiniteScroll from './useInfiniteScroll';
-import UserCard from '../../shared/ui/user-card/UserCard';
+import usersApi from '@entities/user/api/usersApi';
+import skillsApi from '@entities/skill/api/skillsApi';
+import cityApi from '@entities/city/api/citiesApi';
+import categoryApi from '@entities/category/api/categoriesApi';
 import type { UserCardProps } from '../../shared/ui/user-card/types';
-import getUsersMock from '../../services/mockApi/users';
-import getSkillsMock from '../../services/mockApi/skills';
-import getCitiesMock from '../../services/mockApi/cities';
-import getCategoriesMock from '../../services/mockApi/categories';
-import type { RawUser, RawSkill, RawCity } from './types';
+import UserCard from '../../shared/ui/user-card/UserCard';
+import useInfiniteScroll from './useInfiniteScroll';
 import buildUserCards from '../../entities/user/buildUserCards';
 import styles from './scroll.module.scss';
 
 /**
  * InfiniteScroll:
- * - подгружает моковые файлы (users, skills, cities, categories)
+ * - подгружает данные через entities API (users, skills, cities, categories)
  * - мапит пользователей в UserCardProps
  * - рендерит чанки (pageSize) и подгружает следующий чанк при intersection
- *
- * Замечания:
- * - mockApi-функции ожидаются как default export, возвращающие объект { users: [...] } и т.д.
- * - если структура mockApi отличается — поправь чтение (см. comments ниже).
  */
 
 const PAGE_SIZE = Infinity; // сколько карточек подгружаем за раз — исправить, если нужно другое значение
@@ -31,7 +26,7 @@ export default function InfiniteScroll(): JSX.Element {
   const loadingInitialRef = useRef(false);
   const mountedRef = useRef(true);
 
-  // загрузка всех моковых данных при монтировании
+  // загрузка всех данных при монтировании
   useEffect(() => {
     let mounted = true;
     loadingInitialRef.current = true;
@@ -39,30 +34,21 @@ export default function InfiniteScroll(): JSX.Element {
 
     (async () => {
       try {
-        const [usersRes, skillsRes, citiesRes, categoriesRes] = await Promise.all([
-          getUsersMock(),
-          getSkillsMock(),
-          getCitiesMock(),
-          getCategoriesMock(),
+        const [rawUsers, rawSkills, rawCities, categoriesData] = await Promise.all([
+          usersApi.getUsers(),
+          skillsApi.getSkills(),
+          cityApi.getCities(),
+          categoryApi.getAll(),
         ]);
 
-        const rawUsers: RawUser[] = Array.isArray(usersRes) ? usersRes : (usersRes.users ?? []);
-        const rawSkills: RawSkill[] = Array.isArray(skillsRes)
-          ? skillsRes
-          : (skillsRes.skills ?? []);
-        const rawCities: RawCity[] = Array.isArray(citiesRes)
-          ? citiesRes
-          : (citiesRes.cities ?? []);
-        const rawCategories = categoriesRes;
-
-        const mapped = buildUserCards(rawUsers, rawSkills, rawCities, rawCategories);
+        const mapped = buildUserCards(rawUsers, rawSkills, rawCities, categoriesData);
 
         if (!mounted) return;
         setAllUsers(mapped);
         setVisibleItems(mapped.slice(0, PAGE_SIZE));
         setPage(1);
       } catch (err) {
-        console.error('Ошибка при загрузке моков для InfiniteScroll:', err);
+        console.error('Ошибка при загрузке данных для InfiniteScroll:', err);
       } finally {
         loadingInitialRef.current = false;
         setLoadingInitial(false);

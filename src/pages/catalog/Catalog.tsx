@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import FiltersPanel from '@widgets/filters-panel';
-import InfiniteScroll from '@/features/infinite-scroll/InfiniteScroll';
+import InfiniteScroll from '@features/infinite-scroll/InfiniteScroll';
 import './Catalog.scss';
 import FilterBar from '@widgets/filter-bar';
 import { CardsBlock } from './CardsBlock';
 import UsersSection from '@widgets/users-section/UsersSection';
-import { useSelector } from '../../services/store';
+import { useSelector } from '@app/store';
 
 export function Catalog() {
   // Проверяем, есть ли активные фильтры
@@ -30,18 +30,20 @@ export function Catalog() {
       <FiltersPanel />
 
       <div className="catalog__content">
-        <div className="catalog__controls">
-          <FilterBar />
-        </div>
         {hasActiveFilters ? (
-          <UsersSection
-            title="Подходящие предложения"
-            mode="all"
-            infinite
-            previewLimit={20}
-            showCount
-            showSortButton
-          />
+          <>
+            <div className="catalog__controls">
+              <FilterBar />
+            </div>
+            <UsersSection
+              title="Подходящие предложения"
+              mode="all"
+              infinite
+              previewLimit={20}
+              showCount
+              showSortButton
+            />
+          </>
         ) : (
           <>
             <CardsBlock title="ПОПУЛЯРНОЕ" startIndex={0} />
