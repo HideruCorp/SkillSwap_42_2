@@ -69,7 +69,6 @@
 /*TERTIARY стиль кнопок*/
 .buttonTertiary {
   background-color: $color-surface;
-  border-color: $color-disabled; // Нет границы по умолчанию
   color: $color-text;
 
   &:hover {

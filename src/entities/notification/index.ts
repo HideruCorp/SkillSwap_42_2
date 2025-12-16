@@ -1,8 +1,10 @@
 import fetchNotifications from './api/notificationsApi';
 import notificationsReducer, {
+  addNotification,
+  updateNotification,
+  deleteNotification,
   markAsRead,
   markAllAsReadForUser,
-  removeNotification,
   clearViewedForUser,
 } from './model/notificationsSlice';
 
@@ -11,9 +13,11 @@ export type { Notification, NotificationsState } from './model/types';
 export {
   fetchNotifications,
   notificationsReducer,
+  addNotification,
+  updateNotification,
+  deleteNotification,
   markAsRead,
   markAllAsReadForUser,
-  removeNotification,
   clearViewedForUser,
 };
 

@@ -16,15 +16,11 @@ import AllSkillsDropdown from './all-skills-dropdown/AllSkillsDropdown';
 import Favorites from './favorites/Favorites';
 import UserInfo from './userInfo/UserInfo';
 
-// TODO: Заменить на ID авторизованного пользователя
-const CURRENT_USER_ID = 1;
-// Константа для задержки debounce
 const SEARCH_DEBOUNCE_DELAY = 1500;
 
 function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const [authenticated] = useState(false);
   const { isAuthenticated, currentUser } = useAuthState();
 
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -34,7 +30,7 @@ function Header() {
   const textSearchFromStore = useSelector(selectTextSearch);
   const [localSearchValue, setLocalSearchValue] = useState(textSearchFromStore);
 
-  const { hasUnread } = useNotifications(CURRENT_USER_ID);
+  const { hasUnread } = useNotifications(currentUser?.id ?? 1);
 
   // Используем debounce для значения поиска
   const debouncedSearchValue = useDebounce(localSearchValue, SEARCH_DEBOUNCE_DELAY);
@@ -89,7 +85,7 @@ function Header() {
       <div
         className={`${styles['profile-panel']} ${isAuthenticated && styles['profile-panel--authenticated']}`}
       >
-        {isAuthenticated ? (
+        {isAuthenticated && currentUser ? (
           <>
             <div className={styles['profile-icons']}>
               <ThemeToggler />
@@ -99,16 +95,13 @@ function Header() {
                 isOpen={isNotificationPanelOpen}
                 onToggle={handleToggleNotificationPanel}
               >
-                <NotificationPanel
-                  userId={CURRENT_USER_ID}
-                  onClose={handleCloseNotificationPanel}
-                />
+                <NotificationPanel userId={currentUser.id} onClose={handleCloseNotificationPanel} />
               </Dropdown>
               <Favorites />
             </div>
             <Dropdown
               trigger={
-                <UserInfo userName={currentUser?.name!} userAvatarUrl={currentUser?.avatarUrl} />
+                <UserInfo userName={currentUser.name} userAvatarUrl={currentUser.avatarUrl} />
               }
               align="right"
               isOpen={isProfileMenuOpen}

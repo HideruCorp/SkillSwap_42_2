@@ -5,7 +5,7 @@ function SideBar() {
     <ul className={styles.sideBar}>
       <li>
         <NavLink
-          to="/profile/exchanges"
+          to="/profile/requests"
           className={({ isActive }) => (isActive ? `${styles.active} ${styles.item}` : styles.item)}
         >
           <img src="../../../src/shared/assets/img/request.svg" />
@@ -14,7 +14,7 @@ function SideBar() {
       </li>
       <li>
         <NavLink
-          to="/profile/requests"
+          to="/profile/exchanges"
           className={({ isActive }) => (isActive ? `${styles.active} ${styles.item}` : styles.item)}
         >
           <img src="../../../src/shared/assets/img/message-Text.svg" />
