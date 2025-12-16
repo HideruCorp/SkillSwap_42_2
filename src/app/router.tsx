@@ -14,8 +14,10 @@ import {
   SkillPage,
   TermsPage,
 } from '@pages/index';
-import ModalExchange from '@widgets/modals/modal-exchange/ModalExchange';
-import ModalOfferSuccess from '@widgets/modals/modal-offer-success/ModalOfferSuccess';
+import StatusModal from '@widgets/modals/status-modal/StatusModal';
+import notificationDeafaultIcon from '@shared/assets/img/notification-Default.svg'
+import doneIcon from '@shared/assets/img/Done.svg'
+import userCircleIcon from '@shared/assets/img/user-Circle.svg'
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 import ProfileEditForm from '@pages/profile/profileEditForm/ProfileEditForm';
@@ -93,7 +95,11 @@ function AppRouter() {
         path="/profile/exchanges-modal"
         element={
           <Modal onClose={handleModalClose}>
-            <ModalExchange onClose={handleModalClose} />
+            <StatusModal onClose={handleModalClose} 
+            icon={notificationDeafaultIcon} 
+            title='Вы предложили обмен' 
+            text='Теперь дождитесь подтверждения. Вам придет уведомление' 
+            buttonText='Готово'/>
           </Modal>
         }
       />
@@ -101,8 +107,12 @@ function AppRouter() {
         path="/profile/offer-modal"
         element={
           <Modal onClose={handleModalClose}>
-            {/* если не авторизован показывать ModalOfferSuccessUnauth */}
-            <ModalOfferSuccess onClose={handleModalClose} />
+            {/* если не авторизован показывать <StatusModal icon={userCircleIcon} другие пропсы> */}
+            <StatusModal onClose={handleModalClose} 
+            icon={doneIcon} 
+            title='Ваше предложение создано' 
+            text='Теперь вы можете предложить обмен' 
+            buttonText='Готово'/>
           </Modal>
         }
       />
