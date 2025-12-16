@@ -10,10 +10,9 @@ interface StatusModalProps {
 }
 
 function StatusModal({ onClose, icon, title, text, buttonText }: StatusModalProps) {
-  console.log('Icon URL:', icon);
   return (
     <div className={styles.container}>
-      <img className={styles.icon} src={icon} />
+      <img alt={title} className={styles.icon} src={icon} />
       <h2 className={styles.title}>{title}</h2>
       <p className={styles.text}>{text}</p>
       <Button className={styles.button} type="primary" onClick={onClose} title={buttonText} />

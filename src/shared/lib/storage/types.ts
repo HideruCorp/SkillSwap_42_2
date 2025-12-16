@@ -1,4 +1,4 @@
-import type { User, Skill, Request, Exchange } from '../../types';
+import type { User, Skill, Request, Exchange, Notification } from '../../types';
 /**
  * Типы для Delta Storage
  */
@@ -16,3 +16,6 @@ export type StoredRequest = Request;
 
 // Обмен (структура совпадает с Exchange)
 export type StoredExchange = Exchange;
+
+// Уведомление
+export type StoredNotification = Notification;

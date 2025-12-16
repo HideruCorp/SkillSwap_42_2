@@ -2,7 +2,7 @@
   {
     "id": 1,
     "userId": 1,
-    "userName": "Николай",
+    "fromUserId": 14,
     "action": "accept",
     "createdDate": "2025-12-09",
     "readed": false
@@ -10,7 +10,7 @@
   {
     "id": 2,
     "userId": 1,
-    "userName": "Татьяна",
+    "fromUserId": 11,
     "action": "offer",
     "createdDate": "2025-12-09",
     "readed": false
@@ -18,7 +18,7 @@
   {
     "id": 3,
     "userId": 1,
-    "userName": "Олег",
+    "fromUserId": 32,
     "action": "offer",
     "createdDate": "2025-12-08",
     "readed": true
@@ -26,7 +26,7 @@
   {
     "id": 4,
     "userId": 1,
-    "userName": "Игорь",
+    "fromUserId": 38,
     "action": "accept",
     "createdDate": "2025-05-23",
     "readed": true

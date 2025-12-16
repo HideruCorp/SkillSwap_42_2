@@ -1,13 +1,20 @@
-import type { StoredUser, StoredSkill, StoredRequest, StoredExchange } from './types';
+import type {
+  StoredUser,
+  StoredSkill,
+  StoredRequest,
+  StoredExchange,
+  StoredNotification,
+} from './types';
 
 const DB_NAME = 'skillswap_db';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 const STORES = {
   USERS: 'users',
   SKILLS: 'skills',
   REQUESTS: 'requests',
   EXCHANGES: 'exchanges',
+  NOTIFICATIONS: 'notifications',
   META: 'meta',
 } as const;
 
@@ -73,6 +80,14 @@ class DeltaStorageClass {
           const store = db.createObjectStore(STORES.EXCHANGES, { keyPath: 'id' });
           store.createIndex('requestId', 'requestId', { unique: true });
           store.createIndex('status', 'status', { unique: false });
+        }
+
+        // Notifications store
+        if (!db.objectStoreNames.contains(STORES.NOTIFICATIONS)) {
+          const store = db.createObjectStore(STORES.NOTIFICATIONS, { keyPath: 'id' });
+          store.createIndex('userId', 'userId', { unique: false });
+          store.createIndex('fromUserId', 'fromUserId', { unique: false });
+          store.createIndex('readed', 'readed', { unique: false });
         }
 
         // Meta store
@@ -252,6 +267,43 @@ class DeltaStorageClass {
 
   async getAllExchanges(): Promise<StoredExchange[]> {
     const store = await this.getStore(STORES.EXCHANGES);
+    return DeltaStorageClass.promisify(store.getAll());
+  }
+
+  // ==================== NOTIFICATIONS ====================
+
+  async addNotification(notification: StoredNotification): Promise<void> {
+    const store = await this.getStore(STORES.NOTIFICATIONS, 'readwrite');
+    await DeltaStorageClass.promisify(store.put(notification));
+  }
+
+  async updateNotification(id: number, changes: Partial<StoredNotification>): Promise<void> {
+    const store = await this.getStore(STORES.NOTIFICATIONS, 'readwrite');
+    const existing = await DeltaStorageClass.promisify(store.get(id));
+
+    if (existing) {
+      await DeltaStorageClass.promisify(store.put({ ...existing, ...changes }));
+    }
+  }
+
+  async deleteNotification(id: number): Promise<void> {
+    const store = await this.getStore(STORES.NOTIFICATIONS, 'readwrite');
+    await DeltaStorageClass.promisify(store.delete(id));
+  }
+
+  async getNotificationById(id: number): Promise<StoredNotification | undefined> {
+    const store = await this.getStore(STORES.NOTIFICATIONS);
+    return DeltaStorageClass.promisify(store.get(id));
+  }
+
+  async getNotificationsByUserId(userId: number): Promise<StoredNotification[]> {
+    const store = await this.getStore(STORES.NOTIFICATIONS);
+    const index = store.index('userId');
+    return DeltaStorageClass.promisify(index.getAll(userId));
+  }
+
+  async getAllNotifications(): Promise<StoredNotification[]> {
+    const store = await this.getStore(STORES.NOTIFICATIONS);
     return DeltaStorageClass.promisify(store.getAll());
   }
 
