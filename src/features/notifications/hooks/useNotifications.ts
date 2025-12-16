@@ -19,19 +19,12 @@ function useNotifications(userId: number): UseNotificationsReturn {
   const dispatch = useDispatch();
 
   const loading = useSelector(selectNotificationsLoading);
-  const allNotifications = useSelector(selectAllNotifications);
 
   const newNotifications = useSelector((state) => selectNewNotificationsByUserId(state, userId));
   const viewedNotifications = useSelector((state) =>
     selectViewedNotificationsByUserId(state, userId)
   );
   const hasUnread = useSelector((state) => selectHasUnreadByUserId(state, userId));
-
-  useEffect(() => {
-    if (allNotifications.length === 0 && !loading) {
-      dispatch(fetchNotifications());
-    }
-  }, [dispatch, allNotifications.length, loading]);
 
   const readAll = useMemo(
     () => () => {

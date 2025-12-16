@@ -1,7 +1,13 @@
 import type { Middleware, UnknownAction } from '@reduxjs/toolkit';
 import type { Gender } from '@shared/types';
 import DeltaStorage from './deltaStorage';
-import type { StoredUser, StoredSkill, StoredRequest, StoredExchange } from './types';
+import type {
+  StoredUser,
+  StoredSkill,
+  StoredRequest,
+  StoredExchange,
+  StoredNotification,
+} from './types';
 
 /**
  * Типы payload для разных actions
@@ -55,6 +61,16 @@ interface ExchangePayload {
   status: string;
   createdAt: string;
   completedAt?: string;
+}
+
+interface NotificationPayload {
+  id: number;
+  userId: number;
+  fromUserId: number;
+  action: 'accept' | 'offer';
+  createdDate: string;
+  readed: boolean;
+  requestId?: number;
 }
 
 type ActionWithPayloadAndMeta = UnknownAction & {
@@ -211,6 +227,62 @@ const persistHandlers: Record<string, (action: ActionWithPayloadAndMeta) => Prom
   'exchanges/deleteExchange': async (action) => {
     const id = action.payload as number;
     await DeltaStorage.deleteExchange(id);
+  },
+
+  // ==================== NOTIFICATIONS ====================
+
+  'notifications/addNotification': async (action) => {
+    const notification = action.payload as NotificationPayload;
+    const storedNotification: StoredNotification = {
+      id: notification.id,
+      userId: notification.userId,
+      fromUserId: notification.fromUserId,
+      action: notification.action,
+      createdDate: notification.createdDate,
+      readed: notification.readed,
+      requestId: notification.requestId,
+    };
+    await DeltaStorage.addNotification(storedNotification);
+  },
+
+  'notifications/updateNotification': async (action) => {
+    const { id, changes } = action.payload as UpdatePayload<NotificationPayload>;
+    await DeltaStorage.updateNotification(id, changes as Partial<StoredNotification>);
+  },
+
+  'notifications/deleteNotification': async (action) => {
+    const id = action.payload as number;
+    await DeltaStorage.deleteNotification(id);
+  },
+
+  'notifications/markAsRead': async (action) => {
+    const notificationId = action.payload as number;
+    const notification = await DeltaStorage.getNotificationById(notificationId);
+    if (notification) {
+      await DeltaStorage.updateNotification(notificationId, { readed: true });
+    }
+  },
+
+  'notifications/markAllAsReadForUser': async (action) => {
+    const userId = action.payload as number;
+    const notifications = await DeltaStorage.getNotificationsByUserId(userId);
+
+    await Promise.all(
+      notifications
+        .filter((notification) => !notification.readed)
+        .map((notification) => DeltaStorage.updateNotification(notification.id, { readed: true }))
+    );
+  },
+
+  'notifications/clearViewedForUser': async (action) => {
+    const userId = action.payload as number;
+    const notifications = await DeltaStorage.getNotificationsByUserId(userId);
+
+    await Promise.all(
+      notifications
+        .filter((notification) => notification.readed)
+        .map((notification) => DeltaStorage.deleteNotification(notification.id))
+    );
   },
 };
 

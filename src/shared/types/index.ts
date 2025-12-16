@@ -84,6 +84,17 @@ export interface Exchange {
 export type RequestStatus = 'pending' | 'accepted' | 'rejected';
 export type ExchangeStatus = 'inProgress' | 'completed' | 'cancelled';
 
+// Типы для уведомлений
+export interface Notification {
+  id: NotificationId;
+  userId: UserId; // Кому уведомление (получатель)
+  fromUserId: UserId; // От кого уведомление (отправитель)
+  action: 'accept' | 'offer';
+  createdDate: IsoDate; // ISO date string from JSON
+  readed: boolean;
+  requestId?: RequestId; // ID связанной заявки (для перехода при клике)
+}
+
 // Типы для ответов API (обертки JSON)
 export interface SkillsResponse {
   skills: Skill[];
