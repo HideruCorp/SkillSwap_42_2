@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import ModalOfferSuccessUnauth from '@widgets/modals/modal-offer-success-unauth/ModalOfferSuccessUnauth';
+import StatusModal from '@widgets/modals/status-modal/StatusModal';
+import userCircleIcon from '@shared/assets/img/user-Circle.svg'
 import { UserSkillCard } from '@shared/ui/user-skill-card';
 import type { UserSkillCardProps } from '@shared/ui/user-skill-card/types';
 import type { SkillTag } from '@shared/ui/skill-tag-list/type';
@@ -239,7 +240,11 @@ function SkillPage() {
       />
       {isOpenModal && (
         <Modal onClose={modalClose}>
-          <ModalOfferSuccessUnauth onClose={modalClose} />
+          <StatusModal onClose={modalClose} 
+            icon={userCircleIcon}
+            title='Ваше предложение создано' 
+            text='Теперь вы можете предложить обмен' 
+            buttonText='Готово'/>
         </Modal>
       )}
     </>

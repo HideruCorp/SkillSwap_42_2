@@ -17,7 +17,6 @@ import {
 import StatusModal from '@widgets/modals/status-modal/StatusModal';
 import notificationDeafaultIcon from '@shared/assets/img/notification-Default.svg'
 import doneIcon from '@shared/assets/img/Done.svg'
-import userCircleIcon from '@shared/assets/img/user-Circle.svg'
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 import ProfileEditForm from '@pages/profile/profileEditForm/ProfileEditForm';
