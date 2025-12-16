@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { UseNotificationPanelReturn } from '../types';
 import useNotifications from './useNotifications';
 
 function useNotificationPanel(userId: number, onClose?: () => void): UseNotificationPanelReturn {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const {
     newNotifications,
@@ -29,7 +31,7 @@ function useNotificationPanel(userId: number, onClose?: () => void): UseNotifica
 
   const onNotificationClick = (id: number) => {
     markAsRead(id);
-    // TODO: Перейти к деталям уведомления
+    navigate(`/profile/requests?requestId=${id}`);
   };
 
   return {

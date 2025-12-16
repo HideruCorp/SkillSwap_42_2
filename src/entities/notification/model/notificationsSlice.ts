@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { NotificationsState } from './types';
+import type { Notification, NotificationsState } from './types';
 import fetchNotifications from '../api/notificationsApi';
 
 const initialState: NotificationsState = {
@@ -12,6 +12,22 @@ const notificationsSlice = createSlice({
   name: 'notifications',
   initialState,
   reducers: {
+    addNotification(state, action: PayloadAction<Notification>) {
+      state.items.push(action.payload);
+    },
+    updateNotification(
+      state,
+      action: PayloadAction<{ id: number; changes: Partial<Notification> }>
+    ) {
+      const { id, changes } = action.payload;
+      const notification = state.items.find((item) => item.id === id);
+      if (notification) {
+        Object.assign(notification, changes);
+      }
+    },
+    deleteNotification(state, action: PayloadAction<number>) {
+      state.items = state.items.filter((item) => item.id !== action.payload);
+    },
     markAsRead(state, action: PayloadAction<number>) {
       const notification = state.items.find((item) => item.id === action.payload);
       if (notification) {
@@ -24,9 +40,6 @@ const notificationsSlice = createSlice({
           item.readed = true;
         }
       });
-    },
-    removeNotification(state, action: PayloadAction<number>) {
-      state.items = state.items.filter((item) => item.id !== action.payload);
     },
     clearViewedForUser(state, action: PayloadAction<number>) {
       state.items = state.items.filter((item) => item.userId !== action.payload || !item.readed);
@@ -49,7 +62,13 @@ const notificationsSlice = createSlice({
   },
 });
 
-export const { markAsRead, markAllAsReadForUser, removeNotification, clearViewedForUser } =
-  notificationsSlice.actions;
+export const {
+  addNotification,
+  updateNotification,
+  deleteNotification,
+  markAsRead,
+  markAllAsReadForUser,
+  clearViewedForUser,
+} = notificationsSlice.actions;
 
 export default notificationsSlice.reducer;
