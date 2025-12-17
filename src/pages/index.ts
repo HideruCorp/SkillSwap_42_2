@@ -1,4 +1,3 @@
-export { Catalog } from './catalog';
 export { AuthorizePage } from './authorize';
 export { ProfilePage } from './profile';
 export { ProfileFavoritesPage } from './profile-favorites';
@@ -11,3 +10,4 @@ export { NotFoundPage } from './not-found';
 export { ServerErrorPage } from './server-error';
 export { PrivacyPage } from './privacy';
 export { TermsPage } from './terms';
+export { MainPage } from './MainPage';
