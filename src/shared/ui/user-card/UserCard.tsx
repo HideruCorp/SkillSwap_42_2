@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import styles from './user-card.module.scss';
 import type { UserCardProps } from './types';
 import { useAuthState } from '@features/auth';
-import { useState } from 'react';
+import { useSelector } from '@app/store';
+import { selectSkillById } from '@entities/skill/model/skillsSlice';
 
 function UserCard({
-  id, // добавлен id
+  id,
+  mainSkillId,
   name,
   city,
   age,
@@ -21,7 +23,10 @@ function UserCard({
   const navigate = useNavigate();
   const { currentUser } = useAuthState();
 
-  const [likeCount, setLikeCount] = useState(likes?.length);
+  // Берём актуальную информацию о лайках из skillsSlice (SSOT)
+  const skill = useSelector((state) => selectSkillById(state, mainSkillId));
+  const likesArray = skill?.likesReceived ?? likes ?? [];
+  const likeCount = likesArray.length;
 
   const getAgeSuffix = (years: number): string => {
     if (years % 10 === 1 && years % 100 !== 11) return 'год';
@@ -29,15 +34,9 @@ function UserCard({
     return 'лет';
   };
 
-  const liked = currentUser ? likes.includes(currentUser?.id) : false;
+  const liked = currentUser ? likesArray.includes(currentUser.id) : false;
   const handleLike = () => {
-    onLikeClick?.(id);
-
-    if (isLiked || liked) {
-      setLikeCount(likeCount - 1);
-    } else {
-      setLikeCount(likeCount + 1);
-    }
+    onLikeClick?.(mainSkillId);
   };
 
   return (

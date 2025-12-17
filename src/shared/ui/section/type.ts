@@ -11,4 +11,5 @@ export type SectionUIProps = {
   triggerRef?: (node: HTMLDivElement | null) => void;
   hasMore?: boolean;
   headerExtra?: React.ReactNode; // дополнительный элемент в заголовке
+  isFavorite?: (skillId: number) => boolean;
 };

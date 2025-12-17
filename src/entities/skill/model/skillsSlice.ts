@@ -77,8 +77,15 @@ const skillsSlice = createSlice({
     selectAllSkills: (state) => state.items,
     selectSkillById: (state, id: number) => state.items.find((s) => s.id === id),
     selectSkillsByUserId: (state, userId: number) => state.items.filter((s) => s.userId === userId),
+    // ID навыков, которые лайкнул конкретный пользователь
     selectFavoriteSkillIds: (state, userId: number) =>
       state.items.filter((s) => s.likesReceived.includes(userId)).map((s) => s.id),
+    // Проверка: лайкнул ли пользователь конкретный навык
+    selectIsSkillLiked: (state, skillId: number, userId: number) => {
+      const skill = state.items.find((s) => s.id === skillId);
+      if (!skill) return false;
+      return skill.likesReceived.includes(userId);
+    },
     selectSkillsLoading: (state) => state.isLoading,
     selectSkillsError: (state) => state.error,
   },
@@ -100,6 +107,7 @@ export const {
   selectSkillById,
   selectSkillsByUserId,
   selectFavoriteSkillIds,
+  selectIsSkillLiked,
   selectSkillsLoading,
   selectSkillsError,
 } = skillsSlice.selectors;

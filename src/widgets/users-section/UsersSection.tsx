@@ -30,17 +30,17 @@ type Props = {
 };
 
 export default function UsersSection({
-                                       title,
-                                       mode,
-                                       previewLimit = 3,
-                                       infinite = false,
-                                       showAllButton = false,
-                                       className,
-                                       showCount = false,
-                                       showSortButton = false,
-                                     }: Props): JSX.Element {
+  title,
+  mode: _mode,
+  previewLimit = 3,
+  infinite = false,
+  showAllButton = false,
+  className,
+  showCount = false,
+  showSortButton = false,
+}: Props): JSX.Element {
   const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
   const [aux, setAux] = useState<{ rawSkills: any[]; rawCities: any[]; rawCategories: any } | null>(
     null
   );
@@ -150,9 +150,12 @@ export default function UsersSection({
   });
   const cards = infinite ? visibleCards : previewCards;
 
-  const handleLikeClick = useCallback((userId: number) => {
-    toggleFavorite(userId);
-  }, [toggleFavorite]);
+  const handleLikeClick = useCallback(
+    (skillId: number) => {
+      toggleFavorite(skillId);
+    },
+    [toggleFavorite]
+  );
 
   const handleOpenAll = useCallback(() => {
     // TODO: implement navigation to full list

@@ -8,6 +8,7 @@ import type {
   StoredExchange,
   StoredNotification,
 } from './types';
+import { loadSkillById } from './dataMerger';
 
 /**
  * Типы payload для разных actions
@@ -158,26 +159,71 @@ const persistHandlers: Record<string, (action: ActionWithPayloadAndMeta) => Prom
 
   'skills/addFavorite': async (action) => {
     const { skillId, userId } = action.payload as FavoritePayload;
-    const skill = await DeltaStorage.getSkillById(skillId);
 
-    if (skill) {
-      const newLikes = skill.likesReceived.includes(userId)
-        ? skill.likesReceived
-        : [...skill.likesReceived, userId];
+    // Пытаемся взять дельту из IndexedDB
+    let stored = await DeltaStorage.getSkillById(skillId);
 
-      await DeltaStorage.updateSkill(skillId, { likesReceived: newLikes });
+    // Если дельты ещё нет — берём базовый skill (mock) и создаём дельту
+    if (!stored) {
+      const baseSkill = await loadSkillById(skillId);
+      if (!baseSkill) return;
+
+      const initial: StoredSkill = {
+        id: baseSkill.id,
+        subcategoryId: baseSkill.subcategoryId,
+        userId: baseSkill.userId,
+        title: baseSkill.title,
+        description: baseSkill.description,
+        createdAt: baseSkill.createdAt,
+        images: baseSkill.images,
+        likesReceived: baseSkill.likesReceived ?? [],
+      };
+
+      const newLikes = initial.likesReceived.includes(userId)
+        ? initial.likesReceived
+        : [...initial.likesReceived, userId];
+
+      await DeltaStorage.addSkill({ ...initial, likesReceived: newLikes });
+      return;
     }
+
+    // Если дельта уже есть — просто обновляем likesReceived
+    const newLikes = stored.likesReceived.includes(userId)
+      ? stored.likesReceived
+      : [...stored.likesReceived, userId];
+
+    await DeltaStorage.updateSkill(skillId, { likesReceived: newLikes });
   },
 
   'skills/removeFavorite': async (action) => {
     const { skillId, userId } = action.payload as FavoritePayload;
-    const skill = await DeltaStorage.getSkillById(skillId);
+    let stored = await DeltaStorage.getSkillById(skillId);
 
-    if (skill) {
-      await DeltaStorage.updateSkill(skillId, {
-        likesReceived: skill.likesReceived.filter((id) => id !== userId),
-      });
+    // Если дельты ещё нет — создаём её на основе базового skill,
+    // чтобы зафиксировать новое состояние likesReceived
+    if (!stored) {
+      const baseSkill = await loadSkillById(skillId);
+      if (!baseSkill) return;
+
+      const initial: StoredSkill = {
+        id: baseSkill.id,
+        subcategoryId: baseSkill.subcategoryId,
+        userId: baseSkill.userId,
+        title: baseSkill.title,
+        description: baseSkill.description,
+        createdAt: baseSkill.createdAt,
+        images: baseSkill.images,
+        likesReceived: baseSkill.likesReceived ?? [],
+      };
+
+      const newLikes = initial.likesReceived.filter((id) => id !== userId);
+      await DeltaStorage.addSkill({ ...initial, likesReceived: newLikes });
+      return;
     }
+
+    await DeltaStorage.updateSkill(skillId, {
+      likesReceived: stored.likesReceived.filter((id) => id !== userId),
+    });
   },
 
   // ==================== REQUESTS ====================

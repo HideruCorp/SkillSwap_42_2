@@ -14,6 +14,7 @@ function SectionUI({
   triggerRef,
   hasMore,
   headerExtra,
+  isFavorite,
 }: SectionUIProps) {
   return (
     <section className={`${styles.section} ${className ?? ''}`}>
@@ -33,16 +34,18 @@ function SectionUI({
               <UserCard
                 key={card.id}
                 id={card.id}
+                mainSkillId={card.mainSkillId}
                 name={card.name}
                 city={card.city}
                 age={card.age}
                 canTeach={card.canTeach}
                 wantsToLearn={card.wantsToLearn}
                 avatarUrl={card.avatarUrl ?? undefined}
-                isLiked={card.isLiked}
+                isLiked={isFavorite ? isFavorite(card.mainSkillId) : card.isLiked}
                 likes={card.likes}
                 onDetailsClick={onDetailsClick ? () => onDetailsClick(card.id) : undefined}
-                onLikeClick={onLikeClick ? () => onLikeClick(card.id) : undefined}
+                // В onLikeClick пробрасываем ID НАВЫКА, а не пользователя
+                onLikeClick={onLikeClick ? () => onLikeClick(card.mainSkillId) : undefined}
               />
             ))}
           </div>

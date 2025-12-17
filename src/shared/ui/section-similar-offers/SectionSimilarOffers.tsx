@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import UserCard from '@shared/ui/user-card/UserCard';
 import SectionHeaderUI from '@shared/ui/section-header/SectionHeaderUI';
 import ArrowButton from '@shared/ui/arrow-button/ArrowButton';
-
 import type { UserCardProps } from '@shared/ui/user-card/types';
+import { useFavorites } from '@features/favorites';
 
 import styles from './section-similar-offers.module.scss';
 
@@ -12,7 +12,6 @@ interface SectionSimilarOffersProps {
   title: string;
   cards: UserCardProps[];
   isLoading?: boolean;
-  onLikeClick?: (id: number) => void;
   onDetailsClick?: (id: number) => void;
 }
 
@@ -22,7 +21,6 @@ const SCROLL_DEBOUNCE_MS = 100;
 function SectionSimilarOffers({
   title,
   cards,
-  onLikeClick,
   onDetailsClick,
   isLoading = false,
 }: SectionSimilarOffersProps) {
@@ -103,6 +101,8 @@ function SectionSimilarOffers({
     };
   }, [cards.length]);
 
+  const { toggleFavorite, isFavorite } = useFavorites();
+
   return (
     <section className={styles.section}>
       <SectionHeaderUI title={title} />
@@ -133,7 +133,8 @@ function SectionSimilarOffers({
               <UserCard
                 key={card.id}
                 {...card}
-                onLikeClick={onLikeClick}
+                isLiked={isFavorite(card.mainSkillId)}
+                onLikeClick={() => toggleFavorite(card.mainSkillId)}
                 onDetailsClick={onDetailsClick}
               />
             ))}

@@ -72,13 +72,14 @@ export default function buildUserCards(
 
     return {
       id,
+      mainSkillId: userSkills[0]?.id ?? 0,
       name: u.name ?? 'Без имени',
       city: getCityName(u.cityId, rawCities),
       age: calcAge(u.dateOfBirth),
       canTeach,
       wantsToLearn,
       avatarUrl: u.avatarUrl ?? null,
-      likes: userSkills[0].likesReceived
+      likes: userSkills[0]?.likesReceived ?? []
     } as UserCardProps;
   });
 }
