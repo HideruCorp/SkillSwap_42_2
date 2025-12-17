@@ -89,33 +89,6 @@ function AppRouter() {
         />
       </Route>
 
-      {/* модалки */}
-      <Route
-        path="/profile/exchanges-modal"
-        element={
-          <Modal onClose={handleModalClose}>
-            <StatusModal onClose={handleModalClose} 
-            icon={notificationDeafaultIcon} 
-            title='Вы предложили обмен' 
-            text='Теперь дождитесь подтверждения. Вам придет уведомление' 
-            buttonText='Готово'/>
-          </Modal>
-        }
-      />
-      <Route
-        path="/profile/offer-modal"
-        element={
-          <Modal onClose={handleModalClose}>
-            {/* если не авторизован показывать <StatusModal icon={userCircleIcon} другие пропсы> */}
-            <StatusModal onClose={handleModalClose} 
-            icon={doneIcon} 
-            title='Ваше предложение создано' 
-            text='Теперь вы можете предложить обмен' 
-            buttonText='Готово'/>
-          </Modal>
-        }
-      />
-
       {/* Служебные страницы */}
       <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/terms" element={<TermsPage />} />

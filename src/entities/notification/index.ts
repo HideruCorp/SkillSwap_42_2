@@ -6,6 +6,7 @@ import notificationsReducer, {
   markAsRead,
   markAllAsReadForUser,
   clearViewedForUser,
+  initializeNotifications,
 } from './model/notificationsSlice';
 
 export type { Notification, NotificationsState } from './model/types';
@@ -19,6 +20,7 @@ export {
   markAsRead,
   markAllAsReadForUser,
   clearViewedForUser,
+  initializeNotifications,
 };
 
 export {
