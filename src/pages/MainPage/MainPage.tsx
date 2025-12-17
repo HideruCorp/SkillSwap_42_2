@@ -1,10 +1,11 @@
-import React, { useMemo, type JSX } from 'react';
-import UsersSection from '../../widgets/users-section/UsersSection';
-import InfiniteScroll from '../../features/infinite-scroll/InfiniteScroll';
+import { useMemo } from 'react';
+import FiltersPanel from '@widgets/filters-panel';
+import UsersSection from '@widgets/users-section/UsersSection';
 import styles from './main-page.module.scss';
+import FilterBar from '@widgets/filter-bar';
 import { useSelector } from '@app/store';
 
-export default function MainPage(): JSX.Element {
+export function MainPage() {
   // Проверяем, есть ли активные фильтры
   const skillType = useSelector((state) => state.filters.skillType);
   const gender = useSelector((state) => state.filters.gender);
@@ -16,54 +17,62 @@ export default function MainPage(): JSX.Element {
     return (
       skillType !== 'all' ||
       gender !== 'all' ||
-      cities.length > 0 ||
-      subcategories.length > 0 ||
-      textSearch.trim() !== ''
+      (cities && cities.length > 0) ||
+      (subcategories && subcategories.length > 0) ||
+      (textSearch && textSearch.trim() !== '')
     );
   }, [skillType, gender, cities, subcategories, textSearch]);
 
   return (
-    <main className={styles.page}>
-      <aside className={styles.sidebar}>
-        {/* Здесь фильтры - пока заглушка */}
-        <div style={{ padding: 16 }}>
-          <h4>Фильтры</h4>
-        </div>
+    <>
+      {/* ЛЕВАЯ КОЛОНКА */}
+      <aside className={styles.filters}>
+        <FiltersPanel />
       </aside>
 
+      {/* ПРАВАЯ КОЛОНКА */}
       <section className={styles.content}>
+        <div className={styles.controls}>
+          <FilterBar />
+        </div>
+
         {hasActiveFilters ? (
-          // При активных фильтрах показываем секцию "Подходящие предложения"
           <UsersSection
             title="Подходящие предложения"
             mode="all"
             infinite
-            previewLimit={20}
+            previewLimit={21}
             showCount
+            showSortButton
           />
         ) : (
-          // Без фильтров показываем обычные секции
           <>
-            <UsersSection
-              title="Популярное"
-              mode="likes"
-              previewLimit={3}
-              infinite={false}
-              showAllButton
-            />
-
-            <UsersSection
-              title="Новое"
-              mode="created"
-              previewLimit={3}
-              infinite={false}
-              showAllButton
-            />
-
-            <UsersSection title="Рекомендуем" mode="created" infinite previewLimit={20} />
+            <div className={styles.section}>
+              <UsersSection
+                title="Популярное"
+                mode="likes"
+                previewLimit={3}
+                infinite={false}
+                showAllButton
+              />
+              </div>
+            <div className={styles.section}>
+              <UsersSection
+                title="Новое"
+                mode="created"
+                previewLimit={3}
+                infinite={false}
+                showAllButton
+              />
+            </div>
+            <div className={styles.section}>
+              <UsersSection title="Рекомендуем" mode="created" infinite previewLimit={21} />
+            </div>
           </>
         )}
       </section>
-    </main>
+    </>
   );
 }
+
+export default MainPage;
