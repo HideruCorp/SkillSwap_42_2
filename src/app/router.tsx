@@ -2,7 +2,7 @@ import Modal from '@features/modal/Modal';
 import {
   AboutPage,
   AuthorizePage,
-  Catalog,
+  MainPage,
   NotFoundPage,
   PrivacyPage,
   ProfileExchangesPage,
@@ -32,7 +32,7 @@ function AppRouter() {
   return (
     <Routes location={backgroundLocation || location}>
       {/* Главные страницы */}
-      <Route path="/" element={<Catalog />} />
+      <Route path="/" element={<MainPage />} /> //После измененний вернуть MainPage
       <Route path="/skill/:id" element={<SkillPage />} />
       <Route path="/about" element={<AboutPage />} />
 
