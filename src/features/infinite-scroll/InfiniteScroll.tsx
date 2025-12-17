@@ -8,7 +8,7 @@ import UserCard from '../../shared/ui/user-card/UserCard';
 import useInfiniteScroll from './useInfiniteScroll';
 import buildUserCards from '../../entities/user/buildUserCards';
 import styles from './scroll.module.scss';
-import { useFavorites } from '../favorites';
+import { useFavorites } from '@features/favorites';
 
 /**
  * InfiniteScroll:
@@ -110,9 +110,8 @@ export default function InfiniteScroll(): JSX.Element {
               key={userProps.id}
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...userProps}
-              isLiked={isFavorite(userProps.id)}
-              // onDetailsClick={() => console.log('Подробнее:', userProps)}
-              onLikeClick={() => toggleFavorite(userProps.id)}
+              isLiked={isFavorite(userProps.mainSkillId)}
+              onLikeClick={() => toggleFavorite(userProps.mainSkillId)}
             />
           ))}
       </div>

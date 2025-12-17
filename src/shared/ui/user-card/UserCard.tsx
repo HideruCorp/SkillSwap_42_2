@@ -3,11 +3,10 @@ import Button from '@shared/ui/button/Button';
 import { useNavigate } from 'react-router-dom';
 import styles from './user-card.module.scss';
 import type { UserCardProps } from './types';
-import { useAuthState } from '@features/auth';
-import { useState } from 'react';
 
 function UserCard({
-  id, // добавлен id
+  id,
+  mainSkillId,
   name,
   city,
   age,
@@ -16,12 +15,11 @@ function UserCard({
   avatarUrl,
   onLikeClick,
   isLiked = false,
-  likes,
+  likes = [],
 }: UserCardProps) {
   const navigate = useNavigate();
-  const { currentUser } = useAuthState();
 
-  const [likeCount, setLikeCount] = useState(likes?.length);
+  const likeCount = likes.length;
 
   const getAgeSuffix = (years: number): string => {
     if (years % 10 === 1 && years % 100 !== 11) return 'год';
@@ -29,15 +27,8 @@ function UserCard({
     return 'лет';
   };
 
-  const liked = currentUser ? likes.includes(currentUser?.id) : false;
   const handleLike = () => {
-    onLikeClick?.(id);
-
-    if (isLiked || liked) {
-      setLikeCount(likeCount - 1);
-    } else {
-      setLikeCount(likeCount + 1);
-    }
+    onLikeClick?.(mainSkillId);
   };
 
   return (
@@ -63,10 +54,10 @@ function UserCard({
             type="button"
             className={styles.likeButton}
             onClick={handleLike}
-            aria-label={isLiked || liked ? 'Убрать лайк' : 'Поставить лайк'}
+            aria-label={isLiked ? 'Убрать лайк' : 'Поставить лайк'}
           >
             <div
-              className={`${styles.likeIcon} ${isLiked || liked ? styles.likeIconActive : styles.likeIconDefault}`}
+              className={`${styles.likeIcon} ${isLiked ? styles.likeIconActive : styles.likeIconDefault}`}
             />
           </button>
         </div>

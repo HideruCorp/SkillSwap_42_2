@@ -1,30 +1,51 @@
 // src/features/favorites/hooks/useFavorites.ts
-import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { toggleFavorite, loadFavoritesFromStorage } from '../model/favoritesSlice';
-import { selectFavorites } from '../model/selectors';
-import type { RootState } from '@app/store';
+// Хук работы с избранным, завязанный ТОЛЬКО на skillsSlice и likesReceived
+import { useCallback } from 'react';
+import { useDispatch, useSelector } from '@app/store';
+import { useAuthState } from '@features/auth';
+import {
+  addFavorite as addFavoriteSkill,
+  removeFavorite as removeFavoriteSkill,
+  selectFavoriteSkillIds,
+} from '@entities/skill/model/skillsSlice';
 
-export const useFavorites = () => {
+export default function useFavorites() {
   const dispatch = useDispatch();
-  const favorites = useSelector((state: RootState) => state.favorites.favorites);
+  const { currentUser } = useAuthState();
+  const userId = currentUser?.id;
 
-  // Загружаем избранное при монтировании компонента
-  useEffect(() => {
-    dispatch(loadFavoritesFromStorage());
-  }, [dispatch]);
+  // Массив ID навыков, которые лайкнул текущий пользователь
+  const favoriteSkillIds = useSelector((state) => {
+    if (!userId) return [];
+    return selectFavoriteSkillIds(state, userId);
+  });
 
-  const handleToggleFavorite = useCallback((userId: number) => {
-    dispatch(toggleFavorite(userId));
-  }, [dispatch]);
+  const toggleFavorite = useCallback(
+    (skillId: number) => {
+      if (!userId) return;
 
-  const isFavorite = useCallback((userId: number) => {
-    return favorites.includes(userId);
-  }, [favorites]);
+      const alreadyLiked = favoriteSkillIds.includes(skillId);
+
+      if (alreadyLiked) {
+        dispatch(removeFavoriteSkill({ skillId, userId }));
+      } else {
+        dispatch(addFavoriteSkill({ skillId, userId }));
+      }
+    },
+    [dispatch, userId, favoriteSkillIds]
+  );
+
+  const isFavorite = useCallback(
+    (skillId: number) => {
+      if (!userId) return false;
+      return favoriteSkillIds.includes(skillId);
+    },
+    [favoriteSkillIds, userId]
+  );
 
   return {
-    favorites,
-    toggleFavorite: handleToggleFavorite,
+    favoriteSkillIds,
+    toggleFavorite,
     isFavorite,
   };
 };

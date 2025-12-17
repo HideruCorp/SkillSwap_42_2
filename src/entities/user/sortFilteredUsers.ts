@@ -1,17 +1,7 @@
 import type { User } from '@shared/types';
 import type { RawSkill } from '@features/infinite-scroll/types';
 import type { SortOption } from '@features/sort';
-
-// Вспомогательная функция для вычисления возраста
-function calcAge(dateOfBirth: string): number {
-  if (!dateOfBirth) return 0;
-  const dob = new Date(dateOfBirth);
-  const now = new Date();
-  let age = now.getFullYear() - dob.getFullYear();
-  const m = now.getMonth() - dob.getMonth();
-  if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) age -= 1;
-  return age;
-}
+import { calculateAge } from '@shared/helpers';
 
 // Подсчет общего количества лайков пользователя (сумма лайков всех его навыков)
 function getUserLikesCount(userId: number, skills: RawSkill[]): number {
@@ -77,8 +67,8 @@ export default function sortFilteredUsers(
     case 'age': {
       // Сортировка по возрасту (младшие сначала)
       return sorted.sort((a, b) => {
-        const ageA = calcAge(a.dateOfBirth);
-        const ageB = calcAge(b.dateOfBirth);
+        const ageA = calculateAge(a.dateOfBirth);
+        const ageB = calculateAge(b.dateOfBirth);
         return ageA - ageB; // По возрастанию (младшие выше)
       });
     }

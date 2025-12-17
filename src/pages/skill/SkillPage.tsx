@@ -24,6 +24,7 @@ import { selectCurrentUser, selectIsAuthenticated } from '@features/auth';
 import { useRequestsApi } from '@features/requests';
 import { selectOutgoingPendingRequests } from '@entities/request';
 import { useSelector } from '@app/store';
+import { useFavorites } from '@features/favorites';
 import styles from './skill-page.module.scss';
 
 function SkillPage() {
@@ -53,6 +54,7 @@ function SkillPage() {
   const outgoingPendingRequests = useSelector((state) =>
     selectOutgoingPendingRequests(state, currentUser?.id ?? 1)
   );
+  const { toggleFavorite, isFavorite } = useFavorites();
 
   useEffect(() => {
     if (searchParams.get('registerSuccess')) {
@@ -219,11 +221,6 @@ function SkillPage() {
       : false;
 
   // handlers for similar offers section
-  const handleLike = (userId: number) => {
-    // TODO: интеграция с favorites
-    console.log('Like user', userId);
-  };
-
   const handleDetails = (userId: number) => {
     navigate(`/users/${userId}`);
   };
@@ -256,12 +253,11 @@ function SkillPage() {
       <SkillWidget
         skill={skill}
         skillDescription={skillDescription}
-        isLiked={false}
+        isLiked={isFavorite(skill.id)}
         isOwner={isOwner} // Передаем флаг владельца
         requestSent={requestSent} // Передаем флаг отправленной заявки
         onLike={(skillId) => {
-          // TODO: добавить/удалить из favorites в localStorage
-          console.log('Like skill', skillId);
+          toggleFavorite(skillId);
         }}
         onShare={(skillId) => {
           // TODO: реализовать share через Web Share API или clipboard
@@ -274,7 +270,6 @@ function SkillPage() {
         title="Похожие предложения"
         cards={offers}
         isLoading={isLoading}
-        onLikeClick={handleLike}
         onDetailsClick={handleDetails}
       />
       {isSkillCreatedModalOpen && (
