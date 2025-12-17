@@ -11,4 +11,5 @@ export interface UserCardProps {
   onDetailsClick?: (id: number) => void; // принимает id
   onLikeClick?: (id: number) => void; // принимает id
   isLiked?: boolean;
+  likes: number[];
 }
