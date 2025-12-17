@@ -200,8 +200,8 @@ export default function SkillRequestCard({ request, currentUserId }: SkillReques
       </section>
 
       <section className={styles.contentSection}>
-        <div className={styles.skillInfo}>
-          <h4 className={styles.skillHeader}>Хочет изучить:</h4>
+        <div className={isOutgoing ? styles.skillInfoRight : styles.skillInfo}>
+          <h4 className={styles.skillHeader}>{isOutgoing ? 'Хочу изучить' : 'Хочет изучить'}</h4>
           <SkillTagUI
             className={styles.tag}
             bgColor={requestedSkillData.color}
@@ -213,8 +213,8 @@ export default function SkillRequestCard({ request, currentUserId }: SkillReques
         </div>
 
         {request.status === 'accepted' && exchangedSkillData && (
-          <div className={styles.exchangeSection}>
-            <h4 className={styles.skillHeader}>В обмен на:</h4>
+          <div className={isOutgoing ? styles.exchangeSectionLeft : styles.exchangeSection}>
+            <h4 className={styles.skillHeader}>В обмен на</h4>
             <SkillTagUI
               className={styles.tag}
               bgColor={exchangedSkillData.color}
@@ -228,7 +228,7 @@ export default function SkillRequestCard({ request, currentUserId }: SkillReques
 
         {request.status === 'pending' && isIncoming && (
           <div className={styles.exchangeSection}>
-            <h4 className={styles.skillHeader}>В обмен на:</h4>
+            <h4 className={styles.skillHeader}>В обмен на</h4>
             <div className={styles.dropdownWrapper}>
               <DropdownListUI
                 selected={selectedSkill}
