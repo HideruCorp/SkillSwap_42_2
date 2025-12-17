@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import ModalOfferSuccessUnauth from '@widgets/modals/modal-offer-success-unauth/ModalOfferSuccessUnauth';
-import ModalExchange from '@widgets/modals/modal-exchange';
+import StatusModal from '@widgets/modals/status-modal/StatusModal';
+import userCircleIcon from '@shared/assets/img/user-circle-100.svg';
+import notificationIcon from '@shared/assets/img/notification-100.svg';
 import ModalGatekeeper from '@widgets/modals/modal-gatekeeper';
 import { UserSkillCard } from '@shared/ui/user-skill-card';
 import type { UserSkillCardProps } from '@shared/ui/user-skill-card/types';
@@ -39,7 +40,7 @@ function SkillPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [offers, setOffers] = useState<UserCardProps[]>([]);
-  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isSkillCreatedModalOpen, setIsSkillCreatedModalOpen] = useState(false);
   const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false);
   const [isGatekeeperModalOpen, setIsGatekeeperModalOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -55,7 +56,7 @@ function SkillPage() {
 
   useEffect(() => {
     if (searchParams.get('registerSuccess')) {
-      setIsOpenModal(true);
+      setIsSkillCreatedModalOpen(true);
     }
     let mounted = true;
 
@@ -168,12 +169,15 @@ function SkillPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  const modalClose = () => {
+  const closeSkillCreatedModal = () => {
     const params = new URLSearchParams(window.location.search);
     params.delete('registerSuccess');
     setSearchParams(params);
-    setIsOpenModal(false);
+    setIsSkillCreatedModalOpen(false);
   };
+
+  const closeExchangeModal = () => setIsExchangeModalOpen(false);
+  const closeGatekeeperModal = () => setIsGatekeeperModalOpen(false);
 
   if (isLoading) {
     return (
@@ -273,19 +277,31 @@ function SkillPage() {
         onLikeClick={handleLike}
         onDetailsClick={handleDetails}
       />
-      {isOpenModal && (
-        <Modal onClose={modalClose}>
-          <ModalOfferSuccessUnauth onClose={modalClose} />
+      {isSkillCreatedModalOpen && (
+        <Modal onClose={closeSkillCreatedModal}>
+          <StatusModal
+            onClose={closeSkillCreatedModal}
+            icon={userCircleIcon}
+            title="Ваше предложение создано"
+            text="Теперь вы можете предложить обмен"
+            buttonText="Готово"
+          />
         </Modal>
       )}
       {isExchangeModalOpen && (
-        <Modal onClose={() => setIsExchangeModalOpen(false)}>
-          <ModalExchange onClose={() => setIsExchangeModalOpen(false)} />
+        <Modal onClose={closeExchangeModal}>
+          <StatusModal
+            onClose={closeExchangeModal}
+            icon={notificationIcon}
+            title="Вы предложили обмен"
+            text="Теперь дождитесь подтверждения. Вам придёт уведомление"
+            buttonText="Готово"
+          />
         </Modal>
       )}
       {isGatekeeperModalOpen && (
-        <Modal onClose={() => setIsGatekeeperModalOpen(false)}>
-          <ModalGatekeeper onClose={() => setIsGatekeeperModalOpen(false)} />
+        <Modal onClose={closeGatekeeperModal}>
+          <ModalGatekeeper onClose={closeGatekeeperModal} />
         </Modal>
       )}
     </>
