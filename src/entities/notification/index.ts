@@ -28,6 +28,7 @@ export {
   selectNotificationsError,
   selectNotificationById,
   selectNotificationsByUserId,
+  selectNotificationsByRequestId,
 } from './model/selectors';
 
 export default notificationsReducer;

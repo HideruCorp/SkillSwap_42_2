@@ -7,3 +7,10 @@ export interface CreateRequestPayload {
   toUser: number;
   status?: Request['status'];
 }
+
+/** Данные для принятия заявки */
+export interface AcceptRequestPayload {
+  requestId: number;
+  givenSkillId: number; // навык того, кто принимает (отдает взамен)
+  receivedSkillId: number; // навык отправителя заявки
+}

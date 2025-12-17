@@ -31,6 +31,7 @@ function ProfileRequestsPage() {
     createRequest({
       requestedSkill: 1,
       fromUser: 2,
+      toUser: 0,
     });
   };
 
