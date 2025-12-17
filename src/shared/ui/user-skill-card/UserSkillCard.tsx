@@ -1,4 +1,5 @@
 import { SkillTagListUI } from '@shared/ui/skill-tag-list';
+import { getAgeSuffix } from '@shared/lib/utils';
 import styles from './user-skill-card.module.scss';
 import type { UserSkillCardProps } from './types';
 
@@ -11,12 +12,6 @@ function UserSkillCard({
   wantsToLearn,
   avatarUrl,
 }: UserSkillCardProps) {
-  const getAgeSuffix = (years: number): string => {
-    if (years % 10 === 1 && years % 100 !== 11) return 'год';
-    if ([2, 3, 4].includes(years % 10) && ![12, 13, 14].includes(years % 100)) return 'года';
-    return 'лет';
-  };
-
   return (
     <div className={styles.card}>
       <div className={styles.header}>

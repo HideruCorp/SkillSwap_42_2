@@ -1,0 +1,183 @@
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
+
+.tag {
+  --skill-tag-padding: 15px 16px;
+  --skill-tag-font-size: 16px;
+  --skill-tag-color: #{$color-text};
+}
+
+.card {
+  background: $color-surface;
+  border-radius: 16px;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 24px;
+}
+
+.userSection {
+  @include flex(column, 16px, normal, space-between);
+}
+
+.avatarBlock {
+  @include flex(row, 12px, center);
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.avatarPlaceholder {
+  @include flex(row, 0, center, center);
+
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: $color-accent;
+  color: $color-text;
+  font-size: 24px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.userInfo {
+  @include flex(column, 4px);
+}
+
+.userName {
+  @include text-h4;
+
+  margin: 0;
+  font-size: 18px;
+  color: $color-text;
+}
+
+.userLocation {
+  @include text-caption;
+
+  margin: 0;
+  color: $color-text-caption;
+}
+
+.dateBadge {
+  @include text-caption;
+
+  margin: 0;
+  font-size: 13px;
+  color: $color-text-caption;
+
+  span {
+    font-weight: 500;
+    color: $color-text;
+  }
+}
+
+.contentSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 24px 24px;
+}
+
+.skillInfo {
+  @include flex(column, 16px, flex-start);
+
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.skillInfoRight {
+  @include flex(column, 16px, flex-end);
+
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+}
+
+.skillHeader {
+  @include text-body;
+
+  margin: 0;
+  color: $color-text;
+}
+
+.skillCategory {
+  @include text-caption;
+
+  margin: 0;
+  color: $color-text-caption;
+}
+
+.exchangeSection {
+  @include flex(column, 16px, flex-end);
+
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+}
+
+.exchangeSectionLeft {
+  @include flex(column, 16px, flex-start);
+
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+}
+
+.dropdownWrapper {
+  position: relative;
+  min-width: 280px;
+  min-height: 72px;
+}
+
+.actions {
+  @include flex(row, 12px, center, flex-end);
+
+  grid-column: 1 / -1;
+  grid-row: 2;
+  flex-wrap: wrap;
+}
+
+.actionButton {
+  padding: 8px 24px;
+}
+
+.statusBadge {
+  @include text-body;
+
+  display: inline-flex;
+  align-items: center;
+  color: $color-text-caption;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  width: fit-content;
+}
+
+.statusAccepted {
+  background: rgba($color-accent, 0.3);
+}
+
+.statusRejected {
+  background: rgba($color-alarm, 0.15);
+}
+
+.statusPending {
+  background: $color-disabled;
+  color: $color-text-caption;
+}
+
+.loading {
+  @include text-body;
+
+  grid-column: 1 / -1;
+  padding: 40px;
+  text-align: center;
+  color: $color-text-caption;
+}

@@ -1,5 +1,8 @@
+import classNames from 'classnames';
 import styles from './skill-tag-ui.module.scss';
 import type { SkillTagUIProps } from './type';
+
+const clsx = classNames.bind(styles);
 
 /**
  * SkillTagUI - Компонент для отображения тега навыка с кастомным цветом фона
@@ -17,9 +20,9 @@ import type { SkillTagUIProps } from './type';
  * }
  * ```
  */
-export function SkillTagUI({ bgColor, text }: SkillTagUIProps) {
+export function SkillTagUI({ bgColor, text, className }: SkillTagUIProps) {
   return (
-    <span className={styles['skill-tag']} style={{ backgroundColor: bgColor }}>
+    <span className={clsx(styles['skill-tag'], className)} style={{ backgroundColor: bgColor }}>
       {text}
     </span>
   );

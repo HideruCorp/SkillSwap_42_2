@@ -1,6 +1,22 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import DeltaStorage from '@shared/lib/storage';
 import type { Notification, NotificationsState } from './types';
 import fetchNotifications from '../api/notificationsApi';
+
+export const initializeNotifications = createAsyncThunk<
+  Notification[],
+  void,
+  { rejectValue: string }
+>('notifications/initialize', async (_, { rejectWithValue }) => {
+  try {
+    const notifications = await DeltaStorage.getAllNotifications();
+    return notifications;
+  } catch (error) {
+    return rejectWithValue(
+      error instanceof Error ? error.message : 'Failed to initialize notifications'
+    );
+  }
+});
 
 const initialState: NotificationsState = {
   items: [],
@@ -58,6 +74,18 @@ const notificationsSlice = createSlice({
       .addCase(fetchNotifications.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? 'Failed to fetch notifications';
+      })
+      .addCase(initializeNotifications.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(initializeNotifications.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload;
+      })
+      .addCase(initializeNotifications.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? 'Failed to initialize notifications';
       });
   },
 });

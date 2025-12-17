@@ -43,3 +43,23 @@ export const selectIncomingPendingRequests = createSelector(
     });
   }
 );
+
+/**
+ * Архивные заявки (accepted/rejected) — как входящие, так и исходящие
+ * Отсортированы по дате создания (новые первыми)
+ */
+export const selectArchivedRequests = createSelector(
+  [selectRequestsItems, selectSkillsItems, selectUserId],
+  (requests, skills, userId): Request[] => {
+    const skillOwnerMap = new Map(skills.map((s) => [s.id, s.userId]));
+
+    return requests
+      .filter((request) => {
+        if (request.status === 'pending') return false;
+        const skillOwnerId = skillOwnerMap.get(request.requestedSkill);
+        // Include if user is sender OR skill owner
+        return skillOwnerId === userId || request.fromUser === userId;
+      })
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+);

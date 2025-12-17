@@ -19,6 +19,7 @@ export const selectNotificationsError = (state: RootState): string | null =>
 const selectNotificationsItems = (state: RootState) => state.notifications.items;
 const selectNotificationId = (_state: RootState, id: number) => id;
 const selectUserId = (_state: RootState, userId: number) => userId;
+const selectRequestId = (_state: RootState, requestId: number) => requestId;
 
 export const selectNotificationById = createSelector(
   [selectNotificationsItems, selectNotificationId],
@@ -28,4 +29,9 @@ export const selectNotificationById = createSelector(
 export const selectNotificationsByUserId = createSelector(
   [selectNotificationsItems, selectUserId],
   (items, userId): Notification[] => items.filter((item) => item.userId === userId)
+);
+
+export const selectNotificationsByRequestId = createSelector(
+  [selectNotificationsItems, selectRequestId],
+  (items, requestId): Notification[] => items.filter((item) => item.requestId === requestId)
 );

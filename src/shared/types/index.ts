@@ -89,7 +89,7 @@ export interface Notification {
   id: NotificationId;
   userId: UserId; // Кому уведомление (получатель)
   fromUserId: UserId; // От кого уведомление (отправитель)
-  action: 'accept' | 'offer';
+  action: 'accept' | 'offer' | 'reject';
   createdDate: IsoDate; // ISO date string from JSON
   readed: boolean;
   requestId?: RequestId; // ID связанной заявки (для перехода при клике)

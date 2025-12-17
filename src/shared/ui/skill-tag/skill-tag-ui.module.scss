@@ -4,12 +4,17 @@
 .skill-tag {
   @include mixins.text-caption;
 
-  color: variables.$color-text;
+  --skill-tag-padding: 8px 12px;
+  --skill-tag-font-size: inherit;
+  --skill-tag-color: #{variables.$color-text};
+
+  color: var(--skill-tag-color);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 12px;
+  padding: var(--skill-tag-padding);
   border-radius: 20px;
   white-space: nowrap;
   user-select: none;
+  font-size: var(--skill-tag-font-size);
 }

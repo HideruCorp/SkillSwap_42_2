@@ -5,8 +5,11 @@ import DeltaStorage from '@shared/lib/storage';
 import { initializeUsers } from '@entities/user/model/usersSlice';
 import { initializeSkills } from '@entities/skill/model/skillsSlice';
 import { bootstrapAuth } from '@features/auth';
-import AppRouter from './router';
 import { useDispatch } from '@app/store';
+import { initializeRequests } from '@entities/request';
+import { initializeExchanges } from '@entities/exchange';
+import { initializeNotifications } from '@entities/notification';
+import AppRouter from './router';
 
 function App() {
   const dispatch = useDispatch();
@@ -20,7 +23,13 @@ function App() {
         await DeltaStorage.init();
 
         // Затем загружаем данные в Redux
-        await Promise.all([dispatch(initializeUsers()), dispatch(initializeSkills())]);
+        await Promise.all([
+          dispatch(initializeUsers()),
+          dispatch(initializeSkills()),
+          dispatch(initializeRequests()),
+          dispatch(initializeExchanges()),
+          dispatch(initializeNotifications()),
+        ]);
 
         // Bootstrap auth после загрузки users (для проверки существования пользователя)
         await dispatch(bootstrapAuth());

@@ -5,7 +5,6 @@
   @include m.flex(column, 24px);
 
   padding: 40px;
-  box-shadow: 0 4px 16px rgb(0 0 0 / 10%);
   background-color: v.$color-surface;
   border: 1px solid v.$color-toggle;
   border-radius: 12px;

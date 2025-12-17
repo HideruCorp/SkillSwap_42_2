@@ -1,74 +1,109 @@
-import {
-  initializeRequests,
-  selectAllRequests,
-  selectRequestsError,
-  selectRequestsLoading,
-} from '@entities/request';
-import { useRequestsApi } from '@features/requests';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from '@app/store';
+import { useSearchParams } from 'react-router-dom';
+import { useSelector } from '@app/store';
+import { selectCurrentUserId } from '@features/auth';
+import { selectIncomingPendingRequests, selectArchivedRequests } from '@features/requests';
+import { selectOutgoingPendingRequests, selectRequestsLoading } from '@entities/request';
+import { SkillRequestCard } from '@widgets/skill-request-card';
+import SectionHeaderUI from '@shared/ui/section-header/SectionHeaderUI';
+import type { Request as RequestType } from '@shared/types';
 import styles from './profile-requests-page.module.scss';
 
 /**
  * ProfileRequestsPage - страница "Заявки" в профиле пользователя
- * Реализует вкладку "Заявки" в разделе профиля
+ * Реализует три секции: входящие заявки, исходящие заявки и архив
  *
  * Роут: /profile/requests
+ * Поддерживает deep-linking: /profile/requests?requestId=123
  */
 
 function ProfileRequestsPage() {
-  const dispatch = useDispatch();
-  const { createRequest } = useRequestsApi();
-  const requests = useSelector(selectAllRequests);
+  const [searchParams] = useSearchParams();
+  const currentUserId = useSelector(selectCurrentUserId);
   const isLoading = useSelector(selectRequestsLoading);
-  const error = useSelector(selectRequestsError);
 
+  // Get requests data using selectors
+  const incomingPending = useSelector((state) =>
+    currentUserId ? selectIncomingPendingRequests(state, currentUserId) : []
+  );
+  const outgoingPending = useSelector((state) =>
+    currentUserId ? selectOutgoingPendingRequests(state, currentUserId) : []
+  );
+  const archived = useSelector((state) =>
+    currentUserId ? selectArchivedRequests(state, currentUserId) : []
+  );
+
+  // Scroll to request from URL params
   useEffect(() => {
-    dispatch(initializeRequests());
-  }, [dispatch]);
+    if (isLoading) return;
 
-  const handleAddTestRequest = () => {
-    createRequest({
-      requestedSkill: 1,
-      fromUser: 2,
-    });
+    const requestId = searchParams.get('requestId');
+    if (requestId) {
+      const element = document.querySelector(`[data-request-id="${requestId}"]`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }, [searchParams, isLoading]);
+
+  // Helper function to render a section
+  const renderSection = (title: string, requests: RequestType[], emptyMessage: string) => {
+    if (isLoading) {
+      return (
+        <div className={styles.section}>
+          <SectionHeaderUI title={title} />
+          <div className={styles.cardList}>
+            {requests.map((request) => (
+              <SkillRequestCard
+                key={request.id}
+                request={request}
+                currentUserId={currentUserId as number}
+              />
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    if (requests.length === 0) {
+      return (
+        <div className={styles.section}>
+          <SectionHeaderUI title={title} />
+          <p className={styles.emptyState}>{emptyMessage}</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className={styles.section}>
+        <SectionHeaderUI title={title} />
+        <div className={styles.cardList}>
+          {requests.map((request) => (
+            <SkillRequestCard
+              key={request.id}
+              request={request}
+              currentUserId={currentUserId as number}
+            />
+          ))}
+        </div>
+      </div>
+    );
   };
 
+  if (!currentUserId) {
+    return (
+      <section className={styles.profileRequests}>
+        <SectionHeaderUI title="Заявки" />
+        <div className={styles.loader}>Загрузка...</div>
+      </section>
+    );
+  }
+
   return (
-    <section className={styles['profile-requests']}>
-      <h1>Заявки</h1>
-
-      {/* Тестовая панель - удалить после проверки */}
-      <div style={{ padding: '20px', background: '#f0f0f0', marginBottom: '20px' }}>
-        <h3>Тестирование персистентности</h3>
-        <button type="button" onClick={handleAddTestRequest} style={{ padding: '10px 20px' }}>
-          Добавить тестовую заявку
-        </button>
-        <p>После добавления перезагрузите страницу - данные должны сохраниться</p>
-      </div>
-
-      {isLoading && <p>Загрузка...</p>}
-      {error && <p style={{ color: 'red' }}>Ошибка: {error}</p>}
-
-      <h2>Список заявок ({requests.length})</h2>
-      {requests.length === 0 ? (
-        <p>Заявок пока нет</p>
-      ) : (
-        <ul>
-          {requests.map((req) => (
-            <li
-              key={req.id}
-              style={{ marginBottom: '10px', padding: '10px', border: '1px solid #ccc' }}
-            >
-              <div>ID: {req.id}</div>
-              <div>Скилл: {req.requestedSkill}</div>
-              <div>От пользователя: {req.fromUser}</div>
-              <div>Статус: {req.status}</div>
-              <div>Создано: {new Date(req.createdAt).toLocaleString()}</div>
-            </li>
-          ))}
-        </ul>
-      )}
+    <section className={styles.profileRequests}>
+      {renderSection('Входящие заявки', incomingPending, 'Нет входящих заявок')}
+      {renderSection('Исходящие заявки', outgoingPending, 'Нет исходящих заявок')}
+      {renderSection('Архив', archived, 'Архив пуст')}
     </section>
   );
 }
