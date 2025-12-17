@@ -16,19 +16,9 @@
   white-space: nowrap;
   background-color: $color-surface;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
   border: 1px solid rgb(0 0 0 / 5%);
   cursor: pointer;
-  transition: box-shadow 0.2s;
   user-select: none;
-
-  &:hover {
-    box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
-  }
-
-  &:active {
-    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
-  }
 }
 
 .buttonText {
@@ -44,7 +34,6 @@
 .menuContainer {
   background-color: $color-surface !important;
   border-radius: 12px !important;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 8%) !important;
   border: 1px solid rgb(0 0 0 / 5%) !important;
   min-width: 200px;
   padding: 8px 0;
