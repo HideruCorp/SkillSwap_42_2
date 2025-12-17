@@ -16,6 +16,7 @@ export {
   resetFilters,
 } from './model/filtersSlice';
 
+export { useActiveFilters } from './useActiveFilters';
 export type { default as FiltersState } from './model/filtersSlice';
 
 // Default export for reducer

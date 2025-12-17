@@ -1,38 +1,11 @@
-import { useMemo } from 'react';
 import FiltersPanel from '@widgets/filters-panel';
 import UsersSection from '@widgets/users-section/UsersSection';
 import styles from './main-page.module.scss';
 import FilterBar from '@widgets/filter-bar';
-import { useSelector } from '@app/store';
+import { useActiveFilters } from '@features/filters/useActiveFilters';
 
 export function MainPage() {
-  // Проверяем, есть ли активные фильтры для UsersSection
-  const skillType = useSelector((state) => state.filters.skillType);
-  const gender = useSelector((state) => state.filters.gender);
-  const cities = useSelector((state) => state.filters.cities);
-  const subcategories = useSelector((state) => state.filters.subcategories);
-  const textSearch = useSelector((state) => state.filters.textSearch);
-
-  const hasActiveFilters = useMemo(() => {
-    return (
-      skillType !== 'all' ||
-      gender !== 'all' ||
-      (cities && cities.length > 0) ||
-      (subcategories && subcategories.length > 0) ||
-      (textSearch && textSearch.trim() !== '')
-    );
-  }, [skillType, gender, cities, subcategories, textSearch]);
-
-  // Проверяем, нужно ли рендерить FilterBar
-  const shouldRenderFilterBar = useMemo(() => {
-    return (
-      skillType !== 'all' ||
-      gender !== 'all' ||
-      (cities && cities.length > 0) ||
-      (subcategories && subcategories.length > 0) ||
-      (textSearch && textSearch.trim() !== '')
-    );
-  }, [skillType, gender, cities, subcategories, textSearch]);
+  const { hasActiveFilters } = useActiveFilters();
 
   return (
     <>
@@ -43,22 +16,20 @@ export function MainPage() {
 
       {/* ПРАВАЯ КОЛОНКА */}
       <section className={styles.content}>
-        {/* Рендерим контейнер controls только когда нужно показать FilterBar */}
-        {shouldRenderFilterBar && (
-          <div className={styles.controls}>
-            <FilterBar />
-          </div>
-        )}
-
         {hasActiveFilters ? (
-          <UsersSection
-            title="Подходящие предложения"
-            mode="all"
-            infinite
-            previewLimit={21}
-            showCount
-            showSortButton
-          />
+          <>
+            <div className={styles.controls}>
+              <FilterBar />
+            </div>
+            <UsersSection
+              title="Подходящие предложения"
+              mode="all"
+              infinite
+              previewLimit={21}
+              showCount
+              showSortButton
+            />
+          </>
         ) : (
           <>
             <div className={styles.section}>
