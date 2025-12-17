@@ -78,6 +78,7 @@ export default function buildUserCards(
       canTeach,
       wantsToLearn,
       avatarUrl: u.avatarUrl ?? null,
+      likes: userSkills[0].likesReceived
     } as UserCardProps;
   });
 }

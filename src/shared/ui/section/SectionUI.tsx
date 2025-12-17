@@ -17,7 +17,12 @@ function SectionUI({
 }: SectionUIProps) {
   return (
     <section className={`${styles.section} ${className ?? ''}`}>
-      <SectionHeaderUI title={title} onAction={onAction} actionLabel={actionLabel} extraAction={headerExtra} />
+      <SectionHeaderUI
+        title={title}
+        onAction={onAction}
+        actionLabel={actionLabel}
+        extraAction={headerExtra}
+      />
 
       {cards.length === 0 ? (
         <div className={styles.empty}>В этой секции пусто</div>
@@ -35,15 +40,14 @@ function SectionUI({
                 wantsToLearn={card.wantsToLearn}
                 avatarUrl={card.avatarUrl ?? undefined}
                 isLiked={card.isLiked}
+                likes={card.likes}
                 onDetailsClick={onDetailsClick ? () => onDetailsClick(card.id) : undefined}
                 onLikeClick={onLikeClick ? () => onLikeClick(card.id) : undefined}
               />
             ))}
           </div>
 
-          {hasMore && (
-            <div ref={triggerRef} className={styles.trigger} />
-          )}
+          {hasMore && <div ref={triggerRef} className={styles.trigger} />}
         </>
       )}
     </section>

@@ -43,10 +43,10 @@ type RawCategoriesJson = {
 };
 
 export function CardsBlock({
-                             title,
-                             startIndex = 0,
-                             showButton = true,
-                           }: CardsBlockProps): JSX.Element {
+  title,
+  startIndex = 0,
+  showButton = true,
+}: CardsBlockProps): JSX.Element {
   const [cards, setCards] = useState<UserCardProps[]>([]);
   const [loading, setLoading] = useState(true);
   const { toggleFavorite, isFavorite } = useFavorites();
@@ -83,16 +83,16 @@ export function CardsBlock({
           const wantsToLearn: SkillTag[] =
             Array.isArray(u.skillInterests) && u.skillInterests.length > 0
               ? u.skillInterests
-                .map((sid) => {
-                  const subcategory = subcategories.find((sc) => sc.id === sid);
-                  if (!subcategory) return null;
-                  return {
-                    id: String(sid),
-                    text: subcategory.name,
-                    bgColor: getCategoryColorBySubcategoryId(sid, categories, subcategories),
-                  };
-                })
-                .filter((tag): tag is SkillTag => tag !== null)
+                  .map((sid) => {
+                    const subcategory = subcategories.find((sc) => sc.id === sid);
+                    if (!subcategory) return null;
+                    return {
+                      id: String(sid),
+                      text: subcategory.name,
+                      bgColor: getCategoryColorBySubcategoryId(sid, categories, subcategories),
+                    };
+                  })
+                  .filter((tag): tag is SkillTag => tag !== null)
               : [];
 
           const age = u.dateOfBirth ? calculateAge(u.dateOfBirth) : 0;
@@ -107,6 +107,7 @@ export function CardsBlock({
             canTeach,
             wantsToLearn,
             avatarUrl: u.avatarUrl ?? null,
+            likes: userSkillsRaw[0].likesReceived,
           };
         });
 

@@ -8,6 +8,7 @@ import UserCard from '../../shared/ui/user-card/UserCard';
 import useInfiniteScroll from './useInfiniteScroll';
 import buildUserCards from '../../entities/user/buildUserCards';
 import styles from './scroll.module.scss';
+import { useFavorites } from '../favorites';
 
 /**
  * InfiniteScroll:
@@ -25,6 +26,7 @@ export default function InfiniteScroll(): JSX.Element {
   const [loadingInitial, setLoadingInitial] = useState(true);
   const loadingInitialRef = useRef(false);
   const mountedRef = useRef(true);
+  const { toggleFavorite, isFavorite } = useFavorites();
 
   // загрузка всех данных при монтировании
   useEffect(() => {
@@ -108,8 +110,9 @@ export default function InfiniteScroll(): JSX.Element {
               key={userProps.id}
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...userProps}
+              isLiked={isFavorite(userProps.id)}
               // onDetailsClick={() => console.log('Подробнее:', userProps)}
-              onLikeClick={() => console.log('Like:', userProps.id)}
+              onLikeClick={() => toggleFavorite(userProps.id)}
             />
           ))}
       </div>

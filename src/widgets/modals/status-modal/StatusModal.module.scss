@@ -5,15 +5,13 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 556px;
+  width: 436px;
 }
 
 .icon {
   width: 100px;
   height: 100px;
-  background-image: url('../../../shared/assets/img/user-circle.svg');
-  background-repeat: no-repeat;
-  background-size: cover;
+  object-fit: contain;
 }
 
 .title {
@@ -21,14 +19,16 @@
 
   margin-top: 52px;
   margin-bottom: 12px;
+  text-align: center;
 }
 
 .text {
   @include text-body;
   
   margin-bottom: 32px;
+  text-align: center;
 }
 
 .button {
-  width: 436px;
+  width: 100%;
 }
