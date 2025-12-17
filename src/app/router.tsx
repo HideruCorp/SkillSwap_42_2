@@ -1,4 +1,3 @@
-import Modal from '@features/modal/Modal';
 import {
   AboutPage,
   AuthorizePage,
@@ -14,9 +13,6 @@ import {
   SkillPage,
   TermsPage,
 } from '@pages/index';
-import StatusModal from '@widgets/modals/status-modal/StatusModal';
-import notificationDeafaultIcon from '@shared/assets/img/notification-Default.svg'
-import doneIcon from '@shared/assets/img/Done.svg'
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 import ProfileEditForm from '@pages/profile/profileEditForm/ProfileEditForm';
@@ -25,10 +21,6 @@ import ProtectedRoute from './routes/ProtectedRoute';
 function AppRouter() {
   const location = useLocation();
   const backgroundLocation = location.state?.background;
-
-  const handleModalClose = () => {
-    window.history.back();
-  };
 
   return (
     <Routes location={backgroundLocation || location}>
