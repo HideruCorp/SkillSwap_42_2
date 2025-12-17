@@ -194,19 +194,28 @@ function FilterBar() {
     return items;
   }, [selectedSubcategories, categoriesData, areAllSubcategoriesSelected]);
 
-  const hasActiveFilters =
-    skillType !== 'all' ||
-    gender !== 'all' ||
-    selectedCities.length > 0 ||
-    selectedSubcategories.length > 0 ||
-    textSearch !== '';
+  // Проверяем, есть ли активные фильтры для отображения
+  const hasActiveFilters = useMemo(() => {
+    // skillType !== 'all' - будет отображаться (только не "Все")
+    // gender !== 'all' - будет отображаться (только не "Не имеет значения")
+    const hasSkillTypeFilter = skillType !== 'all';
+    const hasGenderFilter = gender !== 'all';
+    const hasCitiesFilter = selectedCities.length > 0;
+    const hasSubcategoriesFilter = selectedSubcategories.length > 0;
+    const hasTextSearchFilter = textSearch.trim() !== '';
 
+    return hasSkillTypeFilter || hasGenderFilter || hasCitiesFilter || 
+           hasSubcategoriesFilter || hasTextSearchFilter;
+  }, [skillType, gender, selectedCities, selectedSubcategories, textSearch]);
+
+  // Если нет активных фильтров для отображения, не рендерим компонент
   if (!hasActiveFilters) {
     return null;
   }
 
   return (
     <div className={styles['filter-bar']}>
+      {/* skillType: 'all' не отображается */}
       {skillType !== 'all' && (
         <FilterItem
           type="searchType"
@@ -215,6 +224,7 @@ function FilterBar() {
         />
       )}
 
+      {/* gender: 'all' не отображается */}
       {gender !== 'all' && (
         <FilterItem type="gender" value={GENDER_LABELS[gender]} onClick={handleRemoveGender} />
       )}
@@ -228,7 +238,8 @@ function FilterBar() {
         />
       ))}
 
-      {filterItems.map((item) => (
+      {/* Отображаем элементы фильтров, если есть categoriesData */}
+      {categoriesData && filterItems.map((item) => (
         <FilterItem
           key={`${item.type}-${item.id}`}
           type="category"
@@ -237,7 +248,7 @@ function FilterBar() {
         />
       ))}
 
-      {textSearch !== '' && (
+      {textSearch.trim() !== '' && (
         <FilterItem type="name" value={textSearch} onClick={handleRemoveTextSearch} />
       )}
     </div>

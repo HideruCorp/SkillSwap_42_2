@@ -6,7 +6,7 @@ import FilterBar from '@widgets/filter-bar';
 import { useSelector } from '@app/store';
 
 export function MainPage() {
-  // Проверяем, есть ли активные фильтры
+  // Проверяем, есть ли активные фильтры для UsersSection
   const skillType = useSelector((state) => state.filters.skillType);
   const gender = useSelector((state) => state.filters.gender);
   const cities = useSelector((state) => state.filters.cities);
@@ -14,6 +14,17 @@ export function MainPage() {
   const textSearch = useSelector((state) => state.filters.textSearch);
 
   const hasActiveFilters = useMemo(() => {
+    return (
+      skillType !== 'all' ||
+      gender !== 'all' ||
+      (cities && cities.length > 0) ||
+      (subcategories && subcategories.length > 0) ||
+      (textSearch && textSearch.trim() !== '')
+    );
+  }, [skillType, gender, cities, subcategories, textSearch]);
+
+  // Проверяем, нужно ли рендерить FilterBar
+  const shouldRenderFilterBar = useMemo(() => {
     return (
       skillType !== 'all' ||
       gender !== 'all' ||
@@ -32,9 +43,12 @@ export function MainPage() {
 
       {/* ПРАВАЯ КОЛОНКА */}
       <section className={styles.content}>
-        <div className={styles.controls}>
-          <FilterBar />
-        </div>
+        {/* Рендерим контейнер controls только когда нужно показать FilterBar */}
+        {shouldRenderFilterBar && (
+          <div className={styles.controls}>
+            <FilterBar />
+          </div>
+        )}
 
         {hasActiveFilters ? (
           <UsersSection
@@ -55,7 +69,7 @@ export function MainPage() {
                 infinite={false}
                 showAllButton
               />
-              </div>
+            </div>
             <div className={styles.section}>
               <UsersSection
                 title="Новое"
