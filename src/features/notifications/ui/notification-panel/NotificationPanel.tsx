@@ -1,3 +1,6 @@
+import { useMemo } from 'react';
+import { useSelector } from '@app/store';
+import { selectAllUsers } from '@entities/user';
 import NotificationItemUI from '@features/notifications/ui/notification-item/NotificationItemUI';
 import { useNotificationPanel } from '../../hooks';
 import type { NotificationPanelProps } from '../../types';
@@ -6,6 +9,14 @@ import styles from './notification-panel.module.scss';
 function NotificationPanel({ userId, onClose }: NotificationPanelProps) {
   const { newNotifications, viewedNotifications, readAll, clearViewed, onNotificationClick } =
     useNotificationPanel(userId, onClose);
+  const allUsers = useSelector(selectAllUsers);
+
+  // Создаём Map для быстрого доступа к именам пользователей
+  const usersMap = useMemo(() => new Map(allUsers.map((u) => [u.id, u.name])), [allUsers]);
+
+  // Функция для получения имени пользователя по ID (оптимизировано через Map)
+  const getUserName = (fromUserId: number): string =>
+    usersMap.get(fromUserId) ?? 'Неизвестный пользователь';
 
   return (
     <div className={styles.panel}>
@@ -25,9 +36,10 @@ function NotificationPanel({ userId, onClose }: NotificationPanelProps) {
               <NotificationItemUI
                 key={notification.id}
                 readed={notification.readed}
-                userName={notification.userName}
+                userName={getUserName(notification.fromUserId)}
                 action={notification.action}
                 createdDate={notification.createdDate}
+                requestId={notification.requestId}
                 onClick={() => onNotificationClick(notification.id)}
               />
             ))
@@ -51,9 +63,10 @@ function NotificationPanel({ userId, onClose }: NotificationPanelProps) {
               <NotificationItemUI
                 key={notification.id}
                 readed={notification.readed}
-                userName={notification.userName}
+                userName={getUserName(notification.fromUserId)}
                 action={notification.action}
                 createdDate={notification.createdDate}
+                requestId={notification.requestId}
               />
             ))}
           </div>

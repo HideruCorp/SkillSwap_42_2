@@ -6,7 +6,7 @@ import {
 } from '@entities/exchange';
 import { useExchangesApi } from '@features/exchanges';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from '../../services/store';
+import { useDispatch, useSelector } from '@app/store';
 import styles from './profile-exchanges-page.module.scss';
 
 /**

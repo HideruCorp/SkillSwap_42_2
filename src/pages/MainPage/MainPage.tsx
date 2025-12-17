@@ -3,7 +3,7 @@ import FiltersPanel from '@widgets/filters-panel';
 import UsersSection from '@widgets/users-section/UsersSection';
 import styles from './main-page.module.scss';
 import FilterBar from '@widgets/filter-bar';
-import { useSelector } from '../../services/store';
+import { useSelector } from '@app/store';
 
 export function MainPage() {
   // Проверяем, есть ли активные фильтры

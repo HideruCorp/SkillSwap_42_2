@@ -1,6 +1,6 @@
 import { useEffect, useState, type SyntheticEvent } from 'react';
 import type { Category, Subcategory } from '@shared/types';
-import { fetchCategories } from '@api/categoriesApi';
+import categoriesApi from '@entities/category/api/categoriesApi';
 import Modal from '@features/modal/Modal';
 import styles from './all-skills-dropdown.module.scss';
 import AllSkillsModal from './all-skills-modal/AllSkillsModal';
@@ -12,7 +12,7 @@ function AllSkillsDropdown() {
 
   // если categories/subcategories будут храниться в общем сторе, можно брать их оттуда, без запроса
   const fetchData = async () => {
-    const result = await fetchCategories();
+    const result = await categoriesApi.getAll();
     setCategory(result.categories);
     setSubcategory(result.subcategories);
   };

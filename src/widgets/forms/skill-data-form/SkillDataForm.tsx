@@ -198,7 +198,7 @@ function SkillDataForm({
                 label="Название навыка"
                 placeholder="Введите название вашего навыка"
                 type="text"
-                message={getFieldError('skillName')}
+                error={getFieldError('skillName')}
                 value={field.value}
                 onChange={(value) => {
                   field.onChange(value);

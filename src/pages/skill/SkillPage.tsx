@@ -1,28 +1,30 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { SkillGallery } from '@/widgets/skillGallery';
-import ModalOfferSuccessUnauth from '@widgets/modals/modal-offer-success-unauth/ModalOfferSuccessUnauth';
-import { SkillDescriptionUI } from '@shared/ui/skill-description';
+import StatusModal from '@widgets/modals/status-modal/StatusModal';
+import userCircleIcon from '@shared/assets/img/user-circle-100.svg';
+import notificationIcon from '@shared/assets/img/notification-100.svg';
+import ModalGatekeeper from '@widgets/modals/modal-gatekeeper';
 import { UserSkillCard } from '@shared/ui/user-skill-card';
 import type { UserSkillCardProps } from '@shared/ui/user-skill-card/types';
 import type { SkillTag } from '@shared/ui/skill-tag-list/type';
-import { fetchSkills } from '@api/skillsApi';
-import { fetchUserById } from '@api/usersApi';
-import { fetchCategories } from '@api/categoriesApi';
-import getCitiesMock from '@/services/mockApi/cities';
+import skillsApi from '@entities/skill/api/skillsApi';
+import usersApi from '@entities/user/api/usersApi';
+import categoryApi from '@entities/category/api/categoriesApi';
+import cityApi from '@entities/city/api/citiesApi';
 import type { Skill, User, City } from '@shared/types';
 import { calculateAge, getCategoryColorBySubcategoryId } from '@shared/helpers';
-import styles from './skill-page.module.scss';
-import { Skill as SkillWidget } from '@/widgets/skill';
-import SectionSimilarOffers from '@/shared/ui/section-similar-offers';
+import { Skill as SkillWidget } from '@widgets/skill';
+import SectionSimilarOffers from '@shared/ui/section-similar-offers';
 import buildUserCards from '@entities/user/buildUserCards';
-import type { UserCardProps } from '@/shared/ui/user-card/types';
+import type { UserCardProps } from '@shared/ui/user-card/types';
 import Modal from '@features/modal/Modal';
-import { useSelector } from '@/services/store';
 import { selectAllSkills } from '@entities/skill/model/skillsSlice';
 import { selectAllUsers } from '@entities/user';
-// Импортируем селектор текущего пользователя
-import { selectCurrentUser } from '@features/auth';
+import { selectCurrentUser, selectIsAuthenticated } from '@features/auth';
+import { useRequestsApi } from '@features/requests';
+import { selectOutgoingPendingRequests } from '@entities/request';
+import { useSelector } from '@app/store';
+import styles from './skill-page.module.scss';
 
 function SkillPage() {
   const { id } = useParams<{ id: string }>();
@@ -38,17 +40,23 @@ function SkillPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [offers, setOffers] = useState<UserCardProps[]>([]);
-  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isSkillCreatedModalOpen, setIsSkillCreatedModalOpen] = useState(false);
+  const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false);
+  const [isGatekeeperModalOpen, setIsGatekeeperModalOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const allSkills = useSelector(selectAllSkills);
   const allUsers = useSelector(selectAllUsers);
-  // Получаем текущего авторизованного пользователя
   const currentUser = useSelector(selectCurrentUser);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const { createRequest } = useRequestsApi();
+  const outgoingPendingRequests = useSelector((state) =>
+    selectOutgoingPendingRequests(state, currentUser?.id ?? 1)
+  );
 
   useEffect(() => {
     if (searchParams.get('registerSuccess')) {
-      setIsOpenModal(true);
+      setIsSkillCreatedModalOpen(true);
     }
     let mounted = true;
 
@@ -58,9 +66,9 @@ function SkillPage() {
         setError(null);
 
         const [skillsData, categoriesData, citiesData] = await Promise.all([
-          fetchSkills(),
-          fetchCategories(),
-          getCitiesMock(),
+          skillsApi.getSkills(),
+          categoryApi.getAll(),
+          cityApi.getCities(),
         ]);
 
         if (!mounted) return;
@@ -78,14 +86,14 @@ function SkillPage() {
         }
 
         const { categories, subcategories } = categoriesData;
-        const cities = Array.isArray(citiesData) ? citiesData : citiesData.cities;
+        const cities = citiesData;
 
         const userSkills = skillsData.filter((s) => s.userId === creator.id);
-        const canTeach: SkillTag[] = userSkills.map((skill) => ({
-          id: String(skill.id),
-          text: skill.title,
+        const canTeach: SkillTag[] = userSkills.map((userSkill) => ({
+          id: String(userSkill.id),
+          text: userSkill.title,
           bgColor: getCategoryColorBySubcategoryId(
-            skill.subcategoryId || 0,
+            userSkill.subcategoryId || 0,
             categories,
             subcategories
           ),
@@ -134,12 +142,11 @@ function SkillPage() {
 
         // ограничение до 12 уникальных предложений
         const creatorIds = Array.from(new Set(similarSkills.map((s) => s.userId))).slice(0, 12);
-        const creators = await Promise.all(creatorIds.map((uid) => fetchUserById(uid)));
+        const creators = await Promise.all(creatorIds.map((uid) => usersApi.getUserById(uid)));
         const rawCreators = creators.filter((c): c is User => c !== null);
 
         if (mounted) {
-          const cities = Array.isArray(citiesData) ? citiesData : citiesData.cities;
-          const mappedOffers = buildUserCards(rawCreators, skillsData, cities, categoriesData);
+          const mappedOffers = buildUserCards(rawCreators, skillsData, citiesData, categoriesData);
           setOffers(mappedOffers.slice(0, 12));
         }
       } catch (err) {
@@ -159,14 +166,18 @@ function SkillPage() {
     return () => {
       mounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  const modalClose = () => {
+  const closeSkillCreatedModal = () => {
     const params = new URLSearchParams(window.location.search);
     params.delete('registerSuccess');
     setSearchParams(params);
-    setIsOpenModal(false);
+    setIsSkillCreatedModalOpen(false);
   };
+
+  const closeExchangeModal = () => setIsExchangeModalOpen(false);
+  const closeGatekeeperModal = () => setIsGatekeeperModalOpen(false);
 
   if (isLoading) {
     return (
@@ -201,6 +212,12 @@ function SkillPage() {
   // Проверяем, является ли текущий пользователь владельцем навыка
   const isOwner = currentUser && skill ? currentUser.id === skill.userId : false;
 
+  // Проверяем, отправлялась ли уже заявка на этот навык
+  const requestSent =
+    currentUser && skill
+      ? outgoingPendingRequests.some((request) => request.requestedSkill === skill.id)
+      : false;
+
   // handlers for similar offers section
   const handleLike = (userId: number) => {
     // TODO: интеграция с favorites
@@ -211,14 +228,37 @@ function SkillPage() {
     navigate(`/users/${userId}`);
   };
 
+  // Обработчик клика по кнопке "Предложить обмен"
+  const handleOfferExchange = (skillId: number) => {
+    if (isAuthenticated && currentUser && skill) {
+      createRequest({
+        requestedSkill: skillId,
+        fromUser: currentUser.id,
+        toUser: skill.userId,
+      });
+      setIsExchangeModalOpen(true);
+    } else {
+      setIsGatekeeperModalOpen(true);
+    }
+  };
+
   return (
     <>
-      <UserSkillCard {...userCardData} />
+      <UserSkillCard
+        name={userCardData.name}
+        city={userCardData.city}
+        age={userCardData.age}
+        about={userCardData.about}
+        canTeach={userCardData.canTeach}
+        wantsToLearn={userCardData.wantsToLearn}
+        avatarUrl={userCardData.avatarUrl}
+      />
       <SkillWidget
         skill={skill}
         skillDescription={skillDescription}
         isLiked={false}
         isOwner={isOwner} // Передаем флаг владельца
+        requestSent={requestSent} // Передаем флаг отправленной заявки
         onLike={(skillId) => {
           // TODO: добавить/удалить из favorites в localStorage
           console.log('Like skill', skillId);
@@ -227,10 +267,7 @@ function SkillPage() {
           // TODO: реализовать share через Web Share API или clipboard
           console.log('Share skill', skillId);
         }}
-        onMoreDetails={(skillId) => {
-          // TODO: скролл к UserCard или открыть модальное окно
-          console.log('More details for skill', skillId);
-        }}
+        onMoreDetails={handleOfferExchange}
       />
       {/* Similar offers section */}
       <SectionSimilarOffers
@@ -240,9 +277,31 @@ function SkillPage() {
         onLikeClick={handleLike}
         onDetailsClick={handleDetails}
       />
-      {isOpenModal && (
-        <Modal onClose={modalClose}>
-          <ModalOfferSuccessUnauth onClose={modalClose} />
+      {isSkillCreatedModalOpen && (
+        <Modal onClose={closeSkillCreatedModal}>
+          <StatusModal
+            onClose={closeSkillCreatedModal}
+            icon={userCircleIcon}
+            title="Ваше предложение создано"
+            text="Теперь вы можете предложить обмен"
+            buttonText="Готово"
+          />
+        </Modal>
+      )}
+      {isExchangeModalOpen && (
+        <Modal onClose={closeExchangeModal}>
+          <StatusModal
+            onClose={closeExchangeModal}
+            icon={notificationIcon}
+            title="Вы предложили обмен"
+            text="Теперь дождитесь подтверждения. Вам придёт уведомление"
+            buttonText="Готово"
+          />
+        </Modal>
+      )}
+      {isGatekeeperModalOpen && (
+        <Modal onClose={closeGatekeeperModal}>
+          <ModalGatekeeper onClose={closeGatekeeperModal} />
         </Modal>
       )}
     </>

@@ -1,6 +1,13 @@
-import type { User } from '@shared/types';
-import type { RawSkill, RawCity, RawCategoriesJson } from '@features/infinite-scroll/types';
-import type { TSkillType, Gender } from '@shared/types';
+import type {
+  User,
+  Skill,
+  City,
+  CategoriesResponse,
+  Subcategory,
+  TSkillType,
+  Gender,
+  SubcategoryId,
+} from '@shared/types';
 
 export interface FilterParams {
   skillType: TSkillType;
@@ -13,9 +20,9 @@ export interface FilterParams {
 export default function filterUsers(
   users: User[],
   filters: FilterParams,
-  skills: RawSkill[],
-  cities: RawCity[],
-  categories?: RawCategoriesJson
+  skills: Skill[],
+  cities: City[],
+  categories?: CategoriesResponse
 ): User[] {
   return users.filter((user) => {
     if (filters.gender !== 'all' && user.gender !== filters.gender) {
@@ -47,32 +54,27 @@ export default function filterUsers(
 
       if (filters.skillType === 'teach') {
         if (filters.subcategories.length > 0) {
-          const hasMatchingTeachSkill = filters.subcategories.some(
-            (subcategoryId) => userTeachSkills.includes(subcategoryId)
+          const hasMatchingTeachSkill = filters.subcategories.some((subcategoryId) =>
+            userTeachSkills.includes(subcategoryId)
           );
 
           if (!hasMatchingTeachSkill) {
             return false;
           }
-        } else {
-          if (userTeachSkills.length === 0) {
-            return false;
-          }
+        } else if (userTeachSkills.length === 0) {
+          return false;
         }
-
       } else if (filters.skillType === 'learn') {
         if (filters.subcategories.length > 0) {
-          const hasMatchingLearnSkill = filters.subcategories.some(
-            (subcategoryId) => userLearnSkills.includes(subcategoryId)
+          const hasMatchingLearnSkill = filters.subcategories.some((subcategoryId) =>
+            userLearnSkills.includes(subcategoryId)
           );
 
           if (!hasMatchingLearnSkill) {
             return false;
           }
-        } else {
-          if (userLearnSkills.length === 0) {
-            return false;
-          }
+        } else if (userLearnSkills.length === 0) {
+          return false;
         }
       }
     }
@@ -91,9 +93,9 @@ export default function filterUsers(
           const isCategory = categories.categories.some((cat: any) => cat && cat.id === id);
           if (isCategory) {
             const categorySubcategories = categories.subcategories
-              .filter((sub: any) => sub && sub.categoryId === id)
-              .map((sub: any) => sub.id)
-              .filter((subId: any): subId is number => typeof subId === 'number');
+              .filter((sub: Subcategory) => sub && sub.categoryId === id)
+              .map((sub: Subcategory) => sub.id)
+              .filter((subId: SubcategoryId): subId is number => typeof subId === 'number');
             categorySubcategories.forEach((subId: number) => expandedSubcategories.add(subId));
           } else {
             expandedSubcategories.add(id);
@@ -104,7 +106,8 @@ export default function filterUsers(
       });
 
       const hasMatchingSubcategory = Array.from(expandedSubcategories).some(
-        (subId) => userSkillSubcategories.includes(subId) || userInterestsSubcategories.includes(subId)
+        (subId) =>
+          userSkillSubcategories.includes(subId) || userInterestsSubcategories.includes(subId)
       );
 
       if (!hasMatchingSubcategory) {

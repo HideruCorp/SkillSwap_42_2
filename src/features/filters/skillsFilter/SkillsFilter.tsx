@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { CheckboxUI } from '@shared/ui/checkbox/CheckboxUI';
 import ChevronUp from '@shared/assets/img/chevron-Up.svg?react';
 import ChevronDown from '@shared/assets/img/chevron-Down.svg?react';
+import categoryApi from '@entities/category/api/categoriesApi';
 import styles from './skills-filter.module.scss';
 import type { SkillsFilterProps } from './types';
 
@@ -37,13 +38,14 @@ function SkillsFilter({ selectedSkills, onSelectionChange }: SkillsFilterProps) 
   const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set());
 
   useEffect(() => {
-    fetch('/db/category.json')
-      .then((res) => res.json())
-      .then((data: CategoryData) => {
+    categoryApi
+      .getAll()
+      .then((data) => {
         setCategoryData(data);
         setLoading(false);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error('Ошибка загрузки категорий:', err);
         setLoading(false);
       });
   }, []);

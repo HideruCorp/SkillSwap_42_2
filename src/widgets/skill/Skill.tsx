@@ -1,4 +1,4 @@
-import type { SkillType } from '@shared/types';
+import type { Skill as SkillType } from '@shared/types';
 import { SkillDescriptionUI } from '@shared/ui/skill-description';
 import Button from '@shared/ui/button/Button';
 import LikeDefaultIcon from '@shared/assets/img/like-Default.svg?react';
@@ -21,6 +21,8 @@ export interface SkillProps {
   onMoreDetails: (skillId: number) => void;
   // Добавляем проп для проверки владельца
   isOwner?: boolean;
+  // Добавляем проп для проверки отправленной заявки
+  requestSent?: boolean;
 }
 
 function Skill({
@@ -31,6 +33,7 @@ function Skill({
   onShare,
   onMoreDetails,
   isOwner = false,
+  requestSent = false,
 }: SkillProps) {
   return (
     <div className={styles.skillCard}>
@@ -70,7 +73,8 @@ function Skill({
           {/* Кнопка "Предложить обмен" показывается только если пользователь НЕ владелец */}
           {!isOwner && (
             <Button
-              title="Предложить обмен"
+              title={requestSent ? 'Обмен предложен' : 'Предложить обмен'}
+              disabled={requestSent}
               onClick={() => onMoreDetails(skill.id)}
               type="default"
             />

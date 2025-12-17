@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { fetchCities } from '@api/citiesApi';
-import { fetchCategories } from '@api/categoriesApi';
+import cityApi from '@entities/city/api/citiesApi';
+import categoryApi from '@entities/category/api/categoriesApi';
 import { compressImage } from '@shared/lib/image/compressImage';
 import type { Category, City, Subcategory } from '@shared/types';
 import UserDataForm, {
@@ -27,7 +27,7 @@ function UserDataStep() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [citiesData, categoriesData] = await Promise.all([fetchCities(), fetchCategories()]);
+        const [citiesData, categoriesData] = await Promise.all([cityApi.getCities(), categoryApi.getAll()]);
         setCities(citiesData);
         setCategories(categoriesData.categories);
         setSubcategories(categoriesData.subcategories);

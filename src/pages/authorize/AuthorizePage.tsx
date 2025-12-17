@@ -9,7 +9,7 @@ import lightBulb from '@shared/assets/img/light-Bulb.svg';
 import userInfo from '@shared/assets/img/user-Info.svg';
 import schoolBoard from '@shared/assets/img/school-Board.svg';
 import Modal from '@features/modal/Modal';
-import { useDispatch } from '../../services/store';
+import { useDispatch } from '@app/store';
 import styles from './authorize-page.module.scss';
 
 import { CredentialsStep, UserDataStep, SkillDataStep } from './steps';

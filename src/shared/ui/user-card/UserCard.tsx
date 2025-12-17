@@ -3,6 +3,8 @@ import Button from '@shared/ui/button/Button';
 import { useNavigate } from 'react-router-dom';
 import styles from './user-card.module.scss';
 import type { UserCardProps } from './types';
+import { useAuthState } from '@features/auth';
+import { useState } from 'react';
 
 function UserCard({
   id, // добавлен id
@@ -14,13 +16,28 @@ function UserCard({
   avatarUrl,
   onLikeClick,
   isLiked = false,
+  likes,
 }: UserCardProps) {
   const navigate = useNavigate();
+  const { currentUser } = useAuthState();
+
+  const [likeCount, setLikeCount] = useState(likes?.length);
 
   const getAgeSuffix = (years: number): string => {
     if (years % 10 === 1 && years % 100 !== 11) return 'год';
     if ([2, 3, 4].includes(years % 10) && ![12, 13, 14].includes(years % 100)) return 'года';
     return 'лет';
+  };
+
+  const liked = currentUser ? likes.includes(currentUser?.id) : false;
+  const handleLike = () => {
+    onLikeClick?.(id);
+
+    if (isLiked || liked) {
+      setLikeCount(likeCount - 1);
+    } else {
+      setLikeCount(likeCount + 1);
+    }
   };
 
   return (
@@ -40,16 +57,19 @@ function UserCard({
           </div>
         </div>
 
-        <button
-          type="button"
-          className={styles.likeButton}
-          onClick={() => onLikeClick?.(id)}
-          aria-label={isLiked ? 'Убрать лайк' : 'Поставить лайк'}
-        >
-          <div
-            className={`${styles.likeIcon} ${isLiked ? styles.likeIconActive : styles.likeIconDefault}`}
-          />
-        </button>
+        <div className={styles.blockCountLikes}>
+          <p className={styles.countLikes}>{likeCount}</p>
+          <button
+            type="button"
+            className={styles.likeButton}
+            onClick={handleLike}
+            aria-label={isLiked || liked ? 'Убрать лайк' : 'Поставить лайк'}
+          >
+            <div
+              className={`${styles.likeIcon} ${isLiked || liked ? styles.likeIconActive : styles.likeIconDefault}`}
+            />
+          </button>
+        </div>
       </div>
 
       <div className={styles.skillsSection}>

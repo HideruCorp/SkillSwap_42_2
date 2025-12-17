@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
 import type { Request } from '@shared/types';
-import type { RootState } from '../../../services/store';
+import type { RootState } from '@app/store';
 
 /**
  * Cross-slice селекторы для requests

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { fetchCategories } from '@api/categoriesApi';
+import categoryApi from '@entities/category/api/categoriesApi';
 import { useDebouncedCallback } from '@shared/hooks/useDebounce';
 import { filesToDataUrls } from '@shared/lib/image/compressImage';
 import type { Category, Subcategory } from '@shared/types';
@@ -34,7 +34,7 @@ function SkillDataStep({ onStepCompleted }: SkillDataStepContainerProps) {
   useEffect(() => {
     const load = async () => {
       try {
-        const result = await fetchCategories();
+        const result = await categoryApi.getAll();
         setCategories(result.categories);
         setSubcategories(result.subcategories);
       } catch (e) {

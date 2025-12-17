@@ -4,5 +4,6 @@ import type { Request } from '@shared/types';
 export interface CreateRequestPayload {
   requestedSkill: number;
   fromUser: number;
+  toUser: number;
   status?: Request['status'];
 }

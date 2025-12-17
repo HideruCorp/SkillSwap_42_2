@@ -1,5 +1,5 @@
 import styles from './search-input.module.scss';
-import searchIcon from '@/shared/assets/img/search.svg';
+import searchIcon from '@shared/assets/img/search.svg';
 
 export interface SearchInputProps {
   value: string;

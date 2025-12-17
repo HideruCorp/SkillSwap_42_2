@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import filtersReducer from '../../services/slices/filtersSlice/filtersSlice';
+import filtersReducer from '@features/filters';
 import FilterBar from './FilterBar';
 
 const meta: Meta<typeof FilterBar> = {

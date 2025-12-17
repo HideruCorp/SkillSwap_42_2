@@ -8,11 +8,12 @@ import buildUserCards from '@entities/user/buildUserCards';
 import filterUsers from '@entities/user/filterUsers';
 import sortFilteredUsers from '@entities/user/sortFilteredUsers';
 import { paginate } from '@entities/user/paginate';
-import getSkillsMock from '../../services/mockApi/skills';
-import getCitiesMock from '../../services/mockApi/cities';
-import getCategoriesMock from '../../services/mockApi/categories';
+import usersApi from '@entities/user/api/usersApi';
+import skillsApi from '@entities/skill/api/skillsApi';
+import cityApi from '@entities/city/api/citiesApi';
+import categoryApi from '@entities/category/api/categoriesApi';
 import { useFavorites } from '@features/favorites/hooks/useFavorites';
-import { useSelector } from '../../services/store';
+import { useSelector } from '@app/store';
 import SortButton from '@widgets/sort-button';
 
 type Mode = 'likes' | 'created' | 'all';
@@ -57,12 +58,10 @@ export default function UsersSection({
   useEffect(() => {
     let mounted = true;
 
-    import('../../services/mockApi/users')
-      .then(({ default: getUsersMock }) => getUsersMock())
-      .then((raw) => {
+    usersApi.getUsers()
+      .then((fetchedUsers) => {
         if (!mounted) return;
-        const arr = Array.isArray(raw) ? raw : (raw.users ?? []);
-        setUsers(arr);
+        setUsers(fetchedUsers);
       })
       .catch(console.error)
       .finally(() => {
@@ -78,16 +77,13 @@ export default function UsersSection({
     let mounted = true;
     (async () => {
       try {
-        const [skillsRes, citiesRes, categoriesRes] = await Promise.all([
-          getSkillsMock(),
-          getCitiesMock(),
-          getCategoriesMock(),
+        const [rawSkills, rawCities, categoriesData] = await Promise.all([
+          skillsApi.getSkills(),
+          cityApi.getCities(),
+          categoryApi.getAll(),
         ]);
         if (!mounted) return;
-        const rawSkills = Array.isArray(skillsRes) ? skillsRes : (skillsRes.skills ?? []);
-        const rawCities = Array.isArray(citiesRes) ? citiesRes : (citiesRes.cities ?? []);
-        const rawCategories = categoriesRes;
-        setAux({ rawSkills, rawCities, rawCategories });
+        setAux({ rawSkills, rawCities, rawCategories: categoriesData });
       } catch (e) {
         console.error('Ошибка загрузки вспомогательных данных', e);
       }
