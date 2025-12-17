@@ -3,9 +3,6 @@ import Button from '@shared/ui/button/Button';
 import { useNavigate } from 'react-router-dom';
 import styles from './user-card.module.scss';
 import type { UserCardProps } from './types';
-import { useAuthState } from '@features/auth';
-import { useSelector } from '@app/store';
-import { selectSkillById } from '@entities/skill/model/skillsSlice';
 
 function UserCard({
   id,
@@ -18,15 +15,11 @@ function UserCard({
   avatarUrl,
   onLikeClick,
   isLiked = false,
-  likes,
+  likes = [],
 }: UserCardProps) {
   const navigate = useNavigate();
-  const { currentUser } = useAuthState();
 
-  // Берём актуальную информацию о лайках из skillsSlice (SSOT)
-  const skill = useSelector((state) => selectSkillById(state, mainSkillId));
-  const likesArray = skill?.likesReceived ?? likes ?? [];
-  const likeCount = likesArray.length;
+  const likeCount = likes.length;
 
   const getAgeSuffix = (years: number): string => {
     if (years % 10 === 1 && years % 100 !== 11) return 'год';
@@ -34,7 +27,6 @@ function UserCard({
     return 'лет';
   };
 
-  const liked = currentUser ? likesArray.includes(currentUser.id) : false;
   const handleLike = () => {
     onLikeClick?.(mainSkillId);
   };
@@ -62,10 +54,10 @@ function UserCard({
             type="button"
             className={styles.likeButton}
             onClick={handleLike}
-            aria-label={isLiked || liked ? 'Убрать лайк' : 'Поставить лайк'}
+            aria-label={isLiked ? 'Убрать лайк' : 'Поставить лайк'}
           >
             <div
-              className={`${styles.likeIcon} ${isLiked || liked ? styles.likeIconActive : styles.likeIconDefault}`}
+              className={`${styles.likeIcon} ${isLiked ? styles.likeIconActive : styles.likeIconDefault}`}
             />
           </button>
         </div>

@@ -1,1 +1,1 @@
-export { useFavorites } from './hooks/useFavorites';
+export { default as useFavorites } from './hooks/useFavorites';

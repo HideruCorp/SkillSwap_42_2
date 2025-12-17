@@ -12,7 +12,7 @@ import usersApi from '@entities/user/api/usersApi';
 import skillsApi from '@entities/skill/api/skillsApi';
 import cityApi from '@entities/city/api/citiesApi';
 import categoryApi from '@entities/category/api/categoriesApi';
-import { useFavorites } from '@features/favorites/hooks/useFavorites';
+import { useFavorites } from '@features/favorites';
 import { useSelector } from '@app/store';
 import SortButton from '@widgets/sort-button';
 

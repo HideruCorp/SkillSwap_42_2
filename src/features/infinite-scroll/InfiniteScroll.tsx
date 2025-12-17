@@ -8,7 +8,7 @@ import UserCard from '../../shared/ui/user-card/UserCard';
 import useInfiniteScroll from './useInfiniteScroll';
 import buildUserCards from '../../entities/user/buildUserCards';
 import styles from './scroll.module.scss';
-import { useFavorites } from '../favorites';
+import { useFavorites } from '@features/favorites';
 
 /**
  * InfiniteScroll:

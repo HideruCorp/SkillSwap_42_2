@@ -3,20 +3,21 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from '@app/store';
 import { useAuthState } from '@features/auth';
-import { addFavorite as addFavoriteSkill, removeFavorite as removeFavoriteSkill } from '@entities/skill/model/skillsSlice';
-import type { RootState } from '@app/store';
+import {
+  addFavorite as addFavoriteSkill,
+  removeFavorite as removeFavoriteSkill,
+  selectFavoriteSkillIds,
+} from '@entities/skill/model/skillsSlice';
 
-export const useFavorites = () => {
+export default function useFavorites() {
   const dispatch = useDispatch();
   const { currentUser } = useAuthState();
   const userId = currentUser?.id;
 
   // Массив ID навыков, которые лайкнул текущий пользователь
-  const favoriteSkillIds = useSelector((state: RootState) => {
+  const favoriteSkillIds = useSelector((state) => {
     if (!userId) return [];
-    return state.skills.items
-      .filter((s) => s.likesReceived.includes(userId))
-      .map((s) => s.id);
+    return selectFavoriteSkillIds(state, userId);
   });
 
   const toggleFavorite = useCallback(
