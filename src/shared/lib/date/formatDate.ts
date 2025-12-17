@@ -1,4 +1,4 @@
-import { differenceInCalendarDays, format, formatRelative } from 'date-fns';
+import { differenceInCalendarDays, differenceInYears, format, formatRelative } from 'date-fns';
 import { customRu } from './locale';
 
 /**
@@ -21,5 +21,24 @@ function formatRelativeDate(date: Date): string {
   return format(date, 'd MMM', { locale: customRu });
 }
 
-export { formatRelativeDate };
+const calculateAge = (dateOfBirth: string): number => {
+  const dob = new Date(dateOfBirth);
+  const now = new Date();
+  return differenceInYears(now, dob);
+};
+
+// Helper function to get correct plural form for days
+const getDaysLabel = (days: number): string => {
+  if (days % 10 === 1 && days % 100 !== 11) return 'день';
+  if ([2, 3, 4].includes(days % 10) && ![12, 13, 14].includes(days % 100)) return 'дня';
+  return 'дней';
+};
+
+const getAgeSuffix = (years: number): string => {
+  if (years % 10 === 1 && years % 100 !== 11) return 'год';
+  if ([2, 3, 4].includes(years % 10) && ![12, 13, 14].includes(years % 100)) return 'года';
+  return 'лет';
+};
+
+export { formatRelativeDate, calculateAge, getDaysLabel, getAgeSuffix };
 export default formatRelativeDate;
