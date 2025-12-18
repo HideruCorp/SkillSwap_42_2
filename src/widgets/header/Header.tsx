@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Logo from '@shared/ui/logo/Logo';
 import { SearchInput } from '@shared/ui/search';
 import Button from '@shared/ui/button/Button';
@@ -16,31 +16,36 @@ import AllSkillsDropdown from './all-skills-dropdown/AllSkillsDropdown';
 import Favorites from './favorites/Favorites';
 import UserInfo from './userInfo/UserInfo';
 
-const SEARCH_DEBOUNCE_DELAY = 1500;
+const SEARCH_DEBOUNCE_DELAY = 300;
 
 function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const { isAuthenticated, currentUser } = useAuthState();
 
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
 
-  // Получаем текущее значение поиска из store
   const textSearchFromStore = useSelector(selectTextSearch);
   const [localSearchValue, setLocalSearchValue] = useState(textSearchFromStore);
 
   const { hasUnread } = useNotifications(currentUser?.id ?? 1);
 
-  // Используем debounce для значения поиска
   const debouncedSearchValue = useDebounce(localSearchValue, SEARCH_DEBOUNCE_DELAY);
 
-  // Обновляем store при изменении debounced значения
+  const isOnMainPage = location.pathname === '/';
+
   useEffect(() => {
     dispatch(setTextSearch(debouncedSearchValue));
-  }, [debouncedSearchValue, dispatch]);
 
-  // Синхронизируем локальное состояние с store при изменении снаружи
+    if (isOnMainPage && debouncedSearchValue.trim()) {
+      const searchParams = new URLSearchParams(window.location.search);
+      searchParams.set('search', debouncedSearchValue);
+      navigate(`?${searchParams.toString()}`, { replace: true });
+    }
+  }, [debouncedSearchValue, dispatch, navigate, isOnMainPage]);
+
   useEffect(() => {
     setLocalSearchValue(textSearchFromStore);
   }, [textSearchFromStore]);
@@ -69,7 +74,42 @@ function Header() {
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setLocalSearchValue(value);
-  }, []);
+
+    if (!value.trim()) {
+      dispatch(setTextSearch(''));
+      if (isOnMainPage) {
+        const searchParams = new URLSearchParams(window.location.search);
+        searchParams.delete('search');
+        navigate(`?${searchParams.toString()}`, { replace: true });
+      }
+    }
+  }, [dispatch, navigate, isOnMainPage]);
+
+  const handleSearchSubmit = useCallback((e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+
+    const searchValue = localSearchValue.trim();
+
+    if (!searchValue) return;
+
+    if (!isOnMainPage) {
+      navigate(`/?search=${encodeURIComponent(searchValue)}`);
+    } else {
+      const searchParams = new URLSearchParams(window.location.search);
+      searchParams.set('search', searchValue);
+      navigate(`?${searchParams.toString()}`, { replace: true });
+    }
+
+    dispatch(setTextSearch(searchValue));
+  }, [localSearchValue, dispatch, navigate, isOnMainPage]);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearchSubmit();
+    }
+  }, [handleSearchSubmit]);
 
   return (
     <header className={`${styles.header}`}>
@@ -80,7 +120,13 @@ function Header() {
         </a>
         <AllSkillsDropdown />
       </nav>
-      <SearchInput value={localSearchValue} onChange={handleSearchChange} />
+      <SearchInput
+        value={localSearchValue}
+        onChange={handleSearchChange}
+        onKeyDown={handleKeyDown}
+        onSubmit={handleSearchSubmit}
+        placeholder="Поиск по имени или навыку..."
+      />
       {!isAuthenticated && <ThemeToggler />}
       <div
         className={`${styles['profile-panel']} ${isAuthenticated && styles['profile-panel--authenticated']}`}
