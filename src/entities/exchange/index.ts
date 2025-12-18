@@ -11,6 +11,8 @@ export {
   setExchanges,
   addExchange,
   updateExchange,
+  completeExchange,
+  cancelExchange,
   deleteExchange,
   setExchangesLoading,
   setExchangesError,

@@ -50,15 +50,16 @@ export const selectActiveExchangesByUserId = createSelector(
 );
 
 /**
- * Завершённые обмены пользователя
+ * Архивные обмены пользователя (завершённые или отменённые)
  */
-export const selectCompletedExchangesByUserId = createSelector(
+export const selectArchivedExchangesByUserId = createSelector(
   [selectExchangesItems, selectSkillsItems, selectUserId],
   (exchanges, skills, userId): Exchange[] => {
     const skillOwnerMap = new Map(skills.map((s) => [s.id, s.userId]));
 
     return exchanges.filter((exchange) => {
-      if (exchange.status !== 'completed') return false;
+      // Archived = completed OR cancelled
+      if (exchange.status !== 'completed' && exchange.status !== 'cancelled') return false;
       const [skill1, skill2] = exchange.skills;
       const owner1 = skillOwnerMap.get(skill1);
       const owner2 = skillOwnerMap.get(skill2);
