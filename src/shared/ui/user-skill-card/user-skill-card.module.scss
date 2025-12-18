@@ -1,18 +1,18 @@
 @use '@shared/styles/variables' as *;
 @use '@shared/styles/mixins' as *;
+@use '@shared/styles/utilities' as *;
 
 .card {
+  @extend %card-base;
+  
   width: 324px;
   flex-shrink: 0;
   height: auto;
   min-height: 444px;
-  background: $color-surface;
-  border-radius: 12px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  box-sizing: border-box;
 
   .skillsSection {
     .tag-list__tags {

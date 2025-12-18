@@ -1,5 +1,6 @@
 @use '@shared/styles/variables' as *;
 @use '@shared/styles/mixins' as *;
+@use '@shared/styles/utilities' as *;
 
 .tag {
   --skill-tag-padding: 15px 16px;
@@ -8,7 +9,8 @@
 }
 
 .card {
-  background: $color-surface;
+  @extend %card-base;
+  
   border-radius: 16px;
   padding: 24px;
   display: grid;
