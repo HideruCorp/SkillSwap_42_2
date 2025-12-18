@@ -4,18 +4,18 @@ import styles from './SectionUI.module.scss';
 import type { SectionUIProps } from './type';
 
 function SectionUI({
-  title,
-  cards,
-  onAction,
-  actionLabel,
-  className,
-  onLikeClick,
-  onDetailsClick,
-  triggerRef,
-  hasMore,
-  headerExtra,
-  isFavorite,
-}: SectionUIProps) {
+                     title,
+                     cards,
+                     onAction,
+                     actionLabel,
+                     className,
+                     onLikeClick,
+                     onDetailsClick,
+                     triggerRef,
+                     hasMore,
+                     headerExtra,
+                     isFavorite,
+                   }: SectionUIProps) {
   return (
     <section className={`${styles.section} ${className ?? ''}`}>
       <SectionHeaderUI
@@ -41,11 +41,10 @@ function SectionUI({
                 canTeach={card.canTeach}
                 wantsToLearn={card.wantsToLearn}
                 avatarUrl={card.avatarUrl ?? undefined}
-                isLiked={isFavorite ? isFavorite(card.mainSkillId) : card.isLiked}
+                isLiked={isFavorite ? isFavorite(card.id) : card.isLiked} // ✅ ID пользователя
                 likes={card.likes}
                 onDetailsClick={onDetailsClick ? () => onDetailsClick(card.id) : undefined}
-                // В onLikeClick пробрасываем ID НАВЫКА, а не пользователя
-                onLikeClick={onLikeClick ? () => onLikeClick(card.mainSkillId) : undefined}
+                onLikeClick={onLikeClick ? () => onLikeClick(card.id) : undefined} // ✅ ID пользователя
               />
             ))}
           </div>

@@ -1,33 +1,43 @@
 import { useMemo } from 'react';
 import { useSelector } from '@app/store';
+import { selectAllUsers } from '@entities/user/model/usersSlice';
 import { useFavorites } from '@features/favorites';
-import { selectAllSkills } from '@entities/skill/model/skillsSlice';
+import UsersSection from '@widgets/users-section/UsersSection';
 import styles from './profile-favorites-page.module.scss';
 
 function ProfileFavoritesPage() {
-  const allSkills = useSelector(selectAllSkills);
-  const { favoriteSkillIds } = useFavorites();
+  const allUsers = useSelector(selectAllUsers);
+  const { favoriteUserIds } = useFavorites();
 
-  const favoriteSkills = useMemo(
-    () => allSkills.filter((skill) => favoriteSkillIds.includes(skill.id)),
-    [allSkills, favoriteSkillIds]
+  const favoriteUsers = useMemo(
+    () => allUsers.filter((user) => favoriteUserIds.includes(user.id)),
+    [allUsers, favoriteUserIds]
   );
 
+  const hasFavorites = favoriteUsers.length > 0;
+
   return (
-    <section className={styles['profile-favorites']}>
-      <h1>Избранное</h1>
-      {favoriteSkills.length === 0 ? (
-        <p>У вас пока нет избранных навыков.</p>
+    <div className={styles.container}>
+      {!hasFavorites ? (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyIcon}>♡</div>
+          <h3 className={styles.emptyTitle}>Пока пусто</h3>
+          <p className={styles.emptyText}>
+            Нажмите на сердечко в карточке пользователя, чтобы добавить его в избранное
+          </p>
+        </div>
       ) : (
-        <ul>
-          {favoriteSkills.map((skill) => (
-            <li key={skill.id}>
-              <strong>{skill.title}</strong>
-            </li>
-          ))}
-        </ul>
+        <UsersSection
+          title=""
+          mode="all"
+          filteredUserIds={favoriteUserIds}
+          infinite={false}
+          showAllButton={false}
+          showCount={false}
+          showSortButton={false}
+        />
       )}
-    </section>
+    </div>
   );
 }
 
