@@ -1,22 +1,25 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import type { JSX } from 'react';
 import SectionUI from '@shared/ui/section/SectionUI';
-import type { UserCardProps } from '@shared/ui/user-card/types';
 import useInfiniteScroll from '@features/infinite-scroll/useInfiniteScroll';
-import type { User } from '@shared/types';
-import buildUserCards from '@entities/user/buildUserCards';
+import type { User, City, Category, Subcategory } from '@shared/types';
 import filterUsers from '@entities/user/filterUsers';
 import sortFilteredUsers from '@entities/user/sortFilteredUsers';
-import { paginate } from '@entities/user/paginate';
-import usersApi from '@entities/user/api/usersApi';
-import skillsApi from '@entities/skill/api/skillsApi';
+import paginate from '@entities/user/paginate';
 import cityApi from '@entities/city/api/citiesApi';
 import categoryApi from '@entities/category/api/categoriesApi';
-import { useFavorites } from '@features/favorites';
 import { useSelector } from '@app/store';
+import { selectAllUsers } from '@entities/user';
+import {
+  selectAllSkillsMemoized,
+  SkillCardContainer,
+  sortSkills,
+  recommendSkills,
+} from '@entities/skill';
+import { useAuthState } from '@features/auth';
 import SortButton from '@widgets/sort-button';
 
-type Mode = 'likes' | 'created' | 'all';
+type Mode = 'likes' | 'created' | 'recommended' | 'all';
 
 type Props = {
   title: string;
@@ -27,28 +30,33 @@ type Props = {
   className?: string;
   showCount?: boolean;
   showSortButton?: boolean;
-  filteredUserIds?: number[];
 };
 
 export default function UsersSection({
-                                       title,
-                                       mode: _mode,
-                                       previewLimit = 3,
-                                       infinite = false,
-                                       showAllButton = false,
-                                       className,
-                                       showCount = false,
-                                       showSortButton = false,
-                                       filteredUserIds,
-                                     }: Props): JSX.Element {
-  const [users, setUsers] = useState<User[]>([]);
-  const [_loading, setLoading] = useState(true);
-  const [aux, setAux] = useState<{ rawSkills: any[]; rawCities: any[]; rawCategories: any } | null>(
-    null
-  );
-  const PAGE_SIZE = 10;
+  title,
+  mode,
+  previewLimit = 3,
+  infinite = false,
+  showAllButton = false,
+  className,
+  showCount = false,
+  showSortButton = false,
+}: Props): JSX.Element {
+  // Подписка на Store
+  const users = useSelector(selectAllUsers);
+  const skills = useSelector(selectAllSkillsMemoized);
+  const { currentUser } = useAuthState();
 
-  const { toggleFavorite, isFavorite } = useFavorites();
+  const [, setLoading] = useState(true);
+  const [auxData, setAuxData] = useState<{
+    cities: City[];
+    categories: Category[];
+    subcategories: Subcategory[];
+  } | null>(null);
+
+  // Memoize aux arrays to maintain stable references and prevent child component rerenders
+  const aux = useMemo(() => auxData, [auxData]);
+  const PAGE_SIZE = 10;
 
   const skillType = useSelector((state) => state.filters.skillType);
   const gender = useSelector((state) => state.filters.gender);
@@ -59,35 +67,22 @@ export default function UsersSection({
 
   useEffect(() => {
     let mounted = true;
-
-    usersApi.getUsers()
-      .then((fetchedUsers) => {
-        if (!mounted) return;
-        setUsers(fetchedUsers);
-      })
-      .catch(console.error)
-      .finally(() => {
-        if (mounted) setLoading(false);
-      });
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    let mounted = true;
     (async () => {
       try {
-        const [rawSkills, rawCities, categoriesData] = await Promise.all([
-          skillsApi.getSkills(),
+        const [citiesResponse, categoriesResponse] = await Promise.all([
           cityApi.getCities(),
           categoryApi.getAll(),
         ]);
         if (!mounted) return;
-        setAux({ rawSkills, rawCities, rawCategories: categoriesData });
+        setAuxData({
+          cities: citiesResponse,
+          categories: categoriesResponse.categories,
+          subcategories: categoriesResponse.subcategories,
+        });
       } catch (e) {
         console.error('Ошибка загрузки вспомогательных данных', e);
+      } finally {
+        if (mounted) setLoading(false);
       }
     })();
     return () => {
@@ -97,8 +92,7 @@ export default function UsersSection({
 
   const filteredUsers = useMemo<User[]>(() => {
     if (!aux) return users;
-
-    let filtered = filterUsers(
+    return filterUsers(
       users,
       {
         skillType,
@@ -107,71 +101,98 @@ export default function UsersSection({
         subcategories,
         textSearch,
       },
-      aux.rawSkills,
-      aux.rawCities,
-      aux.rawCategories
+      skills,
+      aux.cities,
+      { categories: aux.categories, subcategories: aux.subcategories }
     );
+  }, [users, aux, skillType, gender, cities, subcategories, textSearch, skills]);
 
-    if (filteredUserIds && filteredUserIds.length > 0) {
-      filtered = filtered.filter(user => filteredUserIds.includes(user.id));
+  // NEW: Sort skills directly based on mode
+  const sortedSkills = useMemo<number[]>(() => {
+    if (!aux || filteredUsers.length === 0) return [];
+
+    // Get all skills for filtered users
+    const filteredUserIds = new Set(filteredUsers.map((u) => u.id));
+    const userSkills = skills.filter((skill) => filteredUserIds.has(skill.userId));
+
+    let sorted: typeof skills;
+
+    // Apply mode-specific sorting
+    switch (mode) {
+      case 'likes': {
+        // Sort by popularity (most liked first)
+        sorted = sortSkills(userSkills, 'likes');
+        break;
+      }
+
+      case 'created': {
+        // Sort by creation date (newest first)
+        sorted = sortSkills(userSkills, 'created');
+        break;
+      }
+
+      case 'recommended': {
+        // Filter and sort by user interests
+        sorted = recommendSkills(userSkills, currentUser?.skillInterests);
+        break;
+      }
+
+      case 'all':
+      default: {
+        // Use global sort state for 'all' mode (filter results page)
+        // First sort users, then extract skills to maintain user-based sorting
+        const sortedUsers = sortFilteredUsers(filteredUsers, sortBy, skills);
+        const skillIds = sortedUsers
+          .map((user) => skills.filter((skill) => skill.userId === user.id).map((s) => s.id))
+          .flat();
+        return skillIds;
+      }
     }
 
-    return filtered;
-  }, [users, aux, skillType, gender, cities, subcategories, textSearch, filteredUserIds]);
+    return sorted.map((s) => s.id);
+    // NOTE: Using memoized skills selector ensures stable reference.
+    // This useMemo only recalculates when filters, mode, user interests,
+    // or global sortBy change - not when individual skill properties like likes change.
+  }, [filteredUsers, mode, currentUser?.skillInterests, sortBy, aux, skills]);
 
-  const sortedFilteredUsers = useMemo<User[]>(() => {
-    if (!aux || filteredUsers.length === 0) return filteredUsers;
-    return sortFilteredUsers(filteredUsers, sortBy, aux.rawSkills);
-  }, [filteredUsers, sortBy, aux]);
+  // Rename for clarity
+  const visibleSkillIds = sortedSkills;
 
-  const allCards = useMemo<UserCardProps[]>(() => {
-    if (!aux) return [];
-    return buildUserCards(sortedFilteredUsers, aux.rawSkills, aux.rawCities, aux.rawCategories);
-  }, [sortedFilteredUsers, aux]);
-
-  const previewCards = useMemo<UserCardProps[]>(() => {
-    return paginate(allCards, 0, previewLimit);
-  }, [allCards, previewLimit]);
+  const previewSkillIds = useMemo<number[]>(() => {
+    return paginate(visibleSkillIds, 0, previewLimit);
+  }, [visibleSkillIds, previewLimit]);
 
   const [page, setPage] = useState(0);
-  const [visibleCards, setVisibleCards] = useState<UserCardProps[]>([]);
+  const [visibleSkillIdsSlice, setVisibleSkillIdsSlice] = useState<number[]>([]);
 
   useEffect(() => {
     if (!infinite) return;
     setPage(0);
-    setVisibleCards(paginate(allCards, 0, PAGE_SIZE));
-  }, [allCards, infinite]);
+    setVisibleSkillIdsSlice(paginate(visibleSkillIds, 0, PAGE_SIZE));
+  }, [visibleSkillIds, infinite]);
+
+  useEffect(() => {
+    if (!infinite) return;
+    const currentCount = (page + 1) * PAGE_SIZE;
+    setVisibleSkillIdsSlice(paginate(visibleSkillIds, 0, currentCount));
+  }, [visibleSkillIds, infinite, page]);
 
   const loadMore = useCallback(() => {
     if (!infinite) return;
     const nextPage = page + 1;
-    const nextSlice = paginate(allCards, nextPage, PAGE_SIZE);
+    const nextSlice = paginate(visibleSkillIds, nextPage, PAGE_SIZE);
     if (nextSlice.length > 0) {
-      setVisibleCards((prev) => [...prev, ...nextSlice]);
+      setVisibleSkillIdsSlice((prev) => [...prev, ...nextSlice]);
       setPage(nextPage);
     }
-  }, [infinite, page, allCards]);
+  }, [infinite, page, visibleSkillIds]);
 
-  const hasMore = infinite && visibleCards.length < allCards.length;
+  const hasMore = infinite && visibleSkillIdsSlice.length < visibleSkillIds.length;
   const { targetRef } = useInfiniteScroll(loadMore, {
     enabled: infinite,
     rootMargin: '200px',
   });
-  const cards = infinite ? visibleCards : previewCards;
-
-  const handleLikeClick = useCallback(
-    (userId: number) => {
-      toggleFavorite(userId);
-    },
-    [toggleFavorite]
-  );
-
-  const handleIsFavorite = useCallback(
-    (userId: number) => {
-      return isFavorite(userId);
-    },
-    [isFavorite]
-  );
+  const skillIds = infinite ? visibleSkillIdsSlice : previewSkillIds;
 
   const handleOpenAll = useCallback(() => {
     // TODO: implement navigation to full list
@@ -179,23 +200,30 @@ export default function UsersSection({
 
   const displayTitle = useMemo(() => {
     if (showCount) {
-      return `${title}: ${allCards.length}`;
+      return `${title}: ${visibleSkillIds.length}`;
     }
     return title;
-  }, [title, showCount, allCards.length]);
+  }, [title, showCount, visibleSkillIds.length]);
 
   return (
     <SectionUI
       title={displayTitle}
-      cards={cards}
       onAction={showAllButton ? handleOpenAll : undefined}
       actionLabel={showAllButton ? 'Смотреть все' : undefined}
       className={className}
       triggerRef={infinite ? targetRef : undefined}
       hasMore={hasMore}
       headerExtra={showSortButton ? <SortButton /> : undefined}
-      onLikeClick={handleLikeClick}
-      isFavorite={handleIsFavorite}
-    />
+    >
+      {skillIds.map((skillId) => (
+        <SkillCardContainer
+          key={skillId}
+          skillId={skillId}
+          categories={aux?.categories || []}
+          subcategories={aux?.subcategories || []}
+          cities={aux?.cities || []}
+        />
+      ))}
+    </SectionUI>
   );
 }
