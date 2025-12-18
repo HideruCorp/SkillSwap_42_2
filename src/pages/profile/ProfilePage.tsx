@@ -1,6 +1,6 @@
+import type { ReactElement } from 'react';
 import styles from './profile-page.module.scss';
 import SideBar from './sideBar/SideBar';
-import type { ReactElement } from 'react';
 
 interface ProfilePageProps {
   children: ReactElement | string;

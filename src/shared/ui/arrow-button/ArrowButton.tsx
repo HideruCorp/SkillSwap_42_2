@@ -1,4 +1,3 @@
-import React from 'react';
 import cn from 'classnames';
 import ChevronRight from '@shared/assets/img/chevron-Right.svg?react';
 import styles from './arrow-button.module.scss';
@@ -11,13 +10,13 @@ interface ArrowButtonProps {
   ariaLabel?: string;
 }
 
-const ArrowButton: React.FC<ArrowButtonProps> = ({
+function ArrowButton({
   direction = 'right',
   disabled = false,
   onClick,
   className,
   ariaLabel,
-}) => {
+}: ArrowButtonProps) {
   const label = ariaLabel ?? (direction === 'left' ? 'Назад' : 'Вперёд');
 
   return (
@@ -37,6 +36,6 @@ const ArrowButton: React.FC<ArrowButtonProps> = ({
       <ChevronRight className={styles.icon} />
     </button>
   );
-};
+}
 
 export default ArrowButton;

@@ -1,18 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
-import UserCard from '@shared/ui/user-card/UserCard';
+import { SkillCardContainer } from '@entities/skill';
 import SectionHeaderUI from '@shared/ui/section-header/SectionHeaderUI';
-import ArrowButton from '@shared/ui/arrow-button/ArrowButton';
-import type { UserCardProps } from '@shared/ui/user-card/types';
-import { useFavorites } from '@features/favorites';
+import ArrowButton from '@shared/ui/arrow-button';
+import type { Category, Subcategory, City } from '@shared/types';
 
 import styles from './section-similar-offers.module.scss';
 
 interface SectionSimilarOffersProps {
   title: string;
-  cards: UserCardProps[];
+  skillIds: number[];
+  categories: Category[];
+  subcategories: Subcategory[];
+  cities: City[];
   isLoading?: boolean;
-  onDetailsClick?: (id: number) => void;
 }
 
 const EPSILON = 1;
@@ -20,8 +21,10 @@ const SCROLL_DEBOUNCE_MS = 100;
 
 function SectionSimilarOffers({
   title,
-  cards,
-  onDetailsClick,
+  skillIds,
+  categories,
+  subcategories,
+  cities,
   isLoading = false,
 }: SectionSimilarOffersProps) {
   /** ref на scroll-контейнер */
@@ -31,6 +34,9 @@ function SectionSimilarOffers({
   const [isScrollable, setIsScrollable] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+
+  /** генерируем стабильные ключи для скелетонов */
+  const skeletonKeys = useMemo(() => Array.from({ length: 4 }, (_, i) => `skeleton-${i}`), []);
 
   /** проверка возможности скролла */
   const updateScrollState = () => {
@@ -77,7 +83,7 @@ function SectionSimilarOffers({
   /** scroll + resize listeners */
   useEffect(() => {
     const el = scrollRef.current;
-    if (!el) return;
+    if (!el) return undefined;
 
     let timeoutId: number | null = null;
 
@@ -99,25 +105,25 @@ function SectionSimilarOffers({
       window.removeEventListener('resize', updateScrollState);
       if (timeoutId) window.clearTimeout(timeoutId);
     };
-  }, [cards.length]);
-
-  const { toggleFavorite, isFavorite } = useFavorites();
+  }, [skillIds.length]);
 
   return (
     <section className={styles.section}>
       <SectionHeaderUI title={title} />
 
-      {isLoading ? (
+      {isLoading && (
         <div className={styles.slider}>
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className={styles.skeletonCard} />
+          {skeletonKeys.map((key) => (
+            <div key={key} className={styles.skeletonCard} />
           ))}
         </div>
-      ) : cards.length === 0 ? (
-        <div className={styles.empty}>
-          Пока нет похожих предложений
-        </div>
-      ) : (
+      )}
+
+      {!isLoading && skillIds.length === 0 && (
+        <div className={styles.empty}>Пока нет похожих предложений</div>
+      )}
+
+      {!isLoading && skillIds.length > 0 && (
         <div className={styles.wrapper}>
           {isScrollable && canScrollLeft && (
             <ArrowButton
@@ -129,13 +135,13 @@ function SectionSimilarOffers({
           )}
 
           <div className={styles.slider} ref={scrollRef}>
-            {cards.map((card) => (
-              <UserCard
-                key={card.id}
-                {...card}
-                isLiked={isFavorite(card.mainSkillId)}
-                onLikeClick={() => toggleFavorite(card.mainSkillId)}
-                onDetailsClick={onDetailsClick}
+            {skillIds.map((skillId) => (
+              <SkillCardContainer
+                key={skillId}
+                skillId={skillId}
+                categories={categories}
+                subcategories={subcategories}
+                cities={cities}
               />
             ))}
           </div>

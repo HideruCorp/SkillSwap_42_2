@@ -1,3 +1,4 @@
-export { SortButton } from './SortButton';
-export { default } from './SortButton';
+import { SortButton } from './SortButton';
 
+export { SortButton };
+export default SortButton;

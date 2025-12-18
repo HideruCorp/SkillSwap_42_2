@@ -9,4 +9,3 @@ export interface AvatarPickerProps {
 export interface FileWithPreview extends File {
   preview?: string;
 }
-

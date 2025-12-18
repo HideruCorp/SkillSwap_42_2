@@ -10,10 +10,8 @@ import type { Request, Category, Subcategory } from '@shared/types';
 import { SkillTagUI } from '@shared/ui/skill-tag';
 import { DropdownListUI, type OptionType } from '@shared/ui/dropdown-list';
 import Button from '@shared/ui/button/Button';
-import { formatRelativeDate } from '@shared/lib/date';
-import { calculateAge } from '@shared/helpers/dateHelpers';
-import { getCategoryColorBySubcategoryId } from '@shared/helpers/categoryHelpers';
-import { getAgeSuffix } from '@shared/lib/utils';
+import { formatRelativeDate, calculateAge, getAgeSuffix } from '@shared/lib/date';
+import { getCategoryColorBySubcategoryId } from '@shared/lib/utils';
 import styles from './skill-request-card.module.scss';
 
 interface SkillRequestCardProps {

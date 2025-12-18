@@ -16,4 +16,3 @@ export function Divider({ text = 'или', className = '' }: DividerProps) {
 }
 
 export default Divider;
-

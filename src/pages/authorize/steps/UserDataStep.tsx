@@ -27,7 +27,10 @@ function UserDataStep() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [citiesData, categoriesData] = await Promise.all([cityApi.getCities(), categoryApi.getAll()]);
+        const [citiesData, categoriesData] = await Promise.all([
+          cityApi.getCities(),
+          categoryApi.getAll(),
+        ]);
         setCities(citiesData);
         setCategories(categoriesData.categories);
         setSubcategories(categoriesData.subcategories);

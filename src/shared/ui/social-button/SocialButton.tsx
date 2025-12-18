@@ -1,7 +1,7 @@
 import React from 'react';
-import styles from './social-button.module.scss';
 import GoogleIcon from '@shared/assets/img/google.svg?react';
 import AppleIcon from '@shared/assets/img/apple.svg?react';
+import styles from './social-button.module.scss';
 
 export type SocialProvider = 'google' | 'apple';
 
@@ -35,11 +35,7 @@ export function SocialButton({ provider, onClick, className = '' }: SocialButton
   };
 
   return (
-    <button
-      type="button"
-      className={`${styles.socialButton} ${className}`}
-      onClick={handleClick}
-    >
+    <button type="button" className={`${styles.socialButton} ${className}`} onClick={handleClick}>
       <Icon className={styles.icon} />
       <span className={styles.text}>{config.text}</span>
     </button>
@@ -47,4 +43,3 @@ export function SocialButton({ provider, onClick, className = '' }: SocialButton
 }
 
 export default SocialButton;
-
