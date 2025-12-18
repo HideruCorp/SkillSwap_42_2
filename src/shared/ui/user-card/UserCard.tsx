@@ -5,18 +5,18 @@ import styles from './user-card.module.scss';
 import type { UserCardProps } from './types';
 
 function UserCard({
-  id,
-  mainSkillId,
-  name,
-  city,
-  age,
-  canTeach,
-  wantsToLearn,
-  avatarUrl,
-  onLikeClick,
-  isLiked = false,
-  likes = [],
-}: UserCardProps) {
+                    id,
+                    mainSkillId,
+                    name,
+                    city,
+                    age,
+                    canTeach,
+                    wantsToLearn,
+                    avatarUrl,
+                    onLikeClick,
+                    isLiked = false,
+                    likes = [],
+                  }: UserCardProps) {
   const navigate = useNavigate();
 
   const likeCount = likes.length;
@@ -28,7 +28,7 @@ function UserCard({
   };
 
   const handleLike = () => {
-    onLikeClick?.(mainSkillId);
+    onLikeClick?.(id);
   };
 
   return (
@@ -77,7 +77,7 @@ function UserCard({
         <Button
           className={styles.detailsButton}
           title="Подробнее"
-          onClick={() => navigate(`/skill/${Number(canTeach[0].id)}`)}
+          onClick={() => navigate(`/skill/${Number(canTeach[0]?.id || mainSkillId)}`)}
           type="default"
         />
       </div>

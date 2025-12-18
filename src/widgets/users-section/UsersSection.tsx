@@ -27,18 +27,20 @@ type Props = {
   className?: string;
   showCount?: boolean;
   showSortButton?: boolean;
+  filteredUserIds?: number[];
 };
 
 export default function UsersSection({
-  title,
-  mode: _mode,
-  previewLimit = 3,
-  infinite = false,
-  showAllButton = false,
-  className,
-  showCount = false,
-  showSortButton = false,
-}: Props): JSX.Element {
+                                       title,
+                                       mode: _mode,
+                                       previewLimit = 3,
+                                       infinite = false,
+                                       showAllButton = false,
+                                       className,
+                                       showCount = false,
+                                       showSortButton = false,
+                                       filteredUserIds,
+                                     }: Props): JSX.Element {
   const [users, setUsers] = useState<User[]>([]);
   const [_loading, setLoading] = useState(true);
   const [aux, setAux] = useState<{ rawSkills: any[]; rawCities: any[]; rawCategories: any } | null>(
@@ -95,7 +97,8 @@ export default function UsersSection({
 
   const filteredUsers = useMemo<User[]>(() => {
     if (!aux) return users;
-    return filterUsers(
+
+    let filtered = filterUsers(
       users,
       {
         skillType,
@@ -108,7 +111,13 @@ export default function UsersSection({
       aux.rawCities,
       aux.rawCategories
     );
-  }, [users, aux, skillType, gender, cities, subcategories, textSearch]);
+
+    if (filteredUserIds && filteredUserIds.length > 0) {
+      filtered = filtered.filter(user => filteredUserIds.includes(user.id));
+    }
+
+    return filtered;
+  }, [users, aux, skillType, gender, cities, subcategories, textSearch, filteredUserIds]);
 
   const sortedFilteredUsers = useMemo<User[]>(() => {
     if (!aux || filteredUsers.length === 0) return filteredUsers;
@@ -151,15 +160,22 @@ export default function UsersSection({
   const cards = infinite ? visibleCards : previewCards;
 
   const handleLikeClick = useCallback(
-    (skillId: number) => {
-      toggleFavorite(skillId);
+    (userId: number) => {
+      toggleFavorite(userId);
     },
     [toggleFavorite]
   );
 
+  const handleIsFavorite = useCallback(
+    (userId: number) => {
+      return isFavorite(userId);
+    },
+    [isFavorite]
+  );
+
   const handleOpenAll = useCallback(() => {
     // TODO: implement navigation to full list
-  }, [title]);
+  }, []);
 
   const displayTitle = useMemo(() => {
     if (showCount) {
@@ -179,7 +195,7 @@ export default function UsersSection({
       hasMore={hasMore}
       headerExtra={showSortButton ? <SortButton /> : undefined}
       onLikeClick={handleLikeClick}
-      isFavorite={isFavorite}
+      isFavorite={handleIsFavorite}
     />
   );
 }
