@@ -68,18 +68,30 @@
 
 /*TERTIARY стиль кнопок*/
 .buttonTertiary {
+  padding: 12px 24px;
   background-color: $color-surface;
   color: $color-text;
 
   &:hover {
-    border-color: $color-button-hover;
-    color: $color-text-caption;
+    background-color: $color-button-hover;
+    color: $color-text;
+  }
+
+  &:focus {
+    outline: 2px solid $color-accent;
+    outline-offset: 2px;
   }
 
   &:active {
     background-color: $color-button-pressed;
-    color: $color-text;
+    color: $color-surface;
     transform: translateY(1px);
+  }
+
+  &:disabled {
+    background-color: $color-disabled;
+    color: $color-text-caption;
+    pointer-events: none;
   }
 }
 

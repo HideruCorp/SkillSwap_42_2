@@ -81,3 +81,11 @@
   inline-size: $width;
   block-size: $height;
 }
+
+@mixin hide-scrollbar {
+  scrollbar-width: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

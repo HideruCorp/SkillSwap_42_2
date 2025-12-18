@@ -1,12 +1,13 @@
 @use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
 
 .arrowButton {
+  @include button-reset;
+  
   width: 32px;
   height: 32px;
   border-radius: 100px;
   padding: 8px;
-  border: none;
-  cursor: pointer;
 
   display: flex;
   align-items: center;
