@@ -1,3 +1,4 @@
+// profile-favorites-page.module.scss
 .container {
   padding: 24px;
   max-width: 1200px;
@@ -36,6 +37,11 @@
   line-height: 1.5;
 }
 
+.goToSkillsButton {
+  margin-top: 24px;
+  min-width: 200px;
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 16px;
@@ -52,5 +58,9 @@
 
   .emptyTitle {
     font-size: 20px;
+  }
+
+  .goToSkillsButton {
+    min-width: 180px;
   }
 }
