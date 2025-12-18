@@ -19,3 +19,10 @@ export type StoredExchange = Exchange;
 
 // Уведомление
 export type StoredNotification = Notification;
+
+// Избранное
+export interface StoredFavorite {
+  userId: number;
+  skillId: number;
+  createdAt: string;
+}

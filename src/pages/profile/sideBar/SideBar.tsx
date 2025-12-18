@@ -1,5 +1,11 @@
 import { NavLink } from 'react-router-dom';
+import RequestIcon from '@shared/assets/img/request.svg?react';
+import MessageIcon from '@shared/assets/img/message-Text.svg?react';
+import LikeIcon from '@shared/assets/img/like-Default.svg?react';
+import IdeaIcon from '@shared/assets/img/idea.svg?react';
+import UserIcon from '@shared/assets/img/user.svg?react';
 import styles from './sidebar.module.scss';
+
 function SideBar() {
   return (
     <ul className={styles.sideBar}>
@@ -8,7 +14,7 @@ function SideBar() {
           to="/profile/requests"
           className={({ isActive }) => (isActive ? `${styles.active} ${styles.item}` : styles.item)}
         >
-          <img src="../../../src/shared/assets/img/request.svg" />
+          <RequestIcon />
           Заявки
         </NavLink>
       </li>
@@ -17,7 +23,7 @@ function SideBar() {
           to="/profile/exchanges"
           className={({ isActive }) => (isActive ? `${styles.active} ${styles.item}` : styles.item)}
         >
-          <img src="../../../src/shared/assets/img/message-Text.svg" />
+          <MessageIcon />
           Мои обмены
         </NavLink>
       </li>
@@ -26,7 +32,7 @@ function SideBar() {
           to="/profile/favorites"
           className={({ isActive }) => (isActive ? `${styles.active} ${styles.item}` : styles.item)}
         >
-          <img src="../../../src/shared/assets/img/like-Default.svg" />
+          <LikeIcon />
           Избранное
         </NavLink>
       </li>
@@ -35,7 +41,7 @@ function SideBar() {
           to="/profile/skills"
           className={({ isActive }) => (isActive ? `${styles.active} ${styles.item}` : styles.item)}
         >
-          <img src="../../../src/shared/assets/img/idea.svg" />
+          <IdeaIcon />
           Мои навыки
         </NavLink>
       </li>
@@ -45,7 +51,7 @@ function SideBar() {
           end
           className={({ isActive }) => (isActive ? `${styles.active} ${styles.item}` : styles.item)}
         >
-          <img src="../../../src/shared/assets/img/user.svg" />
+          <UserIcon />
           Личные данные
         </NavLink>
       </li>

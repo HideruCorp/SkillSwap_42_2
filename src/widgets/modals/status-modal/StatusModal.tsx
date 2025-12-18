@@ -20,4 +20,4 @@ function StatusModal({ onClose, icon, title, text, buttonText }: StatusModalProp
   );
 }
 
-export default StatusModal ;
+export default StatusModal;

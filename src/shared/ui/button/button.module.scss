@@ -12,18 +12,18 @@
   outline: none;
   border: 1px solid transparent;
   background-color: $color-accent;
-  
+
   cursor: pointer;
-  
+
   &:disabled {
     background-color: $color-disabled;
     color: $color-text-caption;
     pointer-events: none;
   }
-  
+
   &Text {
     @include text-body;
-  
+
     opacity: 0.8;
   }
 }
@@ -41,7 +41,7 @@
   &:active {
     color: $color-surface;
     background-color: $color-button-pressed;
-    transform: translateY(1px); 
+    transform: translateY(1px);
   }
 }
 

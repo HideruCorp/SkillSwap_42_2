@@ -1,10 +1,9 @@
-import type { User } from '@shared/types';
-import type { RawSkill } from '@features/infinite-scroll/types';
+import type { Skill, User } from '@shared/types';
 import type { SortOption } from '@features/sort';
-import { calculateAge } from '@shared/helpers';
+import { calculateAge } from '@shared/lib/date';
 
 // Подсчет общего количества лайков пользователя (сумма лайков всех его навыков)
-function getUserLikesCount(userId: number, skills: RawSkill[]): number {
+function getUserLikesCount(userId: number, skills: Skill[]): number {
   const userSkills = skills.filter((s) => s.userId === userId);
   // Подсчитываем общее количество лайков всех навыков пользователя
   return userSkills.reduce((total, skill) => {
@@ -23,7 +22,7 @@ function getUserLikesCount(userId: number, skills: RawSkill[]): number {
 export default function sortFilteredUsers(
   users: User[],
   sortBy: SortOption,
-  skills: RawSkill[]
+  skills: Skill[]
 ): User[] {
   const sorted = [...users];
 
@@ -77,4 +76,3 @@ export default function sortFilteredUsers(
       return sorted;
   }
 }
-

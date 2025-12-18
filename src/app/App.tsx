@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import DeltaStorage from '@shared/lib/storage';
 import { initializeUsers } from '@entities/user/model/usersSlice';
 import { initializeSkills } from '@entities/skill/model/skillsSlice';
+import { initializeFavorites } from '@entities/favorites';
 import { bootstrapAuth } from '@features/auth';
 import { useDispatch } from '@app/store';
 import { initializeRequests } from '@entities/request';
@@ -26,6 +27,7 @@ function App() {
         await Promise.all([
           dispatch(initializeUsers()),
           dispatch(initializeSkills()),
+          dispatch(initializeFavorites()),
           dispatch(initializeRequests()),
           dispatch(initializeExchanges()),
           dispatch(initializeNotifications()),

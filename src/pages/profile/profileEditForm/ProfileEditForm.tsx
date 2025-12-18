@@ -1,4 +1,3 @@
-import styles from './profile-edit-form.module.scss';
 import { DatePickerUI } from '@shared/ui/date-picker';
 import DropdownListUI from '@shared/ui/dropdown-list/DropdownListUI';
 import Textarea from '@shared/ui/textarea/Textarea';
@@ -10,6 +9,7 @@ import type { City } from '@shared/types';
 import { useEffect, useState, type SyntheticEvent } from 'react';
 import cityApi from '@entities/city/api/citiesApi';
 import { useAuthState } from '@features/auth';
+import styles from './profile-edit-form.module.scss';
 
 const sex: OptionType[] = [
   { value: 'male', title: 'Мужской' },

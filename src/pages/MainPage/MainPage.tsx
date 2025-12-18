@@ -1,8 +1,8 @@
 import FiltersPanel from '@widgets/filters-panel';
 import UsersSection from '@widgets/users-section/UsersSection';
-import styles from './main-page.module.scss';
 import FilterBar from '@widgets/filter-bar';
 import { useActiveFilters } from '@features/filters/useActiveFilters';
+import styles from './main-page.module.scss';
 
 export function MainPage() {
   const { hasActiveFilters } = useActiveFilters();
@@ -51,7 +51,7 @@ export function MainPage() {
               />
             </div>
             <div className={styles.section}>
-              <UsersSection title="Рекомендуем" mode="created" infinite previewLimit={21} />
+              <UsersSection title="Рекомендуем" mode="recommended" infinite previewLimit={21} />
             </div>
           </>
         )}

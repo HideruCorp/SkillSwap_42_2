@@ -47,7 +47,6 @@ export const selectRejectedRequests = createSelector([selectRequestsItems], (ite
   items.filter((item) => item.status === 'rejected')
 );
 
-// Исходящие pending заявки для текущего пользователя
 export const selectOutgoingPendingRequests = createSelector(
   [selectRequestsItems, selectUserId],
   (items, userId): Request[] =>

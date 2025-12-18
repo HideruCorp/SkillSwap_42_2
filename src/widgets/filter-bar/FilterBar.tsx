@@ -84,7 +84,7 @@ function FilterBar() {
     selectedSubcategories.forEach((subcategoryId) => {
       const subcategory = categoriesData.subcategories.find((sub) => sub.id === subcategoryId);
       if (subcategory) {
-        const categoryId = subcategory.categoryId;
+        const { categoryId } = subcategory;
         const subIds = map.get(categoryId) || [];
         subIds.push(subcategoryId);
         map.set(categoryId, subIds);
@@ -145,7 +145,7 @@ function FilterBar() {
       const subcategory = categoriesData.subcategories.find((sub) => sub.id === subcategoryId);
       if (!subcategory) return;
 
-      const categoryId = subcategory.categoryId;
+      const { categoryId } = subcategory;
 
       if (processedCategories.has(categoryId)) return;
 

@@ -17,10 +17,3 @@ export {
 } from './model/usersSlice';
 
 export default usersReducer;
-
-/* TODO move UI components from shared/widget layers
-// Карточка в каталоге
-export { UserCard } from './ui/user-card';
-// Карточка пользователя на странице скилла
-export { UserDetails } from './ui/user-details';
-*/

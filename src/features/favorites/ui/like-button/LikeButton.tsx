@@ -1,0 +1,45 @@
+import { memo } from 'react';
+import { useSelector } from '@app/store';
+import { useIsFavorite, useFavoritesActions } from '@features/favorites';
+import { selectSkillLikesCount } from '@entities/favorites';
+import styles from './LikeButton.module.scss';
+
+type Props = {
+  skillId: number;
+  className?: string;
+};
+
+const LikeButton = memo(({ skillId, className }: Props) => {
+  const isFavorite = useIsFavorite(skillId);
+  const { toggleFavorite } = useFavoritesActions();
+
+  // Subscribe only to likes count, not entire skill object
+  // This prevents rerenders when other skill properties change
+  const likesCount = useSelector((state) => selectSkillLikesCount(state, skillId));
+
+  const handleLike = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    toggleFavorite(skillId, isFavorite);
+  };
+
+  return (
+    <div className={styles.blockCountLikes}>
+      <p className={styles.countLikes}>{likesCount}</p>
+      <button
+        type="button"
+        className={`${styles.likeButton} ${className}`}
+        onClick={handleLike}
+        aria-label={isFavorite ? 'Убрать лайк' : 'Поставить лайк'}
+      >
+        <div
+          className={`${styles.likeIcon} ${isFavorite ? styles.likeIconActive : styles.likeIconDefault}`}
+        />
+      </button>
+    </div>
+  );
+});
+
+LikeButton.displayName = 'LikeButton';
+
+export default LikeButton;
