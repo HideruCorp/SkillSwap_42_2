@@ -10,7 +10,7 @@
       "dateOfBirth": "1992-03-15",
       "gender": "female",
       "registrationDate": "2024-09-10",
-      "skillInterests": [25, 16, 31, 17, 9],
+      "skillInterests": [9, 30, 31, 34, 39, 42],
       "passwordHash": "65c21924bcb9bd6d6776108ba09b7f4d0ba4a75bd90528756bda8050d35bd26a"
     },
     {
@@ -23,7 +23,7 @@
       "dateOfBirth": "1985-07-22",
       "gender": "male",
       "registrationDate": "2024-08-05",
-      "skillInterests": [29, 12, 9, 26, 39, 7],
+      "skillInterests": [2, 3, 4, 7, 30, 31],
       "passwordHash": "16a56ca8e2260a9fc1779ebe183ef39240db0138eb6359de94c1c2ac13d882d3"
     },
     {
@@ -36,7 +36,7 @@
       "dateOfBirth": "1990-11-08",
       "gender": "female",
       "registrationDate": "2024-10-01",
-      "skillInterests": [30, 31, 12, 40, 34, 4],
+      "skillInterests": [22, 23, 29, 30, 31],
       "passwordHash": "60260ceaec22cb2ff45ad9b3fabb7148ffe62e947b869cae0c42a3ad50189773"
     },
     {
@@ -49,7 +49,7 @@
       "dateOfBirth": "1988-05-30",
       "gender": "male",
       "registrationDate": "2024-07-20",
-      "skillInterests": [31, 36, 26, 9, 23, 40],
+      "skillInterests": [36, 38, 39, 40, 30],
       "passwordHash": "c924236a70174fb94bd2663c9e633f7541aa5a7e0f3247c1fc1fd00d38303f3f"
     },
     {
