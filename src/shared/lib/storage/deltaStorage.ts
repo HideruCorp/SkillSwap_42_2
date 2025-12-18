@@ -4,10 +4,11 @@ import type {
   StoredRequest,
   StoredExchange,
   StoredNotification,
+  StoredFavorite,
 } from './types';
 
 const DB_NAME = 'skillswap_db';
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 
 const STORES = {
   USERS: 'users',
@@ -15,6 +16,7 @@ const STORES = {
   REQUESTS: 'requests',
   EXCHANGES: 'exchanges',
   NOTIFICATIONS: 'notifications',
+  FAVORITES: 'favorites',
   META: 'meta',
 } as const;
 
@@ -88,6 +90,13 @@ class DeltaStorageClass {
           store.createIndex('userId', 'userId', { unique: false });
           store.createIndex('fromUserId', 'fromUserId', { unique: false });
           store.createIndex('readed', 'readed', { unique: false });
+        }
+
+        // Favorites store
+        if (!db.objectStoreNames.contains(STORES.FAVORITES)) {
+          const store = db.createObjectStore(STORES.FAVORITES, { keyPath: ['userId', 'skillId'] });
+          store.createIndex('userId', 'userId', { unique: false });
+          store.createIndex('skillId', 'skillId', { unique: false });
         }
 
         // Meta store
@@ -304,6 +313,41 @@ class DeltaStorageClass {
 
   async getAllNotifications(): Promise<StoredNotification[]> {
     const store = await this.getStore(STORES.NOTIFICATIONS);
+    return DeltaStorageClass.promisify(store.getAll());
+  }
+
+  // ==================== FAVORITES ====================
+
+  async addFavorite(userId: number, skillId: number): Promise<void> {
+    const store = await this.getStore(STORES.FAVORITES, 'readwrite');
+    await DeltaStorageClass.promisify(
+      store.put({
+        userId,
+        skillId,
+        createdAt: new Date().toISOString(),
+      })
+    );
+  }
+
+  async removeFavorite(userId: number, skillId: number): Promise<void> {
+    const store = await this.getStore(STORES.FAVORITES, 'readwrite');
+    await DeltaStorageClass.promisify(store.delete([userId, skillId]));
+  }
+
+  async getFavoritesByUserId(userId: number): Promise<StoredFavorite[]> {
+    const store = await this.getStore(STORES.FAVORITES);
+    const index = store.index('userId');
+    return DeltaStorageClass.promisify(index.getAll(userId));
+  }
+
+  async getFavoritesBySkillId(skillId: number): Promise<StoredFavorite[]> {
+    const store = await this.getStore(STORES.FAVORITES);
+    const index = store.index('skillId');
+    return DeltaStorageClass.promisify(index.getAll(skillId));
+  }
+
+  async getAllFavorites(): Promise<StoredFavorite[]> {
+    const store = await this.getStore(STORES.FAVORITES);
     return DeltaStorageClass.promisify(store.getAll());
   }
 

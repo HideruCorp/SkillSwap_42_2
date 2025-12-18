@@ -8,7 +8,6 @@ import type {
   StoredExchange,
   StoredNotification,
 } from './types';
-import { loadSkillById } from './dataMerger';
 
 /**
  * Типы payload для разных actions
@@ -157,73 +156,14 @@ const persistHandlers: Record<string, (action: ActionWithPayloadAndMeta) => Prom
 
   // ==================== FAVORITES ====================
 
-  'skills/addFavorite': async (action) => {
+  'favorites/addFavoriteSkill': async (action) => {
     const { skillId, userId } = action.payload as FavoritePayload;
-
-    // Пытаемся взять дельту из IndexedDB
-    let stored = await DeltaStorage.getSkillById(skillId);
-
-    // Если дельты ещё нет — берём базовый skill (mock) и создаём дельту
-    if (!stored) {
-      const baseSkill = await loadSkillById(skillId);
-      if (!baseSkill) return;
-
-      const initial: StoredSkill = {
-        id: baseSkill.id,
-        subcategoryId: baseSkill.subcategoryId,
-        userId: baseSkill.userId,
-        title: baseSkill.title,
-        description: baseSkill.description,
-        createdAt: baseSkill.createdAt,
-        images: baseSkill.images,
-        likesReceived: baseSkill.likesReceived ?? [],
-      };
-
-      const newLikes = initial.likesReceived.includes(userId)
-        ? initial.likesReceived
-        : [...initial.likesReceived, userId];
-
-      await DeltaStorage.addSkill({ ...initial, likesReceived: newLikes });
-      return;
-    }
-
-    // Если дельта уже есть — просто обновляем likesReceived
-    const newLikes = stored.likesReceived.includes(userId)
-      ? stored.likesReceived
-      : [...stored.likesReceived, userId];
-
-    await DeltaStorage.updateSkill(skillId, { likesReceived: newLikes });
+    await DeltaStorage.addFavorite(userId, skillId);
   },
 
-  'skills/removeFavorite': async (action) => {
+  'favorites/removeFavoriteSkill': async (action) => {
     const { skillId, userId } = action.payload as FavoritePayload;
-    let stored = await DeltaStorage.getSkillById(skillId);
-
-    // Если дельты ещё нет — создаём её на основе базового skill,
-    // чтобы зафиксировать новое состояние likesReceived
-    if (!stored) {
-      const baseSkill = await loadSkillById(skillId);
-      if (!baseSkill) return;
-
-      const initial: StoredSkill = {
-        id: baseSkill.id,
-        subcategoryId: baseSkill.subcategoryId,
-        userId: baseSkill.userId,
-        title: baseSkill.title,
-        description: baseSkill.description,
-        createdAt: baseSkill.createdAt,
-        images: baseSkill.images,
-        likesReceived: baseSkill.likesReceived ?? [],
-      };
-
-      const newLikes = initial.likesReceived.filter((id) => id !== userId);
-      await DeltaStorage.addSkill({ ...initial, likesReceived: newLikes });
-      return;
-    }
-
-    await DeltaStorage.updateSkill(skillId, {
-      likesReceived: stored.likesReceived.filter((id) => id !== userId),
-    });
+    await DeltaStorage.removeFavorite(userId, skillId);
   },
 
   // ==================== REQUESTS ====================

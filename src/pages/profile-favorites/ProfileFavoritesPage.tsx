@@ -1,32 +1,57 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from '@app/store';
-import { selectAllUsers } from '@entities/user/model/usersSlice';
-import { useFavorites } from '@features/favorites';
-import UsersSection from '@widgets/users-section/UsersSection';
+import { selectAllSkills, SkillCardContainer } from '@entities/skill';
+import { useFavoriteSkills } from '@features/favorites';
+import SectionUI from '@shared/ui/section/SectionUI';
 import Button from '@shared/ui/button/Button';
+import cityApi from '@entities/city/api/citiesApi';
+import categoryApi from '@entities/category/api/categoriesApi';
+import type { Category, Subcategory, City } from '@shared/types';
 import styles from './profile-favorites-page.module.scss';
 
 function ProfileFavoritesPage() {
   const navigate = useNavigate();
-  const allUsers = useSelector(selectAllUsers);
+  const allSkills = useSelector(selectAllSkills);
+  const favoriteSkillIds = useFavoriteSkills();
 
-  // TODO: Реализовать корректный хук useFavorites на основе skillsSlice
-  // Временная заглушка - пустые обработчики
-  const { favoriteUserIds } = useFavorites();
+  const [aux, setAux] = useState<{
+    cities: City[];
+    categories: Category[];
+    subcategories: Subcategory[];
+  } | null>(null);
+  const [, setLoading] = useState(true);
 
-  // TODO: Переделать на работу с навыками (skills), а не пользователями
-  // Временная реализация для отображения пользователей
-  const favoriteUsers = useMemo(
-    () => {
-      // TODO: Заменить на фильтрацию навыков
-      // Сейчас фильтруем пользователей по временному механизму лайков
-      return allUsers.filter((user) => favoriteUserIds.includes(user.id));
-    },
-    [allUsers, favoriteUserIds]
-  );
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const [citiesResponse, categoriesResponse] = await Promise.all([
+          cityApi.getCities(),
+          categoryApi.getAll(),
+        ]);
+        if (!mounted) return;
+        setAux({
+          cities: citiesResponse,
+          categories: categoriesResponse.categories,
+          subcategories: categoriesResponse.subcategories,
+        });
+      } catch (e) {
+        console.error('Ошибка загрузки вспомогательных данных', e);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
-  const hasFavorites = favoriteUsers.length > 0;
+  const favoriteSkills = useMemo(() => {
+    return allSkills.filter((skill) => favoriteSkillIds.includes(skill.id));
+  }, [allSkills, favoriteSkillIds]);
+
+  const hasFavorites = favoriteSkills.length > 0;
 
   const handleGoToSkills = () => {
     navigate('/');
@@ -42,23 +67,24 @@ function ProfileFavoritesPage() {
             Нажмите на сердечко в карточке пользователя, чтобы добавить его в избранное
           </p>
           <Button
+            title="Вперёд за навыками"
             onClick={handleGoToSkills}
             type="primary"
             className={styles.goToSkillsButton}
-          >
-            Вперёд за навыками
-          </Button>
+          />
         </div>
       ) : (
-        <UsersSection
-          title="Избранное"
-          mode="all"
-          filteredUserIds={favoriteUserIds}
-          infinite={false}
-          showAllButton={false}
-          showCount={false}
-          showSortButton={false}
-        />
+        <SectionUI title="Избранное" className={styles.section}>
+          {favoriteSkills.map((skill) => (
+            <SkillCardContainer
+              key={skill.id}
+              skillId={skill.id}
+              categories={aux?.categories || []}
+              subcategories={aux?.subcategories || []}
+              cities={aux?.cities || []}
+            />
+          ))}
+        </SectionUI>
       )}
     </div>
   );

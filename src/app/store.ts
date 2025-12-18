@@ -10,7 +10,7 @@ import usersReducer from '@entities/user';
 import skillsReducer from '@entities/skill';
 import requestsReducer from '@entities/request';
 import exchangesReducer from '@entities/exchange';
-import userLikesReducer from '@/entities/user/model/userLikesSlice';
+import favoritesReducer from '@entities/favorites';
 
 import { authReducer, registrationReducer, authListener } from '@features/auth';
 import filtersReducer from '@features/filters';
@@ -21,10 +21,10 @@ import persistMiddleware from '@shared/lib/storage/persistMiddleware';
 export const rootReducer = combineReducers({
   users: usersReducer,
   skills: skillsReducer,
-  userLikes: userLikesReducer,
   notifications: notificationsReducer,
   requests: requestsReducer,
   exchanges: exchangesReducer,
+  favorites: favoritesReducer,
   auth: authReducer,
   registration: registrationReducer,
   filters: filtersReducer,
