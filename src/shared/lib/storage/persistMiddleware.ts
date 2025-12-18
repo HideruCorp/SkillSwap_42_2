@@ -33,7 +33,6 @@ interface SkillPayload {
   description: string;
   createdAt: string;
   images: string[];
-  likesReceived: number[];
 }
 
 interface UpdatePayload<T> {
@@ -139,7 +138,6 @@ const persistHandlers: Record<string, (action: ActionWithPayloadAndMeta) => Prom
       description: skill.description,
       createdAt: skill.createdAt,
       images: skill.images,
-      likesReceived: skill.likesReceived,
     };
     await DeltaStorage.addSkill(storedSkill);
   },
