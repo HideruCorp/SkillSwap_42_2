@@ -9,8 +9,8 @@ export interface UserCardProps {
   canTeach: SkillTag[];
   wantsToLearn: SkillTag[];
   avatarUrl?: string | null;
-  onDetailsClick?: (id: number) => void; // принимает id пользователя
-  onLikeClick?: (skillId: number) => void; // принимает id навыка
+  onDetailsClick?: (userId: number) => void;
+  onLikeClick?: (userId: number) => void;
   isLiked?: boolean;
   likes: number[];
 }

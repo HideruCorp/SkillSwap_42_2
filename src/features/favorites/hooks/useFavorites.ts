@@ -1,51 +1,37 @@
-// src/features/favorites/hooks/useFavorites.ts
-// Хук работы с избранным, завязанный ТОЛЬКО на skillsSlice и likesReceived
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from '@app/store';
-import { useAuthState } from '@features/auth';
-import {
-  addFavorite as addFavoriteSkill,
-  removeFavorite as removeFavoriteSkill,
-  selectFavoriteSkillIds,
-} from '@entities/skill/model/skillsSlice';
+import { useSelector } from '@app/store';
+import { useDispatch } from 'react-redux';
+import { toggleUserLike } from '@/entities/user/model/userLikesSlice';
+import { selectCurrentUserId } from '@/features/auth/model/selectors';
 
-export default function useFavorites() {
+const useFavorites = () => {
   const dispatch = useDispatch();
-  const { currentUser } = useAuthState();
-  const userId = currentUser?.id;
+  const currentUserId = useSelector(selectCurrentUserId);
 
-  // Массив ID навыков, которые лайкнул текущий пользователь
-  const favoriteSkillIds = useSelector((state) => {
-    if (!userId) return [];
-    return selectFavoriteSkillIds(state, userId);
-  });
+  const allLikes = useSelector((state) => state.userLikes.likes);
 
-  const toggleFavorite = useCallback(
-    (skillId: number) => {
-      if (!userId) return;
+  const favoriteUserIds = currentUserId ? (allLikes[currentUserId] || []) : [];
 
-      const alreadyLiked = favoriteSkillIds.includes(skillId);
+  const isFavorite = useCallback((targetUserId: number): boolean => {
+    if (!currentUserId) return false;
+    return favoriteUserIds.includes(targetUserId);
+  }, [currentUserId, favoriteUserIds]);
 
-      if (alreadyLiked) {
-        dispatch(removeFavoriteSkill({ skillId, userId }));
-      } else {
-        dispatch(addFavoriteSkill({ skillId, userId }));
-      }
-    },
-    [dispatch, userId, favoriteSkillIds]
-  );
-
-  const isFavorite = useCallback(
-    (skillId: number) => {
-      if (!userId) return false;
-      return favoriteSkillIds.includes(skillId);
-    },
-    [favoriteSkillIds, userId]
-  );
+  const toggleFavorite = useCallback((targetUserId: number) => {
+    if (currentUserId) {
+      dispatch(toggleUserLike({
+        userId: currentUserId,
+        targetUserId
+      }));
+    }
+  }, [dispatch, currentUserId]);
 
   return {
-    favoriteSkillIds,
-    toggleFavorite,
+    favoriteUserIds,
     isFavorite,
+    toggleFavorite,
+    currentUserId,
   };
 };
+
+export default useFavorites;

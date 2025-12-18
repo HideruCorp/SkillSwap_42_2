@@ -6,10 +6,10 @@ export type SectionUIProps = {
   onAction?: () => void;
   actionLabel?: string;
   className?: string;
-  onLikeClick?: (id: number) => void;
-  onDetailsClick?: (id: number) => void;
+  onLikeClick?: (userId: number) => void;
+  onDetailsClick?: (userId: number) => void;
   triggerRef?: (node: HTMLDivElement | null) => void;
   hasMore?: boolean;
-  headerExtra?: React.ReactNode; // дополнительный элемент в заголовке
-  isFavorite?: (skillId: number) => boolean;
+  headerExtra?: React.ReactNode;
+  isFavorite?: (userId: number) => boolean;
 };
