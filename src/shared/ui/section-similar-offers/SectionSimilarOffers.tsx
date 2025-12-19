@@ -108,56 +108,54 @@ function SectionSimilarOffers({
   }, [skillIds.length]);
 
   return (
-    <section className={styles.section}>
-      <SectionHeaderUI title={title} />
+  <section className={styles.section}>
+    <SectionHeaderUI title={title} />
 
-      {isLoading && (
-        <div className={styles.slider}>
-          {skeletonKeys.map((key) => (
-            <div key={key} className={styles.skeletonCard} />
+    {isLoading ? (
+      <div className={styles.slider}>
+        {skeletonKeys.map((key) => (
+          <div key={key} className={styles.skeletonCard} />
+        ))}
+      </div>
+    ) : skillIds.length === 0 ? (
+      <div className={styles.empty}>
+        Пока нет похожих предложений
+      </div>
+    ) : (
+      <div className={styles.wrapper}>
+        {isScrollable && canScrollLeft && (
+          <ArrowButton
+            direction="left"
+            onClick={handleScrollLeft}
+            className={styles.arrowLeft}
+            ariaLabel="Прокрутить влево"
+          />
+        )}
+
+        <div className={styles.slider} ref={scrollRef}>
+          {skillIds.map((skillId) => (
+            <SkillCardContainer
+              key={skillId}
+              skillId={skillId}
+              categories={categories}
+              subcategories={subcategories}
+              cities={cities}
+            />
           ))}
         </div>
-      )}
 
-      {!isLoading && skillIds.length === 0 && (
-        <div className={styles.empty}>Пока нет похожих предложений</div>
-      )}
-
-      {!isLoading && skillIds.length > 0 && (
-        <div className={styles.wrapper}>
-          {isScrollable && canScrollLeft && (
-            <ArrowButton
-              direction="left"
-              onClick={handleScrollLeft}
-              className={styles.arrowLeft}
-              ariaLabel="Прокрутить влево"
-            />
-          )}
-
-          <div className={styles.slider} ref={scrollRef}>
-            {skillIds.map((skillId) => (
-              <SkillCardContainer
-                key={skillId}
-                skillId={skillId}
-                categories={categories}
-                subcategories={subcategories}
-                cities={cities}
-              />
-            ))}
-          </div>
-
-          {isScrollable && canScrollRight && (
-            <ArrowButton
-              direction="right"
-              onClick={handleScrollRight}
-              className={styles.arrowRight}
-              ariaLabel="Прокрутить вправо"
-            />
-          )}
-        </div>
-      )}
-    </section>
-  );
+        {isScrollable && canScrollRight && (
+          <ArrowButton
+            direction="right"
+            onClick={handleScrollRight}
+            className={styles.arrowRight}
+            ariaLabel="Прокрутить вправо"
+          />
+        )}
+      </div>
+    )}
+  </section>
+);
 }
 
 export default SectionSimilarOffers;

@@ -7,6 +7,7 @@ import Footer from '../footer/Footer';
 
 interface LayoutProps {
   children: ReactNode;
+  withGrid?: boolean;
 }
 
 const cx = classNames.bind(styles);
@@ -25,7 +26,7 @@ function Layout({ children }: LayoutProps) {
         <Header />
         <main
           className={cx(styles.main, {
-            mainLogin: isAuthPage,
+            mainLogin: isAuthPage, 
             mainGrid: !isAuthPage,
           })}
         >
