@@ -8,5 +8,5 @@ export type { CreateExchangePayload } from './model/types';
 export {
   selectExchangesByUserId,
   selectActiveExchangesByUserId,
-  selectCompletedExchangesByUserId,
+  selectArchivedExchangesByUserId,
 } from './model/selectors';

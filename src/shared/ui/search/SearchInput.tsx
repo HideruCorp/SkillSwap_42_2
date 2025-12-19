@@ -1,15 +1,36 @@
-import styles from './search-input.module.scss';
 import searchIcon from '@shared/assets/img/search.svg';
+import styles from './search-input.module.scss';
 
 export interface SearchInputProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onSubmit?: (e: React.FormEvent) => void;
+  placeholder?: string;
 }
 
-export function SearchInput({ value, onChange }: SearchInputProps) {
+export function SearchInput({
+                              value,
+                              onChange,
+                              onKeyDown,
+                              onSubmit,
+                              placeholder
+                            }: SearchInputProps) {
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (onSubmit) {
+      onSubmit(e);
+    }
+  };
+
   return (
-    <div className={`${styles.container}`}>
-      <button type="button" className={`${styles.containerButton}`}>
+    <form className={styles.container} onSubmit={handleSubmit}>
+      <button
+        type="submit"
+        className={`${styles.containerButton}`}
+        aria-label="Поиск"
+      >
         <img src={searchIcon} alt="Поиск" />
       </button>
       <input
@@ -17,9 +38,21 @@ export function SearchInput({ value, onChange }: SearchInputProps) {
         className={`${styles.containerInput}`}
         value={value}
         onChange={onChange}
-        placeholder="Искать навык"
+        onKeyDown={onKeyDown}
+        placeholder={placeholder || "Поиск по имени или навыку..."}
+        aria-label="Поиск пользователей и навыков"
       />
-    </div>
+      {value && (
+        <button
+          type="button"
+          className={styles.clearButton}
+          onClick={() => onChange({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>)}
+          aria-label="Очистить поиск"
+        >
+          ×
+        </button>
+      )}
+    </form>
   );
 }
 

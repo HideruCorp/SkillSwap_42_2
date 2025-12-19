@@ -21,7 +21,6 @@ export interface Skill {
   description: string;
   createdAt: string;
   images: string[];
-  likesReceived: number[];
 }
 
 // Тип навыка для фильтра

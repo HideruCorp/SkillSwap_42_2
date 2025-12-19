@@ -2,6 +2,7 @@ import { useEffect, useState, type SyntheticEvent } from 'react';
 import type { Category, Subcategory } from '@shared/types';
 import categoriesApi from '@entities/category/api/categoriesApi';
 import Modal from '@features/modal/Modal';
+import ChevronDownIcon from '@shared/assets/img/chevron-Down.svg?react';
 import styles from './all-skills-dropdown.module.scss';
 import AllSkillsModal from './all-skills-modal/AllSkillsModal';
 
@@ -33,11 +34,7 @@ function AllSkillsDropdown() {
     <>
       <a href="#allskills" onClick={handleOpen} className={`${styles.allSkillsDropdown}`}>
         Все навыки
-        <img
-          className={`${styles.allSkillsDropdownImg}`}
-          src="../../../src/shared/assets/img/chevron-Down.svg"
-          alt="раскрытие списка навыков"
-        />
+        <ChevronDownIcon className={`${styles.allSkillsDropdownImg}`} />
       </a>
       {isOpenModal && (
         <Modal onClose={handleClose} className={styles.skillModal}>

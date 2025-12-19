@@ -1,7 +1,7 @@
 import type { User, Skill } from '@shared/types';
-import usersApi from '@entities/user/api/usersApi'; // Импортируем из нового места
+import usersApi from '@entities/user/api/usersApi';
 import skillsApi from '@entities/skill/api/skillsApi';
-import type { StoredUser, StoredSkill } from './types';
+import type { StoredUser, StoredSkill, StoredFavorite } from './types';
 import DeltaStorage from './deltaStorage';
 
 /**
@@ -97,4 +97,46 @@ export async function loadStoredUserByEmail(email: string): Promise<StoredUser |
 
   // Fallback на mock через API
   return usersApi.getStoredUserByEmail(normalizedEmail);
+}
+
+/**
+ * Raw skill type from JSON with likesReceived (for migration only)
+ */
+interface RawSkillWithLikes extends Skill {
+  likesReceived?: number[];
+}
+
+/**
+ * Извлечь favorites из массива skills (миграция из likesReceived)
+ * Используется только при первой загрузке, когда в IndexedDB еще нет favorites
+ */
+export async function loadInitialFavorites(): Promise<StoredFavorite[]> {
+  // Проверяем, есть ли уже favorites в IndexedDB
+  const existingFavorites = await DeltaStorage.getAllFavorites();
+  if (existingFavorites.length > 0) {
+    // Уже есть favorites в IndexedDB, не нужно мигрировать
+    return existingFavorites;
+  }
+
+  // Загружаем raw JSON напрямую, чтобы получить likesReceived
+  const response = await fetch('/db/skills.json');
+  const data = await response.json();
+  const rawSkills = data.skills as RawSkillWithLikes[];
+
+  const favorites: StoredFavorite[] = [];
+
+  // Извлекаем все лайки из skills.likesReceived
+  rawSkills.forEach((skill) => {
+    if (skill.likesReceived && Array.isArray(skill.likesReceived)) {
+      skill.likesReceived.forEach((userId: number) => {
+        favorites.push({
+          userId,
+          skillId: skill.id,
+          createdAt: skill.createdAt || new Date().toISOString(),
+        });
+      });
+    }
+  });
+
+  return favorites;
 }

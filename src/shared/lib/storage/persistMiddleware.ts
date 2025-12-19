@@ -33,7 +33,6 @@ interface SkillPayload {
   description: string;
   createdAt: string;
   images: string[];
-  likesReceived: number[];
 }
 
 interface UpdatePayload<T> {
@@ -139,7 +138,6 @@ const persistHandlers: Record<string, (action: ActionWithPayloadAndMeta) => Prom
       description: skill.description,
       createdAt: skill.createdAt,
       images: skill.images,
-      likesReceived: skill.likesReceived,
     };
     await DeltaStorage.addSkill(storedSkill);
   },
@@ -156,28 +154,14 @@ const persistHandlers: Record<string, (action: ActionWithPayloadAndMeta) => Prom
 
   // ==================== FAVORITES ====================
 
-  'skills/addFavorite': async (action) => {
+  'favorites/addFavoriteSkill': async (action) => {
     const { skillId, userId } = action.payload as FavoritePayload;
-    const skill = await DeltaStorage.getSkillById(skillId);
-
-    if (skill) {
-      const newLikes = skill.likesReceived.includes(userId)
-        ? skill.likesReceived
-        : [...skill.likesReceived, userId];
-
-      await DeltaStorage.updateSkill(skillId, { likesReceived: newLikes });
-    }
+    await DeltaStorage.addFavorite(userId, skillId);
   },
 
-  'skills/removeFavorite': async (action) => {
+  'favorites/removeFavoriteSkill': async (action) => {
     const { skillId, userId } = action.payload as FavoritePayload;
-    const skill = await DeltaStorage.getSkillById(skillId);
-
-    if (skill) {
-      await DeltaStorage.updateSkill(skillId, {
-        likesReceived: skill.likesReceived.filter((id) => id !== userId),
-      });
-    }
+    await DeltaStorage.removeFavorite(userId, skillId);
   },
 
   // ==================== REQUESTS ====================

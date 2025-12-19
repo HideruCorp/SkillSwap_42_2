@@ -1,14 +1,12 @@
-import type { UserCardProps } from '@shared/ui/user-card/types';
+import type { ReactNode } from 'react';
 
 export type SectionUIProps = {
   title: string;
-  cards: UserCardProps[];
+  children?: ReactNode;
   onAction?: () => void;
   actionLabel?: string;
   className?: string;
-  onLikeClick?: (id: number) => void;
-  onDetailsClick?: (id: number) => void;
   triggerRef?: (node: HTMLDivElement | null) => void;
   hasMore?: boolean;
-  headerExtra?: React.ReactNode; // дополнительный элемент в заголовке
+  headerExtra?: ReactNode; // дополнительный элемент в заголовке
 };

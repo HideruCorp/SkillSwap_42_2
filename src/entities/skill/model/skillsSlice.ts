@@ -1,6 +1,6 @@
 import { loadMergedData } from '@shared/lib/storage';
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Skill, Nullable, UserId } from '@shared/types';
+import type { Skill, Nullable } from '@shared/types';
 
 interface SkillsState {
   items: Skill[];
@@ -38,19 +38,6 @@ const skillsSlice = createSlice({
     deleteSkill(state, action: PayloadAction<number>) {
       state.items = state.items.filter((s) => s.id !== action.payload);
     },
-    // Favorites
-    addFavorite(state, action: PayloadAction<{ skillId: number; userId: UserId }>) {
-      const skill = state.items.find((s) => s.id === action.payload.skillId);
-      if (skill && !skill.likesReceived.includes(action.payload.userId)) {
-        skill.likesReceived.push(action.payload.userId);
-      }
-    },
-    removeFavorite(state, action: PayloadAction<{ skillId: number; userId: UserId }>) {
-      const skill = state.items.find((s) => s.id === action.payload.skillId);
-      if (skill) {
-        skill.likesReceived = skill.likesReceived.filter((id) => id !== action.payload.userId);
-      }
-    },
     setSkillsLoading(state, action: PayloadAction<boolean>) {
       state.isLoading = action.payload;
     },
@@ -77,29 +64,18 @@ const skillsSlice = createSlice({
     selectAllSkills: (state) => state.items,
     selectSkillById: (state, id: number) => state.items.find((s) => s.id === id),
     selectSkillsByUserId: (state, userId: number) => state.items.filter((s) => s.userId === userId),
-    selectFavoriteSkillIds: (state, userId: number) =>
-      state.items.filter((s) => s.likesReceived.includes(userId)).map((s) => s.id),
     selectSkillsLoading: (state) => state.isLoading,
     selectSkillsError: (state) => state.error,
   },
 });
 
-export const {
-  setSkills,
-  addSkill,
-  updateSkill,
-  deleteSkill,
-  addFavorite,
-  removeFavorite,
-  setSkillsLoading,
-  setSkillsError,
-} = skillsSlice.actions;
+export const { setSkills, addSkill, updateSkill, deleteSkill, setSkillsLoading, setSkillsError } =
+  skillsSlice.actions;
 
 export const {
   selectAllSkills,
   selectSkillById,
   selectSkillsByUserId,
-  selectFavoriteSkillIds,
   selectSkillsLoading,
   selectSkillsError,
 } = skillsSlice.selectors;

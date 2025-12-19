@@ -99,7 +99,10 @@ export function AvatarPicker({
   }, [file]);
 
   return (
-    <div className={`${styles.container} ${className}`} style={{ '--avatar-size': `${size}px` } as React.CSSProperties}>
+    <div
+      className={`${styles.container} ${className}`}
+      style={{ '--avatar-size': `${size}px` } as React.CSSProperties}
+    >
       <div
         {...getRootProps()}
         className={`${styles.avatarWrapper} ${isDragActive ? styles.dragActive : ''} ${error ? styles.error : ''}`}
@@ -153,4 +156,3 @@ export function AvatarPicker({
 }
 
 export default AvatarPicker;
-

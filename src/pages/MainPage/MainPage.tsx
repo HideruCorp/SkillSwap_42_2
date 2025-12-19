@@ -1,50 +1,61 @@
-import { useMemo } from 'react';
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from '@app/store';
+import { setTextSearch, resetFilters } from '@features/filters'; // Добавили resetFilters
 import FiltersPanel from '@widgets/filters-panel';
 import UsersSection from '@widgets/users-section/UsersSection';
-import styles from './main-page.module.scss';
 import FilterBar from '@widgets/filter-bar';
-import { useSelector } from '@app/store';
+import { useActiveFilters } from '@features/filters/useActiveFilters';
+import styles from './main-page.module.scss';
 
 export function MainPage() {
-  // Проверяем, есть ли активные фильтры
-  const skillType = useSelector((state) => state.filters.skillType);
-  const gender = useSelector((state) => state.filters.gender);
-  const cities = useSelector((state) => state.filters.cities);
-  const subcategories = useSelector((state) => state.filters.subcategories);
-  const textSearch = useSelector((state) => state.filters.textSearch);
+  const { hasActiveFilters } = useActiveFilters();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const hasActiveFilters = useMemo(() => {
-    return (
-      skillType !== 'all' ||
-      gender !== 'all' ||
-      (cities && cities.length > 0) ||
-      (subcategories && subcategories.length > 0) ||
-      (textSearch && textSearch.trim() !== '')
-    );
-  }, [skillType, gender, cities, subcategories, textSearch]);
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const searchFromUrl = searchParams.get('search');
+
+    if (searchFromUrl) {
+      dispatch(setTextSearch(searchFromUrl));
+
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete('search');
+      navigate({ search: newSearchParams.toString() }, { replace: true });
+    }
+  }, [location.search, dispatch, navigate]);
+
+  // Эффект для сброса фильтров при размонтировании компонента (уходе со страницы)
+  useEffect(() => {
+    return () => {
+      // Сбрасываем все фильтры, кроме текстового поиска, если он есть
+      dispatch(resetFilters());
+    };
+  }, [dispatch]);
 
   return (
     <>
-      {/* ЛЕВАЯ КОЛОНКА */}
       <aside className={styles.filters}>
         <FiltersPanel />
       </aside>
 
-      {/* ПРАВАЯ КОЛОНКА */}
       <section className={styles.content}>
-        <div className={styles.controls}>
-          <FilterBar />
-        </div>
-
         {hasActiveFilters ? (
-          <UsersSection
-            title="Подходящие предложения"
-            mode="all"
-            infinite
-            previewLimit={21}
-            showCount
-            showSortButton
-          />
+          <>
+            <div className={styles.controls}>
+              <FilterBar />
+            </div>
+            <UsersSection
+              title="Подходящие предложения"
+              mode="all"
+              infinite
+              previewLimit={21}
+              showCount
+              showSortButton
+            />
+          </>
         ) : (
           <>
             <div className={styles.section}>
@@ -55,7 +66,7 @@ export function MainPage() {
                 infinite={false}
                 showAllButton
               />
-              </div>
+            </div>
             <div className={styles.section}>
               <UsersSection
                 title="Новое"
@@ -66,7 +77,7 @@ export function MainPage() {
               />
             </div>
             <div className={styles.section}>
-              <UsersSection title="Рекомендуем" mode="created" infinite previewLimit={21} />
+              <UsersSection title="Рекомендуем" mode="recommended" infinite previewLimit={21} />
             </div>
           </>
         )}

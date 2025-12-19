@@ -35,6 +35,20 @@ const exchangesSlice = createSlice({
         state.items[index] = { ...state.items[index], ...action.payload.changes };
       }
     },
+    completeExchange(state, action: PayloadAction<number>) {
+      const exchange = state.items.find((e) => e.id === action.payload);
+      if (exchange && exchange.status === 'inProgress') {
+        exchange.status = 'completed';
+        exchange.completedAt = new Date().toISOString();
+      }
+    },
+    cancelExchange(state, action: PayloadAction<number>) {
+      const exchange = state.items.find((e) => e.id === action.payload);
+      if (exchange && exchange.status === 'inProgress') {
+        exchange.status = 'cancelled';
+        exchange.completedAt = new Date().toISOString();
+      }
+    },
     deleteExchange(state, action: PayloadAction<number>) {
       state.items = state.items.filter((e) => e.id !== action.payload);
     },
@@ -79,6 +93,8 @@ export const {
   setExchanges,
   addExchange,
   updateExchange,
+  completeExchange,
+  cancelExchange,
   deleteExchange,
   setExchangesLoading,
   setExchangesError,

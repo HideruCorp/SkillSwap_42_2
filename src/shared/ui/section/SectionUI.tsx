@@ -1,16 +1,13 @@
 import SectionHeaderUI from '@shared/ui/section-header/SectionHeaderUI';
-import UserCard from '@shared/ui/user-card/UserCard';
 import styles from './SectionUI.module.scss';
 import type { SectionUIProps } from './type';
 
 function SectionUI({
   title,
-  cards,
+  children,
   onAction,
   actionLabel,
   className,
-  onLikeClick,
-  onDetailsClick,
   triggerRef,
   hasMore,
   headerExtra,
@@ -24,28 +21,11 @@ function SectionUI({
         extraAction={headerExtra}
       />
 
-      {cards.length === 0 ? (
+      {children == null || (Array.isArray(children) && children.length === 0) ? (
         <div className={styles.empty}>В этой секции пусто</div>
       ) : (
         <>
-          <div className={styles.cardsGrid}>
-            {cards.map((card) => (
-              <UserCard
-                key={card.id}
-                id={card.id}
-                name={card.name}
-                city={card.city}
-                age={card.age}
-                canTeach={card.canTeach}
-                wantsToLearn={card.wantsToLearn}
-                avatarUrl={card.avatarUrl ?? undefined}
-                isLiked={card.isLiked}
-                likes={card.likes}
-                onDetailsClick={onDetailsClick ? () => onDetailsClick(card.id) : undefined}
-                onLikeClick={onLikeClick ? () => onLikeClick(card.id) : undefined}
-              />
-            ))}
-          </div>
+          <div className={styles.cardsGrid}>{children}</div>
 
           {hasMore && <div ref={triggerRef} className={styles.trigger} />}
         </>

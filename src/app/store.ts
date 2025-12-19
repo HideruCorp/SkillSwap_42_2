@@ -1,4 +1,3 @@
-// src/app/store.ts
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import {
   type TypedUseSelectorHook,
@@ -6,36 +5,30 @@ import {
   useSelector as selectorHook,
 } from 'react-redux';
 
-// Entity reducers
 import notificationsReducer from '@entities/notification';
 import usersReducer from '@entities/user';
 import skillsReducer from '@entities/skill';
 import requestsReducer from '@entities/request';
 import exchangesReducer from '@entities/exchange';
+import favoritesReducer from '@entities/favorites';
 
-// Feature reducers
 import { authReducer, registrationReducer, authListener } from '@features/auth';
 import filtersReducer from '@features/filters';
 import sortReducer from '@features/sort';
-import favoritesReducer from '@features/favorites/model/favoritesSlice'; // ДОБАВЛЯЕМ
 
-// Middleware
 import persistMiddleware from '@shared/lib/storage/persistMiddleware';
 
 export const rootReducer = combineReducers({
-  // Entities
   users: usersReducer,
   skills: skillsReducer,
   notifications: notificationsReducer,
   requests: requestsReducer,
   exchanges: exchangesReducer,
-
-  // Features
+  favorites: favoritesReducer,
   auth: authReducer,
   registration: registrationReducer,
   filters: filtersReducer,
   sort: sortReducer,
-  favorites: favoritesReducer, // ДОБАВЛЯЕМ
 });
 
 const store = configureStore({

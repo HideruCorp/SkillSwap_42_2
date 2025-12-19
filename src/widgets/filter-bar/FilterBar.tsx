@@ -5,20 +5,9 @@ import cityApi from '@entities/city/api/citiesApi';
 import type { Subcategory, City, TSkillType, Gender, Category } from '@shared/types';
 import FilterItem from '@shared/ui/filter-item/FilterItem';
 
-import { useDispatch, useSelector } from '@app/store';
-import {
-  filtersSlice,
-  setSkillType,
-  setGender,
-  setCities,
-  setSubcategories,
-  setTextSearch,
-} from '@features/filters';
+import { useActiveFilters } from '@features/filters/useActiveFilters';
 
 import styles from './filter-bar.module.scss';
-
-const { selectSkillType, selectGender, selectCities, selectSubcategories, selectTextSearch } =
-  filtersSlice.selectors;
 
 const SKILL_TYPE_LABELS: Record<TSkillType, string> = {
   all: 'Все',
@@ -33,22 +22,34 @@ const GENDER_LABELS: Record<Gender, string> = {
 };
 
 function FilterBar() {
-  const dispatch = useDispatch();
+  const {
+    hasActiveFilters,
+    skillType,
+    gender,
+    cities: selectedCities,
+    subcategories: selectedSubcategories,
+    textSearch,
+    handleRemoveSkillType,
+    handleRemoveGender,
+    handleRemoveCity,
+    handleRemoveSubcategory,
+    handleRemoveTextSearch,
+    handleSetSubcategories,
+  } = useActiveFilters();
 
-  const skillType = useSelector(selectSkillType);
-  const gender = useSelector(selectGender);
-  const selectedCities = useSelector(selectCities);
-  const selectedSubcategories = useSelector(selectSubcategories);
-  const textSearch = useSelector(selectTextSearch);
-
-  const [categoriesData, setCategoriesData] = useState<{ categories: Category[]; subcategories: Subcategory[] } | null>(null);
+  const [categoriesData, setCategoriesData] = useState<{
+    categories: Category[];
+    subcategories: Subcategory[];
+  } | null>(null);
   const [, setCitiesData] = useState<City[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [categoriesRes, citiesRes] = await Promise.all([categoryApi.getAll(), cityApi.getCities()]);
-        // Сохраняем полный объект с categories и subcategories
+        const [categoriesRes, citiesRes] = await Promise.all([
+          categoryApi.getAll(),
+          cityApi.getCities(),
+        ]);
         setCategoriesData({
           categories: categoriesRes.categories,
           subcategories: categoriesRes.subcategories,
@@ -62,52 +63,28 @@ function FilterBar() {
     loadData();
   }, []);
 
-  const handleRemoveSkillType = () => {
-    dispatch(setSkillType('all'));
-  };
-
-  const handleRemoveGender = () => {
-    dispatch(setGender('all'));
-  };
-
-  const handleRemoveCity = (cityName: string) => {
-    dispatch(setCities(selectedCities.filter((c: string) => c !== cityName)));
-  };
-
-  const handleRemoveSubcategory = (subcategoryId: number) => {
-    dispatch(setSubcategories(selectedSubcategories.filter((id: number) => id !== subcategoryId)));
-  };
-
   const handleRemoveCategory = (categoryId: number) => {
     if (!categoriesData?.subcategories) return;
-    
-    // Находим все подкатегории этой категории
+
     const subcategoryIds = categoriesData.subcategories
       .filter((sub) => sub.categoryId === categoryId)
       .map((sub) => sub.id);
-    
-    // Удаляем все подкатегории этой категории из выбранных
+
     const newSelection = selectedSubcategories.filter((id) => !subcategoryIds.includes(id));
-    dispatch(setSubcategories(newSelection));
+    handleSetSubcategories(newSelection);
   };
 
-  const handleRemoveTextSearch = () => {
-    dispatch(setTextSearch(''));
-  };
-
-  // Группируем выбранные подкатегории по категориям
   const groupedSubcategories = useMemo(() => {
     if (!categoriesData?.subcategories || !categoriesData?.categories) {
       return new Map<number, number[]>();
     }
 
     const map = new Map<number, number[]>();
-    
-    // Для каждой выбранной подкатегории находим её категорию
+
     selectedSubcategories.forEach((subcategoryId) => {
       const subcategory = categoriesData.subcategories.find((sub) => sub.id === subcategoryId);
       if (subcategory) {
-        const categoryId = subcategory.categoryId;
+        const { categoryId } = subcategory;
         const subIds = map.get(categoryId) || [];
         subIds.push(subcategoryId);
         map.set(categoryId, subIds);
@@ -117,7 +94,6 @@ function FilterBar() {
     return map;
   }, [selectedSubcategories, categoriesData]);
 
-  // Проверяем, все ли подкатегории категории выбраны
   const areAllSubcategoriesSelected = useMemo(() => {
     if (!categoriesData?.subcategories || !categoriesData?.categories) {
       return new Map<number, boolean>();
@@ -130,27 +106,33 @@ function FilterBar() {
         (sub) => sub.categoryId === category.id
       );
       const selectedSubcategories = groupedSubcategories.get(category.id) || [];
-      
-      // Все подкатегории выбраны, если их количество совпадает
-      result.set(category.id, allSubcategories.length > 0 && 
-        allSubcategories.length === selectedSubcategories.length);
+
+      result.set(
+        category.id,
+        allSubcategories.length > 0 && allSubcategories.length === selectedSubcategories.length
+      );
     });
 
     return result;
   }, [groupedSubcategories, categoriesData]);
 
-  // Формируем список элементов для отображения
   const filterItems = useMemo(() => {
     if (!categoriesData?.subcategories || !categoriesData?.categories) {
       return [];
     }
 
-    const items: Array<{ type: 'category' | 'subcategory'; id: number; name: string; onClick: () => void }> = [];
+    const items: Array<{
+      type: 'category' | 'subcategory';
+      id: number;
+      name: string;
+      onClick: () => void;
+    }> = [];
     const processedCategories = new Set<number>();
 
-    // Вспомогательные функции для получения имен
     const getCategoryNameLocal = (categoryId: number): string => {
-      const category = categoriesData.categories.find((cat: Category) => cat && cat.id === categoryId);
+      const category = categoriesData.categories.find(
+        (cat: Category) => cat && cat.id === categoryId
+      );
       return category?.name || `Категория ${categoryId}`;
     };
 
@@ -159,20 +141,17 @@ function FilterBar() {
       return subcategory?.name || `Подкатегория ${id}`;
     };
 
-    // Обрабатываем выбранные подкатегории
     selectedSubcategories.forEach((subcategoryId) => {
       const subcategory = categoriesData.subcategories.find((sub) => sub.id === subcategoryId);
       if (!subcategory) return;
 
-      const categoryId = subcategory.categoryId;
-      
-      // Если категория уже обработана (все подкатегории выбраны), пропускаем
+      const { categoryId } = subcategory;
+
       if (processedCategories.has(categoryId)) return;
 
       const allSelected = areAllSubcategoriesSelected.get(categoryId) || false;
 
       if (allSelected) {
-        // Если все подкатегории категории выбраны, добавляем категорию
         items.push({
           type: 'category',
           id: categoryId,
@@ -181,7 +160,6 @@ function FilterBar() {
         });
         processedCategories.add(categoryId);
       } else {
-        // Если не все выбраны, добавляем отдельную подкатегорию
         items.push({
           type: 'subcategory',
           id: subcategoryId,
@@ -192,15 +170,15 @@ function FilterBar() {
     });
 
     return items;
-  }, [selectedSubcategories, categoriesData, areAllSubcategoriesSelected]);
+  }, [
+    selectedSubcategories,
+    categoriesData,
+    areAllSubcategoriesSelected,
+    handleRemoveSubcategory,
+    handleRemoveCategory,
+  ]);
 
-  const hasActiveFilters =
-    skillType !== 'all' ||
-    gender !== 'all' ||
-    selectedCities.length > 0 ||
-    selectedSubcategories.length > 0 ||
-    textSearch !== '';
-
+  // Если нет активных фильтров для отображения, не рендерим компонент
   if (!hasActiveFilters) {
     return null;
   }
@@ -228,16 +206,17 @@ function FilterBar() {
         />
       ))}
 
-      {filterItems.map((item) => (
-        <FilterItem
-          key={`${item.type}-${item.id}`}
-          type="category"
-          value={item.name}
-          onClick={item.onClick}
-        />
-      ))}
+      {categoriesData &&
+        filterItems.map((item) => (
+          <FilterItem
+            key={`${item.type}-${item.id}`}
+            type="category"
+            value={item.name}
+            onClick={item.onClick}
+          />
+        ))}
 
-      {textSearch !== '' && (
+      {textSearch.trim() !== '' && (
         <FilterItem type="name" value={textSearch} onClick={handleRemoveTextSearch} />
       )}
     </div>
