@@ -1,9 +1,11 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
 
-
-.main {
-   display: flex;
-   flex-direction: row;
-   gap: 24px;
-   align-items: flex-start;
-
- }
+.mainGrid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+}

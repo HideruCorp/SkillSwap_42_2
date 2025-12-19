@@ -18,15 +18,11 @@
 
   /* Иконка внутри кнопки */
   .icon {
-    display: inline-flex;
     width: 16px;
     height: 16px;
-    svg {
-      width: 100%;
-      height: 100%;
-      stroke: $color-text;
-      fill: none;
-    }
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 0.15s ease;
   }
 
   &:hover {
@@ -38,12 +34,12 @@
 }
 
 /* modifiers */
-.left {
-  transform: rotate(180deg);
+.left .icon {
+ transform: rotate(180deg);
 }
 
-.right {
-  transform: none;
+.right .icon {
+  transform: rotate(0deg);
 }
 
 .disabled {

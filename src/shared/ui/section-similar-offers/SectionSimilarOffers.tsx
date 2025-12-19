@@ -114,9 +114,7 @@ function SectionSimilarOffers({
           ))}
         </div>
       ) : cards.length === 0 ? (
-        <div className={styles.empty}>
-          Пока нет похожих предложений
-        </div>
+        <div className={styles.empty}>Пока нет похожих предложений</div>
       ) : (
         <div className={styles.wrapper}>
           {isScrollable && canScrollLeft && (
@@ -128,16 +126,16 @@ function SectionSimilarOffers({
             />
           )}
 
-          <div className={styles.slider} ref={scrollRef}>
-            {cards.map((card) => (
-              <UserCard
-                key={card.id}
-                {...card}
-                onLikeClick={onLikeClick}
-                onDetailsClick={onDetailsClick}
-              />
-            ))}
-          </div>
+            <div className={styles.slider} ref={scrollRef}>
+              {cards.map((card) => (
+                <UserCard
+                  key={card.id}
+                  {...card}
+                  onLikeClick={onLikeClick}
+                  onDetailsClick={onDetailsClick}
+                />
+              ))}
+            </div>
 
           {isScrollable && canScrollRight && (
             <ArrowButton

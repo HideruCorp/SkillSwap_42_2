@@ -1,7 +1,9 @@
 @use '@shared/styles/variables' as *;
 
 .section {
-  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px; 
 }
 
 .wrapper {
@@ -15,7 +17,6 @@
   gap: 24px;
   overflow-x: auto;
   scroll-behavior: smooth;
-  padding: 12px 0;
 
   scrollbar-width: none;
   &::-webkit-scrollbar {
@@ -48,6 +49,7 @@
   padding: 32px 0;
   text-align: center;
   color: $color-text-caption;
+  font-family: $font-body;
 }
 
 .skeletonCard {

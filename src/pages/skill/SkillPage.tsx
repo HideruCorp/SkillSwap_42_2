@@ -244,6 +244,9 @@ function SkillPage() {
 
   return (
     <>
+      <div className={styles.page}>
+        {/* Верхний блок: сайдбар + контент */}
+        <div className={styles.mainGrid}>
       <UserSkillCard
         name={userCardData.name}
         city={userCardData.city}
@@ -269,6 +272,8 @@ function SkillPage() {
         }}
         onMoreDetails={handleOfferExchange}
       />
+        </div>
+
       {/* Similar offers section */}
       <SectionSimilarOffers
         title="Похожие предложения"
@@ -277,6 +282,7 @@ function SkillPage() {
         onLikeClick={handleLike}
         onDetailsClick={handleDetails}
       />
+          </div>
       {isSkillCreatedModalOpen && (
         <Modal onClose={closeSkillCreatedModal}>
           <StatusModal
