@@ -1,4 +1,7 @@
 import React from 'react';
+import CheckboxDefaultIcon from '@shared/assets/img/checkbox-Default.svg?react';
+import CheckboxDoneIcon from '@shared/assets/img/checkbox-Done-Active.svg?react';
+import CheckboxRemoveIcon from '@shared/assets/img/checkbox-Remove-Active.svg?react';
 import styles from './checkbox.module.scss';
 import type { CheckboxProps } from './type';
 
@@ -17,10 +20,9 @@ export function CheckboxUI({
   };
 
   const isRemoveIcon = variant === 'remove';
-  const containerClass = `${styles.container} ${isRemoveIcon ? styles.removeStyle : ''}`;
 
   return (
-    <label htmlFor={inputId} className={containerClass}>
+    <label htmlFor={inputId} className={styles.container}>
       <input
         id={inputId}
         type="checkbox"
@@ -28,7 +30,11 @@ export function CheckboxUI({
         disabled={isDisabled}
         onChange={handleChange}
       />
-      <span className={styles.visualIndicator} />
+      <span className={styles.visualIndicator}>
+        {!checked && <CheckboxDefaultIcon />}
+        {checked && !isRemoveIcon && <CheckboxDoneIcon />}
+        {checked && isRemoveIcon && <CheckboxRemoveIcon />}
+      </span>
       <span className={styles.textContent}>{text}</span>
     </label>
   );

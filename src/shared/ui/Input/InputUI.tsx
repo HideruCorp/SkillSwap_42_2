@@ -59,11 +59,8 @@ function Input({
         )}
       </div>
 
-      {error ? (
-        <span className={styles.errorText}>{error}</span>
-      ) : message ? (
-        <span className={styles.messageText}>{message}</span>
-      ) : null}
+      {error && <span className={styles.errorText}>{error}</span>}
+      {!error && message && <span className={styles.messageText}>{message}</span>}
     </div>
   );
 }

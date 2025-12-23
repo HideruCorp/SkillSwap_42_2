@@ -71,45 +71,54 @@ function Header() {
     navigate('/auth');
   };
 
-  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setLocalSearchValue(value);
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = e.target;
+      setLocalSearchValue(value);
 
-    if (!value.trim()) {
-      dispatch(setTextSearch(''));
-      if (isOnMainPage) {
+      if (!value.trim()) {
+        dispatch(setTextSearch(''));
+        if (isOnMainPage) {
+          const searchParams = new URLSearchParams(window.location.search);
+          searchParams.delete('search');
+          navigate(`?${searchParams.toString()}`, { replace: true });
+        }
+      }
+    },
+    [dispatch, navigate, isOnMainPage]
+  );
+
+  const handleSearchSubmit = useCallback(
+    (e?: React.FormEvent) => {
+      if (e) {
+        e.preventDefault();
+      }
+
+      const searchValue = localSearchValue.trim();
+
+      if (!searchValue) return;
+
+      if (!isOnMainPage) {
+        navigate(`/?search=${encodeURIComponent(searchValue)}`);
+      } else {
         const searchParams = new URLSearchParams(window.location.search);
-        searchParams.delete('search');
+        searchParams.set('search', searchValue);
         navigate(`?${searchParams.toString()}`, { replace: true });
       }
-    }
-  }, [dispatch, navigate, isOnMainPage]);
 
-  const handleSearchSubmit = useCallback((e?: React.FormEvent) => {
-    if (e) {
-      e.preventDefault();
-    }
+      dispatch(setTextSearch(searchValue));
+    },
+    [localSearchValue, dispatch, navigate, isOnMainPage]
+  );
 
-    const searchValue = localSearchValue.trim();
-
-    if (!searchValue) return;
-
-    if (!isOnMainPage) {
-      navigate(`/?search=${encodeURIComponent(searchValue)}`);
-    } else {
-      const searchParams = new URLSearchParams(window.location.search);
-      searchParams.set('search', searchValue);
-      navigate(`?${searchParams.toString()}`, { replace: true });
-    }
-
-    dispatch(setTextSearch(searchValue));
-  }, [localSearchValue, dispatch, navigate, isOnMainPage]);
-
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleSearchSubmit();
-    }
-  }, [handleSearchSubmit]);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        handleSearchSubmit();
+      }
+    },
+    [handleSearchSubmit]
+  );
 
   return (
     <header className={`${styles.header}`}>
@@ -162,13 +171,13 @@ function Header() {
         ) : (
           <>
             <Button
-              type="secondary"
+              variant="secondary"
               className={styles['sign-in']}
               title="Войти"
               onClick={handleAuthClick}
             />
             <Button
-              type="primary"
+              variant="primary"
               className={styles['sign-up']}
               title="Зарегистрироваться"
               onClick={handleAuthClick}

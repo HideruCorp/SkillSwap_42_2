@@ -7,15 +7,17 @@ import sortSkills from './sortSkills';
  *
  * @param skills - Все доступные навыки
  * @param userInterests - Массив ID подкатегорий, в которых пользователь заинтересован
+ * @param likesMap - Map of skillId to likes count (для сортировки)
  * @returns Навыки, отсортированные с соответствующими интересами в первую очередь, затем остальные (все по дате)
  */
 export default function recommendSkills(
   skills: Skill[],
-  userInterests: SubcategoryId[] | undefined
+  userInterests: SubcategoryId[] | undefined,
+  likesMap: Record<number, number> = {}
 ): Skill[] {
   // Если интересов нет, вернуть все навыки, отсортированные по дате создания
   if (!userInterests || userInterests.length === 0) {
-    return sortSkills(skills, 'created');
+    return sortSkills(skills, 'created', likesMap);
   }
 
   // Разделить навыки на соответствующие и несоответствующие
@@ -31,8 +33,8 @@ export default function recommendSkills(
   });
 
   // Отсортировать обе группы по дате создания (новые первыми)
-  const sortedMatching = sortSkills(matching, 'created');
-  const sortedNonMatching = sortSkills(nonMatching, 'created');
+  const sortedMatching = sortSkills(matching, 'created', likesMap);
+  const sortedNonMatching = sortSkills(nonMatching, 'created', likesMap);
 
   // Вернуть соответствующие навыки первыми, затем несоответствующие
   return [...sortedMatching, ...sortedNonMatching];

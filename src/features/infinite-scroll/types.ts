@@ -13,7 +13,7 @@ export type RawSkill = {
   subcategoryId?: number;
   userId: number;
   title: string;
-  likesReceived: number[];
+  likesReceived: number[]; // DEPRECATED: используется только для миграции в favorites
 };
 
 export type RawCity = { id: number; name: string };

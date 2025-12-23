@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { MouseEventHandler } from 'react';
+import CheckboxDefaultIcon from '@shared/assets/img/checkbox-Default.svg?react';
+import CheckboxDoneIcon from '@shared/assets/img/checkbox-Done-Active.svg?react';
 import arrowDown from '../../assets/img/chevron-Down.svg';
-import checkboxDefault from '../../assets/img/checkbox-Default.svg';
-import checkboxDone from '../../assets/img/checkbox-Done-Active.svg';
 import type { OptionType, SelectProps } from './types';
 
 import styles from './dropdown-list-ui.module.scss';
@@ -200,18 +200,10 @@ export function DropdownListUI(props: SelectProps) {
                       aria-disabled={disabled}
                     >
                       {type === 'сheckbox' && !selected.some((element) => element === option) && (
-                        <img
-                          src={checkboxDefault}
-                          alt="ячейка чекбокса"
-                          className={styles.checkbox}
-                        />
+                        <CheckboxDefaultIcon className={styles.checkbox} aria-hidden="true" />
                       )}
                       {type === 'сheckbox' && selected.some((element) => element === option) && (
-                        <img
-                          src={checkboxDone}
-                          alt="отмеченная ячейка чекбокса"
-                          className={styles.checkbox}
-                        />
+                        <CheckboxDoneIcon className={styles.checkbox} aria-hidden="true" />
                       )}
                       <h5 className={styles.point}>{option.title}</h5>
                     </div>

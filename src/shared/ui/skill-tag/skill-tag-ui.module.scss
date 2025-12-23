@@ -1,4 +1,3 @@
-@use '@shared/styles/variables';
 @use '@shared/styles/mixins';
 
 .skill-tag {
@@ -6,9 +5,8 @@
 
   --skill-tag-padding: 8px 12px;
   --skill-tag-font-size: inherit;
-  --skill-tag-color: #{variables.$color-text};
 
-  color: var(--skill-tag-color);
+  color: var(--color-text-primary);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -18,4 +16,5 @@
   text-align: center;
   user-select: none;
   font-size: var(--skill-tag-font-size);
+  transition: var(--theme-transition);
 }

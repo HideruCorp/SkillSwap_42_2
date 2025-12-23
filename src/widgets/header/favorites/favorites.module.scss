@@ -1,5 +1,19 @@
+@use '@shared/styles/variables' as *;
 @use '@shared/styles/mixins' as *;
 
 .favorites {
   @include button-reset;
+
+  color: var(--color-text-primary);
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: $color-text-link;
+  }
+}
+
+.favoritesIcon {
+  width: 24px;
+  height: 24px;
+  display: block;
 }

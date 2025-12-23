@@ -170,7 +170,7 @@ function CredentialsForm({
       <div className={styles.submitButton}>
         <Button
           htmlType="submit"
-          type="primary"
+          variant="primary"
           title={isLoading ? 'Обработка...' : 'Далее'}
           disabled={isLoading || isCheckingEmail}
         />

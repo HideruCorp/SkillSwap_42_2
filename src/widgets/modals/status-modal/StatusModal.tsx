@@ -15,7 +15,7 @@ function StatusModal({ onClose, icon, title, text, buttonText }: StatusModalProp
       <img alt={title} className={styles.icon} src={icon} />
       <h2 className={styles.title}>{title}</h2>
       <p className={styles.text}>{text}</p>
-      <Button className={styles.button} type="primary" onClick={onClose} title={buttonText} />
+      <Button className={styles.button} variant="primary" onClick={onClose} title={buttonText} />
     </div>
   );
 }

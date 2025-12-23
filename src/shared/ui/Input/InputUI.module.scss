@@ -32,9 +32,15 @@
   transition: all 0.2s ease-in-out;
   box-sizing: border-box;
   font-family: $font-body;
+  
+  // Важно: фон инпута должен быть прозрачным или соответствовать теме
+  background-color: transparent; 
+  color: $color-text;
 
   &:focus {
-    border-color: #000;
+    // БЫЛО: border-color: #000;
+    // СТАЛО: цвет акцента или текста
+    border-color: $color-text; 
   }
 }
 
@@ -55,6 +61,7 @@
 
   display: block;
   margin-top: 4px;
+  color: $color-text-caption; // Добавил явный цвет для сообщения
 }
 
 .errorText {
@@ -77,6 +84,7 @@
   align-items: center;
   justify-content: center;
   z-index: 2;
+  color: $color-text; // Чтобы SVG наследовали цвет
 }
 
 .eyeButton {
@@ -89,6 +97,11 @@
     width: 24px;
     height: 24px;
     pointer-events: none;
+  }
+  
+  // Если внутри SVG используется currentColor
+  svg {
+    fill: $color-text;
   }
 }
 
@@ -111,7 +124,9 @@
     left: -2px;
     right: -2px;
     height: 2px;
-    background-color: #000;
+    // БЫЛО: background-color: #000;
+    // СТАЛО:
+    background-color: $color-text; 
     transform: rotate(45deg);
     transform-origin: center;
   }

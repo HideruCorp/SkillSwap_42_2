@@ -55,7 +55,7 @@ function ModalSuggestion({ submit, onClose }: ModalSuggestionProps) {
           <div className={styles.buttons}>
             <Button
               className={styles.button}
-              type="tertiary"
+              variant="tertiary"
               onClick={onClose}
               title="Редактировать"
               iconRight={
@@ -70,7 +70,7 @@ function ModalSuggestion({ submit, onClose }: ModalSuggestionProps) {
                 />
               }
             />
-            <Button className={styles.button} type="primary" onClick={submit} title="Готово" />
+            <Button className={styles.button} variant="primary" onClick={submit} title="Готово" />
           </div>
         </div>
         <SkillGallery images={skillImages} />

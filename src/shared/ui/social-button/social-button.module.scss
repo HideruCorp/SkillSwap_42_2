@@ -17,7 +17,7 @@
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: $color-accent;
+    border-color: $color-text-link;
     background: rgba($color-accent, 0.05);
   }
 

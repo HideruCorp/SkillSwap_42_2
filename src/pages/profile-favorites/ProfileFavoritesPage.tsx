@@ -69,7 +69,7 @@ function ProfileFavoritesPage() {
           <Button
             title="Вперёд за навыками"
             onClick={handleGoToSkills}
-            type="primary"
+            variant="primary"
             className={styles.goToSkillsButton}
           />
         </div>

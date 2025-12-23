@@ -256,42 +256,42 @@ function SkillPage() {
       <div className={styles.page}>
         {/* Верхний блок: сайдбар + контент */}
         <div className={styles.mainGrid}>
-      <UserSkillCard
-        name={userCardData.name}
-        city={userCardData.city}
-        age={userCardData.age}
-        about={userCardData.about}
-        canTeach={userCardData.canTeach}
-        wantsToLearn={userCardData.wantsToLearn}
-        avatarUrl={userCardData.avatarUrl}
-      />
-      <SkillWidget
-        skill={skill}
-        skillDescription={skillDescription}
-        isLiked={isFavorite}
-        isOwner={isOwner} // Передаем флаг владельца
-        requestSent={requestSent} // Передаем флаг отправленной заявки
-        onLike={(id) => {
-          toggleFavorite.toggleFavorite(id, isFavorite);
-        }}
-        onShare={(id) => {
-          // TODO: реализовать share через Web Share API или clipboard
-          console.log('Share skill', id);
-        }}
-        onMoreDetails={handleOfferExchange}
-      />
+          <UserSkillCard
+            name={userCardData.name}
+            city={userCardData.city}
+            age={userCardData.age}
+            about={userCardData.about}
+            canTeach={userCardData.canTeach}
+            wantsToLearn={userCardData.wantsToLearn}
+            avatarUrl={userCardData.avatarUrl}
+          />
+          <SkillWidget
+            skill={skill}
+            skillDescription={skillDescription}
+            isLiked={isFavorite}
+            isOwner={isOwner} // Передаем флаг владельца
+            requestSent={requestSent} // Передаем флаг отправленной заявки
+            onLike={(id) => {
+              toggleFavorite.toggleFavorite(id, isFavorite);
+            }}
+            onShare={(id) => {
+              // TODO: реализовать share через Web Share API или clipboard
+              console.log('Share skill', id);
+            }}
+            onMoreDetails={handleOfferExchange}
+          />
         </div>
 
-      {/* Similar offers section */}
-      <SectionSimilarOffers
-        title="Похожие предложения"
-        skillIds={similarSkillIds}
-        categories={categoriesData?.categories || []}
-        subcategories={categoriesData?.subcategories || []}
-        cities={citiesData}
-        isLoading={isLoading}
-      />
-          </div>
+        {/* Similar offers section */}
+        <SectionSimilarOffers
+          title="Похожие предложения"
+          skillIds={similarSkillIds}
+          categories={categoriesData?.categories || []}
+          subcategories={categoriesData?.subcategories || []}
+          cities={citiesData}
+          isLoading={isLoading}
+        />
+      </div>
       {isSkillCreatedModalOpen && (
         <Modal onClose={closeSkillCreatedModal}>
           <StatusModal

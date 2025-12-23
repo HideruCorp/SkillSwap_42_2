@@ -1,4 +1,4 @@
-import searchIcon from '@shared/assets/img/search.svg';
+import SearchIcon from '@shared/assets/img/search.svg?react';
 import styles from './search-input.module.scss';
 
 export interface SearchInputProps {
@@ -10,13 +10,12 @@ export interface SearchInputProps {
 }
 
 export function SearchInput({
-                              value,
-                              onChange,
-                              onKeyDown,
-                              onSubmit,
-                              placeholder
-                            }: SearchInputProps) {
-
+  value,
+  onChange,
+  onKeyDown,
+  onSubmit,
+  placeholder,
+}: SearchInputProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (onSubmit) {
@@ -26,12 +25,8 @@ export function SearchInput({
 
   return (
     <form className={styles.container} onSubmit={handleSubmit}>
-      <button
-        type="submit"
-        className={`${styles.containerButton}`}
-        aria-label="Поиск"
-      >
-        <img src={searchIcon} alt="Поиск" />
+      <button type="submit" className={`${styles.containerButton}`} aria-label="Поиск">
+        <SearchIcon />
       </button>
       <input
         type="text"
@@ -39,7 +34,7 @@ export function SearchInput({
         value={value}
         onChange={onChange}
         onKeyDown={onKeyDown}
-        placeholder={placeholder || "Поиск по имени или навыку..."}
+        placeholder={placeholder || 'Поиск по имени или навыку...'}
         aria-label="Поиск пользователей и навыков"
       />
       {value && (

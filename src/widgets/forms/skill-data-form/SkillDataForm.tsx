@@ -309,14 +309,14 @@ function SkillDataForm({
           <Button
             className={styles.fullWidthButton}
             title="Назад"
-            type="secondary"
+            variant="secondary"
             onClick={handlePrevStep}
           />
           <Button
             htmlType="submit"
             className={styles.fullWidthButton}
             title={isSubmitting ? 'Обработка...' : 'Продолжить'}
-            type="primary"
+            variant="primary"
             disabled={isSubmitting}
           />
         </div>

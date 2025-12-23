@@ -3,37 +3,37 @@
     {
       "id": 1,
       "name": "Бизнес и карьера",
-      "color": "#eee7f7",
+      "color": "var(--color-tag-business)",
       "icon": "briefcase"
     },
     {
       "id": 2,
       "name": "Творчество и искусство",
-      "color": "#f7e7f2",
+      "color": "var(--color-tag-creative)",
       "icon": "palette"
     },
     {
       "id": 3,
       "name": "Иностранные языки",
-      "color": "#ebe5c5",
+      "color": "var(--color-tag-languages)",
       "icon": "global"
     },
     {
       "id": 4,
       "name": "Образование и развитие",
-      "color": "#e7f2f6",
+      "color": "var(--color-tag-education)",
       "icon": "book"
     },
     {
       "id": 6,
       "name": "Дом и уют",
-      "color": "#f7ebe5",
+      "color": "var(--color-tag-home)",
       "icon": "home"
     },
     {
       "id": 5,
       "name": "Здоровье и лайфстайл",
-      "color": "#e9f7e7",
+      "color": "var(--color-tag-health)",
       "icon": "lifestyle"
     }
   ],

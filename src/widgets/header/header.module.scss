@@ -3,7 +3,7 @@
 
 .header {
   @include m.flex($gap: 32px, $align: center, $justify: space-between);
-
+  padding-inline: 36px;
   height: 104px;
   background-color: $color-bg;
 }

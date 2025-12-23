@@ -7,6 +7,7 @@
 
   .countLikes {
     @include text-body;
+
     margin-right: 3px;
   }
 }
@@ -37,15 +38,16 @@
 .likeIcon {
   width: 24px;
   height: 24px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
+  color: $color-text;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
 
-.likeIconDefault {
-  background-image: url('@shared/assets/img/like-Default.svg');
-}
+  .active & {
+    color: $color-accent;
+  }
 
-.likeIconActive {
-  background-image: url('@shared/assets/img/like-Active.svg');
+  .likeButton:hover & {
+    color: $color-button-hover;
+  }
 }

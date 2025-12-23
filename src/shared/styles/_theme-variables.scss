@@ -1,0 +1,131 @@
+// CSS Custom Properties for Theme System
+// Light theme is the default baseline, dark theme overrides
+
+:root {
+  // Transition for smooth theme switching
+  --theme-transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+// Light Theme (default)
+:root,
+[data-theme='light'] {
+  // Text colors
+  --color-text-primary: #253017;
+  --color-text-secondary: #69735d;
+  --color-text-disabled: #9ca197;
+  --color-text-link: #508826;
+
+  // UI elements
+  --color-accent: #abd27a;
+  --color-button-hover: #deebc5;
+  --color-button-pressed: #508826;
+  --color-toggle: #b2b9a9;
+  --color-disabled: #e4e8df;
+
+  // Surfaces
+  --color-bg-primary: #f9faf7;
+  --color-bg-secondary: #fff;
+  --color-surface: #fff;
+
+  // Status colors
+  --color-alarm: #e0796e;
+  --color-error: #bf3920;
+
+  // Category tags
+  --color-tag-business: #eee7f7;
+  --color-tag-business-hover: #e5ddf0;
+  --color-tag-creative: #f7e7f2;
+  --color-tag-creative-hover: #f0ddeb;
+  --color-tag-languages: #ebe5c5;
+  --color-tag-languages-hover: #e4ddb5;
+  --color-tag-education: #e7f2f6;
+  --color-tag-education-hover: #dceef4;
+  --color-tag-home: #f7ebe5;
+  --color-tag-home-hover: #f0e3da;
+  --color-tag-health: #e9f7e7;
+  --color-tag-health-hover: #e0f3dd;
+  --color-tag-other: #e8ecf7;
+  --color-tag-other-hover: #dfe5f4;
+  --color-tag-other-active: #d5dbed;
+
+  // Status color variants
+  --color-alarm-hover: #d85f54;
+
+  // Borders & shadows
+  --color-border: #e4e8df;
+  --shadow-sm: 0 1px 2px rgb(37 48 23 / 5%);
+  --shadow-md: 0 4px 6px rgb(37 48 23 / 10%);
+  --shadow-lg: 0 10px 15px rgb(37 48 23 / 10%);
+}
+
+// Dark Theme - Brand-consistent dark variants
+[data-theme='dark'] {
+  // Text colors
+  --color-text-primary: #ecefe9;
+  --color-text-secondary: #bfc4b6;
+  --color-text-disabled: #6e7566;
+  --color-text-link: #abd27a; // Ссылки светлее для контраста на темном
+
+  // UI elements
+  // Исправлено: используем более темный зеленый для фона primary кнопки, чтобы белый текст читался
+  --color-accent: #5e9a32; 
+  --color-button-hover: #508826; // Чуть светлее при наведении
+  --color-button-pressed: #3d691e; // Темнее при нажатии
+  --color-toggle: #48523f;
+  --color-disabled: #2a3024;
+
+  // Surfaces
+  --color-bg-primary: #121410;
+  --color-bg-secondary: #1a2116;
+  --color-surface: #1a2116;
+
+  // Status colors
+  --color-alarm: #e58b80;
+  --color-alarm-hover: #cc7a70;
+  --color-error: #ff5a45;
+  --color-success: #b8e085;
+  --color-warning: #e8c564;
+
+  // Category tags
+  --color-tag-business: #3d3247;
+  --color-tag-business-hover: #4d3f59;
+  --color-tag-business-active: #5d4f6b;
+
+  --color-tag-creative: #473240;
+  --color-tag-creative-hover: #593f50;
+  --color-tag-creative-active: #6b4f60;
+
+  --color-tag-languages: #474332;
+  --color-tag-languages-hover: #59543f;
+  --color-tag-languages-active: #6b654f;
+
+  --color-tag-education: #324247;
+  --color-tag-education-hover: #3f5259;
+  --color-tag-education-active: #4f636b;
+
+  --color-tag-home: #473a32;
+  --color-tag-home-hover: #59493f;
+  --color-tag-home-active: #6b584f;
+
+  --color-tag-health: #354732;
+  --color-tag-health-hover: #42593f;
+  --color-tag-health-active: #506b4f;
+
+  --color-tag-other: #323847;
+  --color-tag-other-hover: #3f4659;
+  --color-tag-other-active: #4f556b;
+
+  // Borders & shadows
+  --color-border: #2a3024;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
+  --shadow-md: 0 4px 6px rgb(0 0 0 / 40%);
+  --shadow-lg: 0 10px 15px rgb(0 0 0 / 50%);
+}
+
+// Respect user's reduced motion preference
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --theme-transition: none;
+  }
+}

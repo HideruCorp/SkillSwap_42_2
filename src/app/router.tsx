@@ -16,8 +16,8 @@ import {
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 import ProfileEditForm from '@pages/profile/profileEditForm/ProfileEditForm';
+import SkillLayout from '@widgets/skill-page-layout/SkillLayout';
 import ProtectedRoute from './routes/ProtectedRoute';
-import SkillLayout from '@/widgets/skill-page-layout/SkillLayout';
 
 function AppRouter() {
   const location = useLocation();
@@ -28,7 +28,7 @@ function AppRouter() {
       {/* Главные страницы */}
       <Route path="/" element={<MainPage />} />
       <Route
-        path="/skill/:id"
+        path="/skills/:id"
         element={
           <SkillLayout>
             <SkillPage />

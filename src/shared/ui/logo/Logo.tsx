@@ -1,10 +1,10 @@
 import './logo.scss';
-import logo from '../../assets/img/logo.svg';
+import LogoIcon from '@shared/assets/img/logo.svg?react';
 
 function Logo() {
   return (
     <a className="logo" href="/">
-      <img src={logo} alt="логотип" />
+      <LogoIcon title="логитип SkillSwap" />
     </a>
   );
 }

@@ -1,6 +1,22 @@
 @use '@shared/styles/variables' as *;
 @use '@shared/styles/mixins' as *;
 
+html {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  transition: var(--theme-transition);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
 body {
-    background-color: rgb(249 250 247 / 100%);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  transition: var(--theme-transition);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }

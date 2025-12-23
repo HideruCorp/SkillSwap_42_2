@@ -1,6 +1,10 @@
 @use '@shared/styles/mixins' as m;
 @use '@shared/styles/variables' as v;
 
+.container {
+  @include m.page-grid-layout;
+}
+
 .filters {
   width: 100%;
 }

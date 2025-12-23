@@ -10,9 +10,13 @@ import { useDispatch } from '@app/store';
 import { initializeRequests } from '@entities/request';
 import { initializeExchanges } from '@entities/exchange';
 import { initializeNotifications } from '@entities/notification';
+import { useThemeInit } from '@features/theme';
 import AppRouter from './router';
 
 function App() {
+  // Initialize theme system (loads from localStorage/system preference)
+  useThemeInit();
+
   const dispatch = useDispatch();
   const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
