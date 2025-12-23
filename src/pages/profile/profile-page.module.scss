@@ -2,11 +2,9 @@
 @use '@shared/styles/mixins' as *;
 
 .profile {
-  display: grid;
-  grid-template-columns: 324px 1020px;
-  margin: 0 auto;
-  max-width: calc(324px + 1020px + 24px);
-  gap: 24px;
+  @include page-grid-layout;
+
+  align-items: stretch;
   min-height: 752px;
 }
 

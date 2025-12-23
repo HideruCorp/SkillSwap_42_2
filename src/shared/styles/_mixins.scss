@@ -57,6 +57,19 @@
   cursor: pointer;
 }
 
+@mixin page-grid-layout {
+  display: grid;
+  // 324px - ширина сайдбара, 1fr - остальной контент
+  grid-template-columns: 324px 1fr; 
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr; // На мобилках в одну колонку
+  }
+}
+
 @mixin flex($direction: row, $gap: 0, $align: normal, $justify: flex-start) {
   display: flex;
 

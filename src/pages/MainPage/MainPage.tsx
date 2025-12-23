@@ -36,7 +36,7 @@ export function MainPage() {
   }, [dispatch]);
 
   return (
-    <>
+    <div className={styles.container}>
       <aside className={styles.filters}>
         <FiltersPanel />
       </aside>
@@ -82,7 +82,7 @@ export function MainPage() {
           </>
         )}
       </section>
-    </>
+    </div>
   );
 }
 
