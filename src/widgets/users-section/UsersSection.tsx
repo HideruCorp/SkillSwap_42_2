@@ -8,7 +8,8 @@ import sortFilteredUsers from '@entities/user/sortFilteredUsers';
 import paginate from '@entities/user/paginate';
 import cityApi from '@entities/city/api/citiesApi';
 import categoryApi from '@entities/category/api/categoriesApi';
-import { useSelector } from '@app/store';
+import store, { useSelector } from '@app/store';
+
 import { selectAllUsers } from '@entities/user';
 import {
   selectAllSkillsMemoized,
@@ -16,6 +17,7 @@ import {
   sortSkills,
   recommendSkills,
 } from '@entities/skill';
+import { selectSkillLikesMap } from '@entities/favorites';
 import { useAuthState } from '@features/auth';
 import SortButton from '@widgets/sort-button';
 
@@ -111,6 +113,9 @@ export default function UsersSection({
   const sortedSkills = useMemo<number[]>(() => {
     if (!aux || filteredUsers.length === 0) return [];
 
+    // Read fresh likes map from store (not in dependencies to prevent rerenders on like clicks)
+    const currentLikesMap = selectSkillLikesMap(store.getState());
+
     // Get all skills for filtered users
     const filteredUserIds = new Set(filteredUsers.map((u) => u.id));
     const userSkills = skills.filter((skill) => filteredUserIds.has(skill.userId));
@@ -121,19 +126,19 @@ export default function UsersSection({
     switch (mode) {
       case 'likes': {
         // Sort by popularity (most liked first)
-        sorted = sortSkills(userSkills, 'likes');
+        sorted = sortSkills(userSkills, 'likes', currentLikesMap);
         break;
       }
 
       case 'created': {
         // Sort by creation date (newest first)
-        sorted = sortSkills(userSkills, 'created');
+        sorted = sortSkills(userSkills, 'created', currentLikesMap);
         break;
       }
 
       case 'recommended': {
         // Filter and sort by user interests
-        sorted = recommendSkills(userSkills, currentUser?.skillInterests);
+        sorted = recommendSkills(userSkills, currentUser?.skillInterests, currentLikesMap);
         break;
       }
 
@@ -141,7 +146,7 @@ export default function UsersSection({
       default: {
         // Use global sort state for 'all' mode (filter results page)
         // First sort users, then extract skills to maintain user-based sorting
-        const sortedUsers = sortFilteredUsers(filteredUsers, sortBy, skills);
+        const sortedUsers = sortFilteredUsers(filteredUsers, sortBy, skills, currentLikesMap);
         const skillIds = sortedUsers
           .map((user) => skills.filter((skill) => skill.userId === user.id).map((s) => s.id))
           .flat();
@@ -153,6 +158,7 @@ export default function UsersSection({
     // NOTE: Using memoized skills selector ensures stable reference.
     // This useMemo only recalculates when filters, mode, user interests,
     // or global sortBy change - not when individual skill properties like likes change.
+    // likesMap is NOT in dependencies - we read fresh value from store inside useMemo
   }, [filteredUsers, mode, currentUser?.skillInterests, sortBy, aux, skills]);
 
   // Rename for clarity

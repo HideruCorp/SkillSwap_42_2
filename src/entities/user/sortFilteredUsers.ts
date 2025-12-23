@@ -3,16 +3,15 @@ import type { SortOption } from '@features/sort';
 import { calculateAge } from '@shared/lib/date';
 
 // Подсчет общего количества лайков пользователя (сумма лайков всех его навыков)
-function getUserLikesCount(userId: number, skills: Skill[]): number {
+function getUserLikesCount(
+  userId: number,
+  skills: Skill[],
+  likesMap: Record<number, number>
+): number {
   const userSkills = skills.filter((s) => s.userId === userId);
   // Подсчитываем общее количество лайков всех навыков пользователя
   return userSkills.reduce((total, skill) => {
-    // Проверяем наличие likesReceived в skill (может быть в расширенном типе)
-    const likes = (skill as any).likesReceived;
-    if (Array.isArray(likes)) {
-      return total + likes.length;
-    }
-    return total;
+    return total + (likesMap[skill.id] || 0);
   }, 0);
 }
 
@@ -22,7 +21,8 @@ function getUserLikesCount(userId: number, skills: Skill[]): number {
 export default function sortFilteredUsers(
   users: User[],
   sortBy: SortOption,
-  skills: Skill[]
+  skills: Skill[],
+  likesMap: Record<number, number> = {}
 ): User[] {
   const sorted = [...users];
 
@@ -30,8 +30,8 @@ export default function sortFilteredUsers(
     case 'popular': {
       // Сортировка по популярности (количество лайков/навыков)
       return sorted.sort((a, b) => {
-        const likesA = getUserLikesCount(a.id, skills);
-        const likesB = getUserLikesCount(b.id, skills);
+        const likesA = getUserLikesCount(a.id, skills, likesMap);
+        const likesB = getUserLikesCount(b.id, skills, likesMap);
         return likesB - likesA; // По убыванию
       });
     }

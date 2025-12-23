@@ -6,9 +6,14 @@ export type SkillSortMode = 'likes' | 'created' | 'all';
  * Sorts skills by the specified mode
  * @param skills - Array of skills to sort
  * @param mode - Sorting mode: 'likes' (by popularity), 'created' (by date), 'all' (no sorting)
+ * @param likesMap - Map of skillId to likes count (default: empty object)
  * @returns Sorted array of skills
  */
-export default function sortSkills(skills: Skill[], mode: SkillSortMode): Skill[] {
+export default function sortSkills(
+  skills: Skill[],
+  mode: SkillSortMode,
+  likesMap: Record<number, number> = {}
+): Skill[] {
   if (mode === 'all') {
     return skills; // No sorting for 'all' mode
   }
@@ -19,8 +24,8 @@ export default function sortSkills(skills: Skill[], mode: SkillSortMode): Skill[
     case 'likes': {
       // Sort by popularity (number of likes received) - descending
       return sorted.sort((a, b) => {
-        const likesA = a.likesReceived.length;
-        const likesB = b.likesReceived.length;
+        const likesA = likesMap[a.id] || 0;
+        const likesB = likesMap[b.id] || 0;
         return likesB - likesA; // Most liked first
       });
     }

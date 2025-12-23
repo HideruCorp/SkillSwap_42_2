@@ -29,4 +29,3 @@ export const sortSlice = createSlice({
 export const { setSortBy, resetSort } = sortSlice.actions;
 
 export default sortSlice.reducer;
-

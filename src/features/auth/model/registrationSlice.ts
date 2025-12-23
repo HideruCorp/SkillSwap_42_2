@@ -260,7 +260,6 @@ export const submitRegistration = createAsyncThunk<
       description: formData.skill.skillDescription,
       createdAt: new Date().toISOString(),
       images: formData.skill.skillImages,
-      likesReceived: [],
     };
 
     dispatch(addSkill(createdSkill));

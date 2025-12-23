@@ -1,4 +1,5 @@
 import favoritesReducer from './model/favoritesSlice';
+import selectSkillLikesMap from './model/selectors';
 
 // Types
 export type { Favorite, FavoritesState, StoredFavorite } from './model/types';
@@ -19,5 +20,7 @@ export {
   selectFavoritesLoading,
   selectFavoritesError,
 } from './model/favoritesSlice';
+
+export { selectSkillLikesMap };
 
 export default favoritesReducer;
