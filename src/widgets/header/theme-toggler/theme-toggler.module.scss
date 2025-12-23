@@ -2,4 +2,30 @@
 
 .themeToggler {
   @include button-reset;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  color: var(--color-text-primary);
+  transition: var(--theme-transition);
+  cursor: pointer;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    transition: var(--theme-transition);
+  }
+
+  &:hover {
+    border-width: 1px;
+    border-color: var(--color-button-pressed);
+    color: var(--color-text-link);
+  }
+
+  &:active {
+    background-color: var(--color-bg-secondary);
+  }
 }
