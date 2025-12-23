@@ -22,8 +22,8 @@ function ModalGatekeeper({ onClose }: ModalGatekeeperProps) {
         Чтобы предложить обмен навыками, необходимо войти или зарегистрироваться
       </p>
       <div className={styles.buttons}>
-        <Button className={styles.button} type="secondary" onClick={onClose} title="Отмена" />
-        <Button className={styles.button} type="primary" onClick={handleLogin} title="Войти" />
+        <Button className={styles.button} variant="secondary" onClick={onClose} title="Отмена" />
+        <Button className={styles.button} variant="primary" onClick={handleLogin} title="Войти" />
       </div>
     </div>
   );

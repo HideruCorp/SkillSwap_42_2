@@ -212,13 +212,13 @@ export default function ExchangeCard({ exchange, currentUserId }: ExchangeCardPr
               <Button
                 className={styles.actionButton}
                 title="Отменить"
-                type="secondary"
+                variant="secondary"
                 onClick={handleCancel}
               />
               <Button
                 className={styles.actionButton}
                 title="Завершить обмен"
-                type="primary"
+                variant="primary"
                 onClick={handleComplete}
               />
             </>

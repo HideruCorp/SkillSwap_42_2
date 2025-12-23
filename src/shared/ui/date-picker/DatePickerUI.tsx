@@ -160,13 +160,13 @@ export function DatePickerUI({
         <div className={styles.footer}>
           <Button
             title="Отменить"
-            type="default"
+            variant="secondary"
             onClick={handleCancel}
             className={styles.button}
           />
           <Button
             title="Выбрать"
-            type="primary"
+            variant="primary"
             onClick={handleConfirm}
             className={styles.button}
             disabled={!draftDate}

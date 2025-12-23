@@ -132,7 +132,7 @@ function ProfileEditForm() {
           <p className={styles.about}>О себе</p>
           <Textarea className={styles.textarea} value={textAbout} onChange={onChangeText} />
         </label>
-        <Button title="Сохранить" htmlType="submit" disabled={!editFormChange} />
+        <Button title="Сохранить" htmlType="submit" variant="primary" disabled={!editFormChange} />
       </form>
       <div className={styles.avatar}>
         <AvatarPicker

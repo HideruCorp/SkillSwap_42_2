@@ -246,13 +246,13 @@ export default function SkillRequestCard({ request, currentUserId }: SkillReques
               <Button
                 className={styles.actionButton}
                 title="Отклонить"
-                type="secondary"
+                variant="secondary"
                 onClick={handleReject}
               />
               <Button
                 className={styles.actionButton}
                 title="Принять"
-                type="primary"
+                variant="primary"
                 onClick={handleAccept}
                 disabled={selectedSkill.length === 0}
               />
@@ -262,7 +262,7 @@ export default function SkillRequestCard({ request, currentUserId }: SkillReques
             <Button
               className={styles.actionButton}
               title="Отозвать заявку"
-              type="secondary"
+              variant="secondary"
               onClick={handleCancel}
             />
           )}

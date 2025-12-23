@@ -26,7 +26,7 @@ const SectionHeaderUI: React.FC<SectionHeaderProps> = ({
             <Button
               title={actionLabel}
               onClick={onAction}
-              type="tertiary"
+              variant="tertiary"
               className={styles.hideTextMobile}
               iconRight={<ChevronRight />}
             />

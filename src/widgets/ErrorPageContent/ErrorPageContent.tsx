@@ -18,13 +18,13 @@ export default function ErrorPageContent({ image, title, description }: ErrorPag
         <Button
           className={styles.fullWidthButton}
           title="Сообщить об ошибке"
-          type="secondary"
+          variant="secondary"
           onClick={() => alert('Отчёт об ошибке отправлен')}
         />
         <Button
           className={styles.fullWidthButton}
           title="На главную"
-          type="primary"
+          variant="primary"
           onClick={handleRedirectHome}
         />
       </div>

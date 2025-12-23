@@ -1,47 +1,145 @@
-import React from 'react';
+import React, { memo, forwardRef } from 'react';
 import cn from 'classnames';
 import styles from './button.module.scss';
 
-export type ButtonType = 'primary' | 'default' | 'secondary' | 'tertiary';
+// Типы кнопок согласно дизайн-системе
+export type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
+export type ButtonSize = 'default' | 'large';
 export type HtmlType = 'button' | 'submit' | 'reset';
 
-interface ButtonProps {
+// Интерфейс для Button компонента
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Текст кнопки */
   title: string;
-  onClick?: () => void;
-  type?: ButtonType;
-  disabled?: boolean;
-  className?: string;
+
+  /** Вариант дизайна кнопки */
+  variant?: ButtonVariant;
+
+  /** Размер кнопки */
+  size?: ButtonSize;
+
+  /** HTML тип кнопки */
   htmlType?: HtmlType;
-  // Иконка справа от текста: <ChevronRight /> Например
+
+  /** Иконка слева от текста */
+  iconLeft?: React.ReactNode;
+
+  /** Иконка справа от текста */
   iconRight?: React.ReactNode;
+
+  /** Состояние загрузки */
+  loading?: boolean;
+
+  /** Полная ширина кнопки */
+  fullWidth?: boolean;
+
+  /** Обработчик клика */
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-function Button({
-  title,
-  onClick,
-  type = 'default',
-  disabled = false,
-  className,
-  htmlType = 'button',
-  iconRight = null,
-}: ButtonProps) {
-  return (
-    <button
-      type={htmlType === 'submit' ? 'submit' : 'button'}
-      className={cn(styles.button, className, {
-        [styles.buttonPrimary]: type === 'primary',
-        [styles.buttonDefault]: type === 'default',
-        [styles.buttonSecondary]: type === 'secondary',
-        [styles.buttonTertiary]: type === 'tertiary',
-      })}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      <span className={styles.buttonText}>{title}</span>
+/**
+ * Button компонент высокого качества с полной поддержкой дизайн-системы
+ * Соответствует спецификациям из JSON и обеспечивает:
+ * - Все состояния: default, hover, pressed, disabled, loading
+ * - Поддержку иконок слева и справа
+ * - ARIA атрибуты для accessibility
+ * - Оптимизированный рендеринг с memo
+ * - Responsive поведение
+ */
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      title,
+      variant = 'secondary',
+      size = 'default',
+      htmlType = 'button',
+      iconLeft = null,
+      iconRight = null,
+      loading = false,
+      fullWidth = false,
+      className,
+      onClick,
+      disabled,
+      id,
+      role,
+      tabIndex,
+      style,
+      title: titleAttr,
+      type: htmlTypeProp,
+      'aria-disabled': ariaDisabled,
+      'aria-busy': ariaBusy,
+      'aria-label': ariaLabel,
+      ...otherProps
+    },
+    ref
+  ) => {
+    // Вычисляем состояние кнопки
+    const isDisabled = disabled || loading;
 
-      {iconRight && <span className={styles.iconRight}>{iconRight}</span>}
-    </button>
-  );
-}
+    // Обработчик клика с отключением при disabled/loading
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (isDisabled) {
+        event.preventDefault();
+        return;
+      }
+      onClick?.(event);
+    };
 
-export default Button;
+    return (
+      <button
+        ref={ref}
+        type={htmlType === 'submit' ? 'submit' : 'button'}
+        className={cn(
+          styles.button,
+          styles[`button--${variant}`],
+          styles[`button--${size}`],
+          {
+            [styles['button--fullWidth']]: fullWidth,
+            [styles['button--loading']]: loading,
+            [styles['button--disabled']]: isDisabled,
+          },
+          className
+        )}
+        onClick={handleClick}
+        disabled={isDisabled}
+        id={id}
+        role={role}
+        tabIndex={tabIndex}
+        style={style}
+        title={titleAttr}
+        aria-disabled={isDisabled}
+        aria-busy={loading}
+        aria-label={loading ? 'Загрузка...' : ariaLabel}
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        {...otherProps}
+      >
+        {/* Контейнер для контента */}
+        <span className={styles.content}>
+          {/* Иконка слева */}
+          {iconLeft && <span className={cn(styles.icon, styles.iconLeft)}>{iconLeft}</span>}
+
+          {/* Текст кнопки */}
+          <span className={styles.text}>{loading ? 'Загрузка...' : title}</span>
+
+          {/* Иконка справа */}
+          {iconRight && !loading && (
+            <span className={cn(styles.icon, styles.iconRight)}>{iconRight}</span>
+          )}
+
+          {/* Спиннер загрузки */}
+          {loading && (
+            <span className={styles.spinner} aria-hidden="true">
+              <span className={styles.spinnerDot} />
+              <span className={styles.spinnerDot} />
+              <span className={styles.spinnerDot} />
+            </span>
+          )}
+        </span>
+      </button>
+    );
+  }
+);
+
+Button.displayName = 'Button';
+
+export default memo(Button);

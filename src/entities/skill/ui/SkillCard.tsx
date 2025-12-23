@@ -53,8 +53,8 @@ const SkillCard = memo(function SkillCard({
         <Button
           className={styles.detailsButton}
           title="Подробнее"
-          onClick={() => navigate(`/skill/${id}`)}
-          type="default"
+          onClick={() => navigate(`/skills/${id}`)}
+          variant="primary"
         />
       </div>
     </div>

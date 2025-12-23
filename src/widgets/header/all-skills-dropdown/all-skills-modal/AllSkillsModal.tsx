@@ -25,10 +25,7 @@ function AllSkillsModal({ categories, subcategories }: AllSkillModalProps) {
         return (
           <section key={category.id} className={styles.section}>
             <div className={styles.wrapper}>
-              <div
-                className={styles.icon}
-                style={{ backgroundColor: category.color }}
-              >
+              <div className={styles.icon} style={{ backgroundColor: category.color }}>
                 {iconUrl ? (
                   <img
                     src={iconUrl}
@@ -49,9 +46,7 @@ function AllSkillsModal({ categories, subcategories }: AllSkillModalProps) {
                     }}
                   />
                 ) : (
-                  <span className={styles.fallbackIcon}>
-                    {category.name.charAt(0)}
-                  </span>
+                  <span className={styles.fallbackIcon}>{category.name.charAt(0)}</span>
                 )}
               </div>
 

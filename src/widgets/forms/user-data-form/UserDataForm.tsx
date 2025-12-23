@@ -266,7 +266,7 @@ export default function UserDataForm({
         <div className={styles.buttonsSection}>
           <div className={styles.buttons}>
             <Button
-              type="default"
+              variant="secondary"
               title="Назад"
               onClick={onPrev}
               className={styles.backButton}
@@ -274,7 +274,7 @@ export default function UserDataForm({
             />
             <Button
               htmlType="submit"
-              type="primary"
+              variant="primary"
               title={isSubmitting ? 'Обработка...' : 'Продолжить'}
               className={styles.submitButton}
               disabled={isSubmitting}

@@ -76,7 +76,7 @@ function Skill({
               title={requestSent ? 'Обмен предложен' : 'Предложить обмен'}
               disabled={requestSent}
               onClick={() => onMoreDetails(skill.id)}
-              type="default"
+              variant="secondary"
             />
           )}
         </div>

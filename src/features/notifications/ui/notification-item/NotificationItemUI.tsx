@@ -33,7 +33,7 @@ function NotificationItemUI({
         <Button
           className={styles.button}
           title="Перейти"
-          type="primary"
+          variant="primary"
           onClick={onClick || doNothing}
         />
       ) : (
