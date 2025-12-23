@@ -13,6 +13,7 @@ import exchangesReducer from '@entities/exchange';
 import favoritesReducer from '@entities/favorites';
 
 import { authReducer, registrationReducer, authListener } from '@features/auth';
+import { themeReducer } from '@features/theme';
 import filtersReducer from '@features/filters';
 import sortReducer from '@features/sort';
 
@@ -26,6 +27,7 @@ export const rootReducer = combineReducers({
   exchanges: exchangesReducer,
   favorites: favoritesReducer,
   auth: authReducer,
+  theme: themeReducer,
   registration: registrationReducer,
   filters: filtersReducer,
   sort: sortReducer,

@@ -3,31 +3,40 @@ $font-heading: 'Jost', sans-serif;
 $font-body: 'Roboto', sans-serif;
 
 // Цвета - Текст
-$color-text: #253017;
-$color-text-caption: #69735d;
-$color-text-disabled: #9ca197;
-$color-text-link: #508826;
+$color-text: var(--color-text-primary);
+$color-text-caption: var(--color-text-secondary);
+$color-text-disabled: var(--color-text-disabled);
+$color-text-link: var(--color-text-link);
 
 // Цвета - UI элементы
-$color-accent: #abd27a;
-$color-button-hover: #deebc5;
-$color-button-pressed: #508826;
-$color-toggle: #b2b9a9;
-$color-disabled: #e4e8df;
+$color-accent: var(--color-accent);
+$color-button-hover: var(--color-button-hover);
+$color-button-pressed: var(--color-button-pressed);
+$color-toggle: var(--color-toggle);
+$color-disabled: var(--color-disabled);
 
 // Цвета - Поверхности
-$color-bg: #f9faf7;
-$color-surface: #fff;
+$color-bg: var(--color-bg-primary);
+$color-surface: var(--color-surface);
 
 // Цвета - Статусы
-$color-alarm: #e0796e;
-$color-error: #bf3920;
+$color-alarm: var(--color-alarm);
+$color-alarm-hover: var(--color-alarm-hover);
+$color-error: var(--color-error);
 
 // Цвета - Теги категорий
-$color-tag-business: #eee7f7;
-$color-tag-creative: #f7e7f2;
-$color-tag-languages: #ebe5c5;
-$color-tag-education: #e7f2f6;
-$color-tag-home: #f7ebe5;
-$color-tag-health: #e9f7e7;
-$color-tag-other: #e8ecf7;
+$color-tag-business: var(--color-tag-business);
+$color-tag-business-hover: var(--color-tag-business-hover);
+$color-tag-creative: var(--color-tag-creative);
+$color-tag-creative-hover: var(--color-tag-creative-hover);
+$color-tag-languages: var(--color-tag-languages);
+$color-tag-languages-hover: var(--color-tag-languages-hover);
+$color-tag-education: var(--color-tag-education);
+$color-tag-education-hover: var(--color-tag-education-hover);
+$color-tag-home: var(--color-tag-home);
+$color-tag-home-hover: var(--color-tag-home-hover);
+$color-tag-health: var(--color-tag-health);
+$color-tag-health-hover: var(--color-tag-health-hover);
+$color-tag-other: var(--color-tag-other);
+$color-tag-other-hover: var(--color-tag-other-hover);
+$color-tag-other-active: var(--color-tag-other-active);
