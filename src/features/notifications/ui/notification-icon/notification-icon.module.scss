@@ -1,3 +1,4 @@
+@use '@shared/styles/variables' as *;
 @use '@shared/styles/mixins' as m;
 
 .notification {
@@ -5,4 +6,10 @@
   
   position: relative;
   cursor: pointer;
+  color: $color-text;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: $color-text-link;
+  }
 }

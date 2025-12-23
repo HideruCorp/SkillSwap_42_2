@@ -15,6 +15,15 @@
   margin-top: 18px;
 }
 
+.buttonLabel {
+  font-family: $font-body;
+  margin-right: 8px;
+  color: $color-button-pressed;
+  font-weight: 400;
+  font-size: 16px;
+  transition: opacity 0.3s, color 0.3s;
+}
+
 .toggleVisibility {
   display: flex;
   align-items: center;
@@ -22,26 +31,22 @@
   padding: 0;
   background-color: transparent;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: opacity 0.3s, color 0.3s;
+  color: $color-button-pressed;
 }
 
 .toggleVisibility:hover {
-  opacity: 0.8;
-}
+  color: $color-text-link;
 
-
-.buttonLabel {
-  font-family: $font-body;
-  margin-right: 8px;
-  color: $color-button-pressed;
-  font-weight: 400;
-  font-size: 16px;
+  .buttonLabel {
+    color: $color-text-link;
+  }
 }
 
 .arrowIcon {
   width: 24px;
   height: 24px;
   margin-top: 3px;
-  transition: transform 0.2s;
+  transition: transform 0.2s, fill 0.3s;
   fill: currentcolor;
 }

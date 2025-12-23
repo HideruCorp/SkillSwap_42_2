@@ -17,17 +17,9 @@
 
   cursor: pointer;
   
-  &:hover .circle {
-    border-color: $color-button-hover;
-  }
-  
   &.disabled {
     cursor: not-allowed;
     opacity: 0.6;
-    
-    &:hover .circle {
-      border-color: inherit;
-    }
   }
 }
 
@@ -38,35 +30,20 @@
   height: 0;
 }
 
-.circle {
-  box-sizing: border-box; 
-  margin: 0;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #000;
-  border-radius: 50%;
-  position: relative;
-  transition: all 0.2s ease;
+.visualIndicator {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: $color-text-caption;
+  transition: color 0.3s ease;
   
-  &::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: $color-button-pressed;
-    opacity: 0;
-    transition: opacity 0.2s;
+  svg {
+    width: 100%;
+    height: 100%;
   }
-  
-  .hiddenInput:checked + & {
-    border-color: $color-button-pressed;
-    
-    &::after {
-      opacity: 1;
-    }
-  }
+}
+
+.label:hover .visualIndicator {
+  color: $color-text-link;
 }

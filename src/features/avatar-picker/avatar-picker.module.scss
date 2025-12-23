@@ -31,8 +31,15 @@
   height: var(--avatar-size, 63px);
   flex-shrink: 0;
   display: block;
+  
+  // Добавляем цвет, который будет наследоваться через currentColor
+  color: var(--color-text-disabled); // Или var(--color-text-primary) по вкусу
+  
+  // В темной теме можно сделать посветлее, если нужно
+  [data-theme='dark'] & {
+    color: var(--color-text-secondary);
+  }
 }
-
 .addButton {
   @include button-reset;
   position: absolute;

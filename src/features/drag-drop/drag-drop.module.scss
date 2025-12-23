@@ -1,4 +1,3 @@
-@use 'sass:color';
 @use '@shared/styles/variables' as *;
 @use '@shared/styles/mixins' as *;
 
@@ -75,7 +74,7 @@
   transition: color 0.2s ease;
 
   &:hover:not(:disabled) {
-    color: $color-accent;
+    color: $color-text-link;
   }
 
   &:active:not(:disabled),
@@ -133,7 +132,7 @@
   cursor: pointer;
 
   &:hover:not(:disabled) {
-    color: color.adjust($color-alarm, $lightness: -10%);
+    color: $color-alarm-hover;
   }
 
   &:disabled {

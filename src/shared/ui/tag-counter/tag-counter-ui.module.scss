@@ -23,11 +23,11 @@
     cursor: pointer;
 
     &:hover {
-      background: color.adjust(variables.$color-tag-other, $lightness: 2%);
+      background: variables.$color-tag-other-hover;
     }
 
     &:active {
-      background: color.adjust(variables.$color-tag-other, $lightness: -2%);
+      background: variables.$color-tag-other-active;
       transform: scale(0.99);
     }
   }

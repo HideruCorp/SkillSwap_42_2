@@ -4,13 +4,13 @@
   width: 100%;
   max-width: 24rem;
   border-radius: 0.25rem;
-  border: 1px solid var(--color-border);
-  background-color: var(--color-background);
+  border: 1px solid var(--color-toggle);
+  background-color: var(--color-surface);
   transition: border-color 0.2s ease;
   position: relative;
 
   &:focus-within {
-    border-color: var(--color-primary);
+    border-color: var(--color-text-secondary);
   }
 
   &Button {
@@ -21,7 +21,7 @@
     border: none;
     background-color: transparent;
     cursor: pointer;
-    color: var(--color-text-secondary);
+    color: var(--color-text-link);
   }
 
   &Input {

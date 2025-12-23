@@ -2,4 +2,24 @@
   display: inline-block;
   width: 159px;
   height: 40px;
+  transition: var(--theme-transition);
+
+  // Logo color variables - Light theme (default)
+  --logo-circle-bg: #abd27a;
+  --logo-star-fill: #f9faf7;
+  --logo-text-fill: #253017;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  // Dark theme - muted colors for reduced brightness
+  [data-theme='dark'] & {
+    --logo-circle-bg: #7aa84f;
+    --logo-star-fill: #1a1f17;
+    --logo-text-fill: #b2b9a9;
+  }
 }
