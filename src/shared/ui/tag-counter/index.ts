@@ -1,2 +1,2 @@
-export { default as TagCounterUI } from './TagCounterUI';
-export type { TagCounterUIProps } from './type';
+export { default as TagCounterUI } from './TagCounterUI'
+export type { TagCounterUIProps } from './type'

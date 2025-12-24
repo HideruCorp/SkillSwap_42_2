@@ -1,10 +1,10 @@
-import DeltaStorage from './deltaStorage';
-
-// Types
-export type { StoredUser, StoredSkill } from './types';
+import DeltaStorage from './deltaStorage'
 
 // Utils
-export { loadMergedData, loadUserById, loadSkillById, loadStoredUserByEmail } from './dataMerger';
-export { initializeAppData, resetAllData } from './initializeApp';
-export type { InitResult } from './initializeApp';
-export default DeltaStorage;
+export { loadMergedData, loadSkillById, loadStoredUserByEmail, loadUserById } from './dataMerger'
+
+export { initializeAppData, resetAllData } from './initializeApp'
+export type { InitResult } from './initializeApp'
+// Types
+export type { StoredSkill, StoredUser } from './types'
+export default DeltaStorage

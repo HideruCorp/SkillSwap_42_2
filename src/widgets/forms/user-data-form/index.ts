@@ -1,5 +1,5 @@
-import UserDataForm from './UserDataForm';
+import UserDataForm from './UserDataForm'
 
-export { UserDataForm };
-export type { UserDataFormProps, UserDataFormValues, UserDataFormErrors } from './UserDataForm';
-export default UserDataForm;
+export { UserDataForm }
+export type { UserDataFormErrors, UserDataFormProps, UserDataFormValues } from './UserDataForm'
+export default UserDataForm

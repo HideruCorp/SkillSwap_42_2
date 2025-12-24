@@ -1,4 +1,4 @@
-import ProfilePage from './ProfilePage';
+import ProfilePage from './ProfilePage'
 
-export { ProfilePage };
-export default ProfilePage;
+export { ProfilePage }
+export default ProfilePage

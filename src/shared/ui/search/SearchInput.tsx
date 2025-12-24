@@ -1,12 +1,12 @@
-import SearchIcon from '@shared/assets/img/search.svg?react';
-import styles from './search-input.module.scss';
+import SearchIcon from '@shared/assets/img/search.svg?react'
+import styles from './search-input.module.scss'
 
 export interface SearchInputProps {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  onSubmit?: (e: React.FormEvent) => void;
-  placeholder?: string;
+  value: string
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
+  onSubmit?: (e: React.FormEvent) => void
+  placeholder?: string
 }
 
 export function SearchInput({
@@ -17,11 +17,11 @@ export function SearchInput({
   placeholder,
 }: SearchInputProps) {
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (onSubmit) {
-      onSubmit(e);
+      onSubmit(e)
     }
-  };
+  }
 
   return (
     <form className={styles.container} onSubmit={handleSubmit}>
@@ -48,7 +48,7 @@ export function SearchInput({
         </button>
       )}
     </form>
-  );
+  )
 }
 
-export default SearchInput;
+export default SearchInput

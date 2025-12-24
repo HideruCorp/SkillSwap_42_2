@@ -1,11 +1,11 @@
-import editIcon from '../../assets/img/edit.svg';
-import './textarea.scss';
+import editIcon from '../../assets/img/edit.svg'
+import './textarea.scss'
 
 interface TextareaProps {
-  value?: string;
-  placeholder?: string;
-  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  className?: string;
+  value?: string
+  placeholder?: string
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
+  className?: string
 }
 
 export default function Textarea({ value, placeholder, onChange, className }: TextareaProps) {
@@ -19,5 +19,5 @@ export default function Textarea({ value, placeholder, onChange, className }: Te
       />
       <img className="textarea__icon" src={editIcon} alt="edit" />
     </div>
-  );
+  )
 }

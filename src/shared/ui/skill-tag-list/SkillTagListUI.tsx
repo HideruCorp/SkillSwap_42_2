@@ -1,8 +1,8 @@
-import { useState, useRef, useLayoutEffect } from 'react';
-import { SkillTagUI } from '@shared/ui/skill-tag';
-import { TagCounterUI } from '@shared/ui/tag-counter';
-import styles from './skill-tag-list-ui.module.scss';
-import type { SkillTagListUIProps } from './type';
+import type { SkillTagListUIProps } from './type'
+import { SkillTagUI } from '@shared/ui/skill-tag'
+import { TagCounterUI } from '@shared/ui/tag-counter'
+import { useLayoutEffect, useRef, useState } from 'react'
+import styles from './skill-tag-list-ui.module.scss'
 
 /**
  * SkillTagListUI - Компонент для отображения списка тегов навыков.
@@ -33,48 +33,49 @@ import type { SkillTagListUIProps } from './type';
  * ```
  */
 export function SkillTagListUI({ tags }: SkillTagListUIProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(tags.length);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const measureRef = useRef<HTMLDivElement>(null);
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [visibleCount, setVisibleCount] = useState(tags.length)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const measureRef = useRef<HTMLDivElement>(null)
 
   useLayoutEffect(() => {
-    if (isExpanded || !measureRef.current || !containerRef.current) return;
+    if (isExpanded || !measureRef.current || !containerRef.current)
+      return
 
-    const containerWidth = containerRef.current.offsetWidth;
-    const gap = 4;
-    const counterWidth = 50; // примерная ширина кнопки "+N"
+    const containerWidth = containerRef.current.offsetWidth
+    const gap = 4
+    const counterWidth = 50 // примерная ширина кнопки "+N"
 
-    const tagElements = measureRef.current.children;
-    let totalWidth = 0;
-    let fitCount = 0;
+    const tagElements = measureRef.current.children
+    let totalWidth = 0
+    let fitCount = 0
 
     for (let i = 0; i < tagElements.length; i += 1) {
-      const tagWidth = (tagElements[i] as HTMLElement).offsetWidth;
-      const nextWidth = totalWidth + tagWidth + (fitCount > 0 ? gap : 0);
+      const tagWidth = (tagElements[i] as HTMLElement).offsetWidth
+      const nextWidth = totalWidth + tagWidth + (fitCount > 0 ? gap : 0)
 
       // Проверяем: если это не последний тег, оставляем место для счётчика
-      const needsCounter = i < tagElements.length - 1;
-      const availableWidth = needsCounter ? containerWidth - counterWidth - gap : containerWidth;
+      const needsCounter = i < tagElements.length - 1
+      const availableWidth = needsCounter ? containerWidth - counterWidth - gap : containerWidth
 
       if (nextWidth <= availableWidth) {
-        totalWidth = nextWidth;
-        fitCount += 1;
+        totalWidth = nextWidth
+        fitCount += 1
       } else {
-        break;
+        break
       }
     }
 
-    setVisibleCount(fitCount);
-  }, [tags, isExpanded]);
+    setVisibleCount(fitCount)
+  }, [tags, isExpanded])
 
   const handleExpand = () => {
-    setIsExpanded(true);
-    setVisibleCount(tags.length);
-  };
+    setIsExpanded(true)
+    setVisibleCount(tags.length)
+  }
 
-  const hiddenCount = tags.length - visibleCount;
-  const displayedTags = isExpanded ? tags : tags.slice(0, visibleCount);
+  const hiddenCount = tags.length - visibleCount
+  const displayedTags = isExpanded ? tags : tags.slice(0, visibleCount)
 
   return (
     <div ref={containerRef} className={styles['tag-list']}>
@@ -97,7 +98,7 @@ export function SkillTagListUI({ tags }: SkillTagListUIProps) {
         )}
       </div>
     </div>
-  );
+  )
 }
 
-export default SkillTagListUI;
+export default SkillTagListUI

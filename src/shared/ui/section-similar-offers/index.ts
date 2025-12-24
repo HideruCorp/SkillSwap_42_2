@@ -1,1 +1,1 @@
-export { default } from './SectionSimilarOffers';
+export { default } from './SectionSimilarOffers'

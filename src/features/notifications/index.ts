@@ -1,8 +1,8 @@
-// UI компоненты
-export { NotificationIcon, NotificationPanel } from './ui';
-
 // Хуки
-export { useNotificationPanel, useNotifications } from './hooks';
+export { useNotificationPanel, useNotifications } from './hooks'
 
 // Типы
-export type { NotificationPanelProps, NotificationIconProps } from './types';
+export type { NotificationIconProps, NotificationPanelProps } from './types'
+
+// UI компоненты
+export { NotificationIcon, NotificationPanel } from './ui'

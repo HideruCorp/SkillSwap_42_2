@@ -1,4 +1,4 @@
-import NotificationPanel from './NotificationPanel';
+import NotificationPanel from './NotificationPanel'
 
-export { NotificationPanel };
-export default NotificationPanel;
+export { NotificationPanel }
+export default NotificationPanel

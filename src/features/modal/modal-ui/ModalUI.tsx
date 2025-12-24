@@ -1,15 +1,15 @@
-import type { ReactNode } from 'react';
-import ModalOverlay from '../modal-overlay/ModalOverlay';
-import styles from './modal-ui.module.scss';
+import type { ReactNode } from 'react'
+import ModalOverlay from '../modal-overlay/ModalOverlay'
+import styles from './modal-ui.module.scss'
 
 export interface ModalUIProps {
-  title?: string | ReactNode;
-  onClose: () => void;
-  children?: ReactNode;
-  className?: string;
+  title?: string | ReactNode
+  onClose: () => void
+  children?: ReactNode
+  className?: string
 }
 
-function ModalUI({ title, onClose, children, className }: ModalUIProps) {
+function ModalUI({ title = undefined, onClose, children = undefined, className = undefined }: ModalUIProps) {
   return (
     <>
       <div className={`${styles.modal} ${className}`} data-testid="modal">
@@ -22,13 +22,7 @@ function ModalUI({ title, onClose, children, className }: ModalUIProps) {
       </div>
       <ModalOverlay onClick={onClose} />
     </>
-  );
+  )
 }
 
-ModalUI.defaultProps = {
-  title: undefined,
-  children: undefined,
-  className: undefined,
-};
-
-export default ModalUI;
+export default ModalUI

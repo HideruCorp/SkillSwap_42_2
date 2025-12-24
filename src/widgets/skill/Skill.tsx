@@ -1,28 +1,28 @@
-import type { Skill as SkillType } from '@shared/types';
-import { SkillDescriptionUI } from '@shared/ui/skill-description';
-import Button from '@shared/ui/button/Button';
-import LikeDefaultIcon from '@shared/assets/img/like-Default.svg?react';
-import LikeActiveIcon from '@shared/assets/img/like-Active.svg?react';
-import ShareIcon from '@shared/assets/img/share.svg?react';
-import styles from './skill.module.scss';
-import { SkillGallery } from '../skillGallery';
+import type { Skill as SkillType } from '@shared/types'
+import LikeActiveIcon from '@shared/assets/img/like-Active.svg?react'
+import LikeDefaultIcon from '@shared/assets/img/like-Default.svg?react'
+import ShareIcon from '@shared/assets/img/share.svg?react'
+import Button from '@shared/ui/button/Button'
+import { SkillDescriptionUI } from '@shared/ui/skill-description'
+import { SkillGallery } from '../skillGallery'
+import styles from './skill.module.scss'
 
 export interface SkillProps {
-  skill: SkillType;
+  skill: SkillType
   skillDescription: {
-    skillName: string;
-    category: string;
-    subcategory: string;
-    description: string;
-  };
-  isLiked: boolean;
-  onLike: (skillId: number) => void;
-  onShare: (skillId: number) => void;
-  onMoreDetails: (skillId: number) => void;
+    skillName: string
+    category: string
+    subcategory: string
+    description: string
+  }
+  isLiked: boolean
+  onLike: (skillId: number) => void
+  onShare: (skillId: number) => void
+  onMoreDetails: (skillId: number) => void
   // Добавляем проп для проверки владельца
-  isOwner?: boolean;
+  isOwner?: boolean
   // Добавляем проп для проверки отправленной заявки
-  requestSent?: boolean;
+  requestSent?: boolean
 }
 
 function Skill({
@@ -44,11 +44,13 @@ function Skill({
           onClick={() => onLike(skill.id)}
           aria-label={isLiked ? 'Убрать из избранного' : 'Добавить в избранное'}
         >
-          {isLiked ? (
-            <LikeActiveIcon className={styles.likeIcon} />
-          ) : (
-            <LikeDefaultIcon className={styles.likeIcon} />
-          )}
+          {isLiked
+            ? (
+                <LikeActiveIcon className={styles.likeIcon} />
+              )
+            : (
+                <LikeDefaultIcon className={styles.likeIcon} />
+              )}
         </button>
 
         <button
@@ -83,6 +85,6 @@ function Skill({
         <SkillGallery images={skill.images} title={skill.title} />
       </div>
     </div>
-  );
+  )
 }
-export default Skill;
+export default Skill

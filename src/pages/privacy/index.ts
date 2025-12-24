@@ -1,4 +1,4 @@
-import PrivacyPage from './PrivacyPage';
+import PrivacyPage from './PrivacyPage'
 
-export { PrivacyPage };
-export default PrivacyPage;
+export { PrivacyPage }
+export default PrivacyPage

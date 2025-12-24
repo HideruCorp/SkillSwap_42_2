@@ -1,13 +1,13 @@
-import { Link } from 'react-router-dom';
-import LogoutIcon from '@shared/assets/img/logout.svg?react';
-import styles from './profile-menu.module.scss';
+import LogoutIcon from '@shared/assets/img/logout.svg?react'
+import { Link } from 'react-router-dom'
+import styles from './profile-menu.module.scss'
 
 interface ProfileMenuProps {
-  onLinkClick?: () => void;
-  handleLogout: () => void;
+  onLinkClick?: () => void
+  handleLogout: () => void
 }
 
-function ProfileMenu({ onLinkClick, handleLogout }: ProfileMenuProps) {
+function ProfileMenu({ onLinkClick = undefined, handleLogout }: ProfileMenuProps) {
   return (
     <nav className={styles['menu-list']}>
       <Link to="/profile" className={styles.link} onClick={onLinkClick}>
@@ -21,11 +21,7 @@ function ProfileMenu({ onLinkClick, handleLogout }: ProfileMenuProps) {
         </span>
       </button>
     </nav>
-  );
+  )
 }
 
-ProfileMenu.defaultProps = {
-  onLinkClick: undefined,
-};
-
-export default ProfileMenu;
+export default ProfileMenu

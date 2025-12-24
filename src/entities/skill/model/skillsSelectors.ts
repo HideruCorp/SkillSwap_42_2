@@ -1,9 +1,9 @@
-import { createSelector } from '@reduxjs/toolkit';
-import type { RootState } from '@app/store';
-import type { Skill } from './types';
+import type { RootState } from '@app/store'
+import type { Skill } from './types'
+import { createSelector } from '@reduxjs/toolkit'
 
 // Base selector - extracts skills array from state
-const selectSkillsState = (state: RootState) => state.skills.items;
+const selectSkillsState = (state: RootState) => state.skills.items
 
 /**
  * Memoized selector that returns all skills.
@@ -14,7 +14,7 @@ const selectSkillsState = (state: RootState) => state.skills.items;
  */
 export const selectAllSkillsMemoized = createSelector(
   [selectSkillsState],
-  (skills): Skill[] => skills
-);
+  (skills): Skill[] => skills,
+)
 
-export default selectAllSkillsMemoized;
+export default selectAllSkillsMemoized

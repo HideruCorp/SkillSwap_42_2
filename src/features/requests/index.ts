@@ -1,12 +1,12 @@
 // Hooks
-export { useRequestsApi } from './hooks';
-
-// Types
-export type { CreateRequestPayload, AcceptRequestPayload } from './model/types';
+export { useRequestsApi } from './hooks'
 
 // Cross-slice selectors
 export {
-  selectIncomingRequests,
-  selectIncomingPendingRequests,
   selectArchivedRequests,
-} from './model/selectors';
+  selectIncomingPendingRequests,
+  selectIncomingRequests,
+} from './model/selectors'
+
+// Types
+export type { AcceptRequestPayload, CreateRequestPayload } from './model/types'

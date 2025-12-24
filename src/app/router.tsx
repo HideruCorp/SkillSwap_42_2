@@ -12,16 +12,16 @@ import {
   ServerErrorPage,
   SkillPage,
   TermsPage,
-} from '@pages/index';
-import { Route, Routes, useLocation } from 'react-router-dom';
+} from '@pages/index'
+import ProfileEditForm from '@pages/profile/profileEditForm/ProfileEditForm'
 
-import ProfileEditForm from '@pages/profile/profileEditForm/ProfileEditForm';
-import SkillLayout from '@widgets/skill-page-layout/SkillLayout';
-import ProtectedRoute from './routes/ProtectedRoute';
+import SkillLayout from '@widgets/skill-page-layout/SkillLayout'
+import { Route, Routes, useLocation } from 'react-router-dom'
+import ProtectedRoute from './routes/ProtectedRoute'
 
 function AppRouter() {
-  const location = useLocation();
-  const backgroundLocation = location.state?.background;
+  const location = useLocation()
+  const backgroundLocation = location.state?.background
 
   return (
     <Routes location={backgroundLocation || location}>
@@ -29,63 +29,63 @@ function AppRouter() {
       <Route path="/" element={<MainPage />} />
       <Route
         path="/skills/:id"
-        element={
+        element={(
           <SkillLayout>
             <SkillPage />
           </SkillLayout>
-        }
+        )}
       />
       <Route path="/about" element={<AboutPage />} />
 
       <Route
         path="/auth"
-        element={
+        element={(
           <ProtectedRoute forUnauthorized>
             <AuthorizePage />
           </ProtectedRoute>
-        }
+        )}
       />
 
       <Route element={<ProtectedRoute />}>
         <Route
           path="/profile"
-          element={
+          element={(
             <ProfilePage>
               <ProfileEditForm />
             </ProfilePage>
-          }
+          )}
         />
         <Route
           path="/profile/favorites"
-          element={
+          element={(
             <ProfilePage>
               <ProfileFavoritesPage />
             </ProfilePage>
-          }
+          )}
         />
         <Route
           path="/profile/requests"
-          element={
+          element={(
             <ProfilePage>
               <ProfileRequestsPage />
             </ProfilePage>
-          }
+          )}
         />
         <Route
           path="/profile/skills"
-          element={
+          element={(
             <ProfilePage>
               <ProfileSkillsPage />
             </ProfilePage>
-          }
+          )}
         />
         <Route
           path="/profile/exchanges"
-          element={
+          element={(
             <ProfilePage>
               <ProfileExchangesPage />
             </ProfilePage>
-          }
+          )}
         />
       </Route>
 
@@ -97,7 +97,7 @@ function AppRouter() {
       <Route path="/error" element={<ServerErrorPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
-  );
+  )
 }
 
-export default AppRouter;
+export default AppRouter

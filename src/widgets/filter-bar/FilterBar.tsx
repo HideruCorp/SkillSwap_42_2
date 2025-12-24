@@ -1,25 +1,25 @@
-import { useEffect, useState, useMemo } from 'react';
+import type { Category, City, Gender, Subcategory, TSkillType } from '@shared/types'
 
-import categoryApi from '@entities/category/api/categoriesApi';
-import cityApi from '@entities/city/api/citiesApi';
-import type { Subcategory, City, TSkillType, Gender, Category } from '@shared/types';
-import FilterItem from '@shared/ui/filter-item/FilterItem';
+import categoryApi from '@entities/category/api/categoriesApi'
+import cityApi from '@entities/city/api/citiesApi'
+import { useActiveFilters } from '@features/filters/useActiveFilters'
+import FilterItem from '@shared/ui/filter-item/FilterItem'
 
-import { useActiveFilters } from '@features/filters/useActiveFilters';
+import { useEffect, useMemo, useState } from 'react'
 
-import styles from './filter-bar.module.scss';
+import styles from './filter-bar.module.scss'
 
 const SKILL_TYPE_LABELS: Record<TSkillType, string> = {
   all: 'Все',
   learn: 'Хочу научиться',
   teach: 'Могу научить',
-};
+}
 
 const GENDER_LABELS: Record<Gender, string> = {
   all: 'Не имеет значения',
   male: 'Мужской',
   female: 'Женский',
-};
+}
 
 function FilterBar() {
   const {
@@ -35,13 +35,13 @@ function FilterBar() {
     handleRemoveSubcategory,
     handleRemoveTextSearch,
     handleSetSubcategories,
-  } = useActiveFilters();
+  } = useActiveFilters()
 
   const [categoriesData, setCategoriesData] = useState<{
-    categories: Category[];
-    subcategories: Subcategory[];
-  } | null>(null);
-  const [, setCitiesData] = useState<City[]>([]);
+    categories: Category[]
+    subcategories: Subcategory[]
+  } | null>(null)
+  const [, setCitiesData] = useState<City[]>([])
 
   useEffect(() => {
     const loadData = async () => {
@@ -49,107 +49,110 @@ function FilterBar() {
         const [categoriesRes, citiesRes] = await Promise.all([
           categoryApi.getAll(),
           cityApi.getCities(),
-        ]);
+        ])
         setCategoriesData({
           categories: categoriesRes.categories,
           subcategories: categoriesRes.subcategories,
-        });
-        setCitiesData(citiesRes);
+        })
+        setCitiesData(citiesRes)
       } catch (error) {
-        console.error('Error loading filter data:', error);
+        console.error('Error loading filter data:', error)
       }
-    };
+    }
 
-    loadData();
-  }, []);
+    loadData()
+  }, [])
 
   const handleRemoveCategory = (categoryId: number) => {
-    if (!categoriesData?.subcategories) return;
+    if (!categoriesData?.subcategories)
+      return
 
     const subcategoryIds = categoriesData.subcategories
       .filter((sub) => sub.categoryId === categoryId)
-      .map((sub) => sub.id);
+      .map((sub) => sub.id)
 
-    const newSelection = selectedSubcategories.filter((id) => !subcategoryIds.includes(id));
-    handleSetSubcategories(newSelection);
-  };
+    const newSelection = selectedSubcategories.filter((id) => !subcategoryIds.includes(id))
+    handleSetSubcategories(newSelection)
+  }
 
   const groupedSubcategories = useMemo(() => {
     if (!categoriesData?.subcategories || !categoriesData?.categories) {
-      return new Map<number, number[]>();
+      return new Map<number, number[]>()
     }
 
-    const map = new Map<number, number[]>();
+    const map = new Map<number, number[]>()
 
     selectedSubcategories.forEach((subcategoryId) => {
-      const subcategory = categoriesData.subcategories.find((sub) => sub.id === subcategoryId);
+      const subcategory = categoriesData.subcategories.find((sub) => sub.id === subcategoryId)
       if (subcategory) {
-        const { categoryId } = subcategory;
-        const subIds = map.get(categoryId) || [];
-        subIds.push(subcategoryId);
-        map.set(categoryId, subIds);
+        const { categoryId } = subcategory
+        const subIds = map.get(categoryId) || []
+        subIds.push(subcategoryId)
+        map.set(categoryId, subIds)
       }
-    });
+    })
 
-    return map;
-  }, [selectedSubcategories, categoriesData]);
+    return map
+  }, [selectedSubcategories, categoriesData])
 
   const areAllSubcategoriesSelected = useMemo(() => {
     if (!categoriesData?.subcategories || !categoriesData?.categories) {
-      return new Map<number, boolean>();
+      return new Map<number, boolean>()
     }
 
-    const result = new Map<number, boolean>();
+    const result = new Map<number, boolean>()
 
     categoriesData.categories.forEach((category) => {
       const allSubcategories = categoriesData.subcategories.filter(
-        (sub) => sub.categoryId === category.id
-      );
-      const selectedSubcategories = groupedSubcategories.get(category.id) || [];
+        (sub) => sub.categoryId === category.id,
+      )
+      const selectedSubcategories = groupedSubcategories.get(category.id) || []
 
       result.set(
         category.id,
-        allSubcategories.length > 0 && allSubcategories.length === selectedSubcategories.length
-      );
-    });
+        allSubcategories.length > 0 && allSubcategories.length === selectedSubcategories.length,
+      )
+    })
 
-    return result;
-  }, [groupedSubcategories, categoriesData]);
+    return result
+  }, [groupedSubcategories, categoriesData])
 
   const filterItems = useMemo(() => {
     if (!categoriesData?.subcategories || !categoriesData?.categories) {
-      return [];
+      return []
     }
 
     const items: Array<{
-      type: 'category' | 'subcategory';
-      id: number;
-      name: string;
-      onClick: () => void;
-    }> = [];
-    const processedCategories = new Set<number>();
+      type: 'category' | 'subcategory'
+      id: number
+      name: string
+      onClick: () => void
+    }> = []
+    const processedCategories = new Set<number>()
 
     const getCategoryNameLocal = (categoryId: number): string => {
       const category = categoriesData.categories.find(
-        (cat: Category) => cat && cat.id === categoryId
-      );
-      return category?.name || `Категория ${categoryId}`;
-    };
+        (cat: Category) => cat && cat.id === categoryId,
+      )
+      return category?.name || `Категория ${categoryId}`
+    }
 
     const getSubcategoryNameLocal = (id: number): string => {
-      const subcategory = categoriesData.subcategories.find((sc) => sc && sc.id === id);
-      return subcategory?.name || `Подкатегория ${id}`;
-    };
+      const subcategory = categoriesData.subcategories.find((sc) => sc && sc.id === id)
+      return subcategory?.name || `Подкатегория ${id}`
+    }
 
     selectedSubcategories.forEach((subcategoryId) => {
-      const subcategory = categoriesData.subcategories.find((sub) => sub.id === subcategoryId);
-      if (!subcategory) return;
+      const subcategory = categoriesData.subcategories.find((sub) => sub.id === subcategoryId)
+      if (!subcategory)
+        return
 
-      const { categoryId } = subcategory;
+      const { categoryId } = subcategory
 
-      if (processedCategories.has(categoryId)) return;
+      if (processedCategories.has(categoryId))
+        return
 
-      const allSelected = areAllSubcategoriesSelected.get(categoryId) || false;
+      const allSelected = areAllSubcategoriesSelected.get(categoryId) || false
 
       if (allSelected) {
         items.push({
@@ -157,30 +160,30 @@ function FilterBar() {
           id: categoryId,
           name: getCategoryNameLocal(categoryId),
           onClick: () => handleRemoveCategory(categoryId),
-        });
-        processedCategories.add(categoryId);
+        })
+        processedCategories.add(categoryId)
       } else {
         items.push({
           type: 'subcategory',
           id: subcategoryId,
           name: getSubcategoryNameLocal(subcategoryId),
           onClick: () => handleRemoveSubcategory(subcategoryId),
-        });
+        })
       }
-    });
+    })
 
-    return items;
+    return items
   }, [
     selectedSubcategories,
     categoriesData,
     areAllSubcategoriesSelected,
     handleRemoveSubcategory,
     handleRemoveCategory,
-  ]);
+  ])
 
   // Если нет активных фильтров для отображения, не рендерим компонент
   if (!hasActiveFilters) {
-    return null;
+    return null
   }
 
   return (
@@ -206,8 +209,8 @@ function FilterBar() {
         />
       ))}
 
-      {categoriesData &&
-        filterItems.map((item) => (
+      {categoriesData
+        && filterItems.map((item) => (
           <FilterItem
             key={`${item.type}-${item.id}`}
             type="category"
@@ -220,7 +223,7 @@ function FilterBar() {
         <FilterItem type="name" value={textSearch} onClick={handleRemoveTextSearch} />
       )}
     </div>
-  );
+  )
 }
 
-export default FilterBar;
+export default FilterBar

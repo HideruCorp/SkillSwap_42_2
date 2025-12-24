@@ -1,4 +1,4 @@
-import useRequestsApi from './useRequestsApi';
+import useRequestsApi from './useRequestsApi'
 
-export { useRequestsApi };
-export default useRequestsApi;
+export { useRequestsApi }
+export default useRequestsApi

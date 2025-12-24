@@ -23,7 +23,7 @@
 
 .label {
   // Используем глобальную переменную темы
-  color: var(--color-text-primary); 
+  color: var(--color-text-primary);
   font-family: $font-heading; // Или var(--font-primary) если она есть, но лучше scss переменную для шрифта
   font-size: 16px;
   font-weight: 500;
@@ -50,7 +50,7 @@
 
 .errorText {
   // Исправляем переменную цвета ошибки
-  color: var(--color-error); 
+  color: var(--color-error);
   font-size: 12px;
   margin-top: 4px;
   min-height: 16px;
@@ -60,7 +60,7 @@
 
 .hint {
   // Исправляем переменную вторичного текста
-  color: var(--color-text-caption); 
+  color: var(--color-text-caption);
   font-size: 13px;
   margin-top: 8px;
   font-style: italic;

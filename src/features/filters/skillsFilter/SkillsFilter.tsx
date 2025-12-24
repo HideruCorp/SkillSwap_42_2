@@ -1,84 +1,86 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { CheckboxUI } from '@shared/ui/checkbox/CheckboxUI';
-import ChevronUp from '@shared/assets/img/chevron-Up.svg?react';
-import ChevronDown from '@shared/assets/img/chevron-Down.svg?react';
-import categoryApi from '@entities/category/api/categoriesApi';
-import styles from './skills-filter.module.scss';
-import type { SkillsFilterProps } from './types';
+import type { SkillsFilterProps } from './types'
+import categoryApi from '@entities/category/api/categoriesApi'
+import ChevronDown from '@shared/assets/img/chevron-Down.svg?react'
+import ChevronUp from '@shared/assets/img/chevron-Up.svg?react'
+import { CheckboxUI } from '@shared/ui/checkbox/CheckboxUI'
+import React, { useEffect, useMemo, useState } from 'react'
+import styles from './skills-filter.module.scss'
 
 interface CategoryItem {
-  id: number;
-  name: string;
+  id: number
+  name: string
 }
 
 interface SubcategoryItem {
-  id: number;
-  name: string;
-  categoryId: number;
+  id: number
+  name: string
+  categoryId: number
 }
 
 interface CategoryData {
-  categories: CategoryItem[];
-  subcategories: SubcategoryItem[];
+  categories: CategoryItem[]
+  subcategories: SubcategoryItem[]
 }
 
 interface DisplayItem {
-  id: number;
-  name: string;
-  isCategory: boolean;
-  isSubcategory?: boolean;
-  parentId?: number;
-  hasSubcategories?: boolean;
+  id: number
+  name: string
+  isCategory: boolean
+  isSubcategory?: boolean
+  parentId?: number
+  hasSubcategories?: boolean
 }
 
 function SkillsFilter({ selectedSkills, onSelectionChange }: SkillsFilterProps) {
-  const [categoryData, setCategoryData] = useState<CategoryData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [expanded, setExpanded] = useState(false);
-  const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set());
+  const [categoryData, setCategoryData] = useState<CategoryData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [expanded, setExpanded] = useState(false)
+  const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     categoryApi
       .getAll()
       .then((data) => {
-        setCategoryData(data);
-        setLoading(false);
+        setCategoryData(data)
+        setLoading(false)
       })
       .catch((err) => {
-        console.error('Ошибка загрузки категорий:', err);
-        setLoading(false);
-      });
-  }, []);
+        console.error('Ошибка загрузки категорий:', err)
+        setLoading(false)
+      })
+  }, [])
 
   const subcategoriesByCategory = useMemo(() => {
-    if (!categoryData) return new Map<number, SubcategoryItem[]>();
+    if (!categoryData)
+      return new Map<number, SubcategoryItem[]>()
 
-    const map = new Map<number, SubcategoryItem[]>();
+    const map = new Map<number, SubcategoryItem[]>()
     categoryData.subcategories.forEach((sub) => {
-      const subs = map.get(sub.categoryId) || [];
-      subs.push(sub);
-      map.set(sub.categoryId, subs);
-    });
-    return map;
-  }, [categoryData]);
+      const subs = map.get(sub.categoryId) || []
+      subs.push(sub)
+      map.set(sub.categoryId, subs)
+    })
+    return map
+  }, [categoryData])
 
   const displayItems = useMemo(() => {
-    if (!categoryData) return [];
+    if (!categoryData)
+      return []
 
-    const items: DisplayItem[] = [];
+    const items: DisplayItem[] = []
 
     categoryData.categories.forEach((category) => {
-      const subcategories = subcategoriesByCategory.get(category.id) || [];
-      const hasSubs = subcategories.length > 0;
+      const subcategories = subcategoriesByCategory.get(category.id) || []
+      const hasSubs = subcategories.length > 0
 
       items.push({
         id: category.id,
         name: category.name,
         isCategory: true,
         hasSubcategories: hasSubs,
-      });
+      })
 
-      const shouldShowSubcategories = expanded || expandedCategories.has(category.id);
+      const shouldShowSubcategories = expanded || expandedCategories.has(category.id)
       if (shouldShowSubcategories && hasSubs) {
         subcategories.forEach((sub) => {
           items.push({
@@ -87,71 +89,72 @@ function SkillsFilter({ selectedSkills, onSelectionChange }: SkillsFilterProps) 
             isCategory: false,
             isSubcategory: true,
             parentId: category.id,
-          });
-        });
+          })
+        })
       }
-    });
+    })
 
-    return items;
-  }, [categoryData, expanded, expandedCategories, subcategoriesByCategory]);
+    return items
+  }, [categoryData, expanded, expandedCategories, subcategoriesByCategory])
 
   const getSubcategoryIds = (categoryId: number): number[] => {
-    const subs = subcategoriesByCategory.get(categoryId) || [];
-    return subs.map((sub) => sub.id);
-  };
+    const subs = subcategoriesByCategory.get(categoryId) || []
+    return subs.map((sub) => sub.id)
+  }
 
   const areAllSubcategoriesSelected = (categoryId: number): boolean => {
-    const subIds = getSubcategoryIds(categoryId);
-    if (subIds.length === 0) return false;
-    return subIds.every((id) => selectedSkills.includes(id));
-  };
+    const subIds = getSubcategoryIds(categoryId)
+    if (subIds.length === 0)
+      return false
+    return subIds.every((id) => selectedSkills.includes(id))
+  }
 
   const isAnySubcategorySelected = (categoryId: number): boolean => {
-    const subIds = getSubcategoryIds(categoryId);
-    return subIds.some((id) => selectedSkills.includes(id));
-  };
+    const subIds = getSubcategoryIds(categoryId)
+    return subIds.some((id) => selectedSkills.includes(id))
+  }
 
   const toggleCategoryExpansion = (categoryId: number) => {
     setExpandedCategories((prev) => {
-      const newSet = new Set(prev);
+      const newSet = new Set(prev)
       if (newSet.has(categoryId)) {
-        newSet.delete(categoryId);
+        newSet.delete(categoryId)
       } else {
-        newSet.add(categoryId);
+        newSet.add(categoryId)
       }
-      return newSet;
-    });
-  };
+      return newSet
+    })
+  }
 
   const toggleSkillSelection = (skillId: number) => {
     // Просто добавляем/убираем выбранный навык (категорию или подкатегорию)
     const updatedSelection = selectedSkills.includes(skillId)
       ? selectedSkills.filter((id) => id !== skillId)
-      : [...selectedSkills, skillId];
-    onSelectionChange(updatedSelection);
-  };
+      : [...selectedSkills, skillId]
+    onSelectionChange(updatedSelection)
+  }
 
   const handleCategoryToggle = (categoryId: number) => {
-    const subIds = getSubcategoryIds(categoryId);
-    const allSelected = areAllSubcategoriesSelected(categoryId);
+    const subIds = getSubcategoryIds(categoryId)
+    const allSelected = areAllSubcategoriesSelected(categoryId)
 
     if (allSelected) {
-      const newSelection = selectedSkills.filter((id) => !subIds.includes(id));
-      onSelectionChange(newSelection);
+      const newSelection = selectedSkills.filter((id) => !subIds.includes(id))
+      onSelectionChange(newSelection)
     } else {
-      const newSelection = [...selectedSkills];
+      const newSelection = [...selectedSkills]
       subIds.forEach((id) => {
         if (!newSelection.includes(id)) {
-          newSelection.push(id);
+          newSelection.push(id)
         }
-      });
-      onSelectionChange(newSelection);
+      })
+      onSelectionChange(newSelection)
     }
-  };
+  }
 
   const handleToggleAll = () => {
-    setExpanded(!expanded);
-  };
+    setExpanded(!expanded)
+  }
 
   if (loading || !categoryData) {
     return (
@@ -159,7 +162,7 @@ function SkillsFilter({ selectedSkills, onSelectionChange }: SkillsFilterProps) 
         <h2 className={styles.sectionTitle}>Навыки</h2>
         <p>Загрузка...</p>
       </section>
-    );
+    )
   }
 
   return (
@@ -168,9 +171,9 @@ function SkillsFilter({ selectedSkills, onSelectionChange }: SkillsFilterProps) 
       <ul className={styles.skillsList}>
         {displayItems.map((item) => {
           if (item.isCategory && item.hasSubcategories) {
-            const anySelected = isAnySubcategorySelected(item.id);
-            const allSelected = areAllSubcategoriesSelected(item.id);
-            const isExpanded = expanded || expandedCategories.has(item.id);
+            const anySelected = isAnySubcategorySelected(item.id)
+            const allSelected = areAllSubcategoriesSelected(item.id)
+            const isExpanded = expanded || expandedCategories.has(item.id)
 
             return (
               <li key={`category-${item.id}`} className={styles.skillItem}>
@@ -187,15 +190,17 @@ function SkillsFilter({ selectedSkills, onSelectionChange }: SkillsFilterProps) 
                     onClick={() => toggleCategoryExpansion(item.id)}
                     aria-expanded={isExpanded}
                   >
-                    {isExpanded ? (
-                      <ChevronUp className={styles.arrowIcon} />
-                    ) : (
-                      <ChevronDown className={styles.arrowIcon} />
-                    )}
+                    {isExpanded
+                      ? (
+                          <ChevronUp className={styles.arrowIcon} />
+                        )
+                      : (
+                          <ChevronDown className={styles.arrowIcon} />
+                        )}
                   </button>
                 </div>
               </li>
-            );
+            )
           }
 
           if (item.isSubcategory) {
@@ -212,7 +217,7 @@ function SkillsFilter({ selectedSkills, onSelectionChange }: SkillsFilterProps) 
                   onToggle={() => toggleSkillSelection(item.id)}
                 />
               </li>
-            );
+            )
           }
 
           return (
@@ -224,7 +229,7 @@ function SkillsFilter({ selectedSkills, onSelectionChange }: SkillsFilterProps) 
                 onToggle={() => toggleSkillSelection(item.id)}
               />
             </li>
-          );
+          )
         })}
       </ul>
       <button
@@ -234,14 +239,16 @@ function SkillsFilter({ selectedSkills, onSelectionChange }: SkillsFilterProps) 
         aria-expanded={expanded}
       >
         <span className={styles.buttonLabel}>{expanded ? 'Свернуть' : 'Все категории'}</span>
-        {expanded ? (
-          <ChevronUp className={styles.arrowIcon} />
-        ) : (
-          <ChevronDown className={styles.arrowIcon} />
-        )}
+        {expanded
+          ? (
+              <ChevronUp className={styles.arrowIcon} />
+            )
+          : (
+              <ChevronDown className={styles.arrowIcon} />
+            )}
       </button>
     </section>
-  );
+  )
 }
 
-export default SkillsFilter;
+export default SkillsFilter

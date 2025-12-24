@@ -1,45 +1,44 @@
-import { useState } from 'react';
-import Dropdown from '@shared/ui/dropdown/Dropdown';
-import Button from '@shared/ui/button/Button';
-import { useDispatch, useSelector } from '@app/store';
-import { setSortBy } from '@features/sort';
-import type { SortOption } from '@features/sort';
-import SortIcon from '@shared/assets/img/sort.svg?react';
-import styles from './sort-button.module.scss';
+import type { SortOption } from '@features/sort'
+import { useDispatch, useSelector } from '@app/store'
+import { setSortBy } from '@features/sort'
+import SortIcon from '@shared/assets/img/sort.svg?react'
+import Dropdown from '@shared/ui/dropdown/Dropdown'
+import { useState } from 'react'
+import styles from './sort-button.module.scss'
 
-const SORT_OPTIONS: { value: SortOption; label: string }[] = [
+const SORT_OPTIONS: { value: SortOption, label: string }[] = [
   { value: 'popular', label: 'По популярности' },
   { value: 'newest', label: 'Сначала новые' },
   { value: 'oldest', label: 'Сначала старые' },
   { value: 'name', label: 'По имени' },
   { value: 'age', label: 'По возрасту' },
-];
+]
 
 export function SortButton() {
-  const dispatch = useDispatch();
-  const currentSort = useSelector((state) => state.sort.sortBy);
-  const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch()
+  const currentSort = useSelector((state) => state.sort.sortBy)
+  const [isOpen, setIsOpen] = useState(false)
 
-  const currentLabel = SORT_OPTIONS.find((opt) => opt.value === currentSort)?.label || 'Сортировка';
+  const currentLabel = SORT_OPTIONS.find((opt) => opt.value === currentSort)?.label || 'Сортировка'
 
   const handleToggle = (newIsOpen: boolean) => {
-    setIsOpen(newIsOpen);
-  };
+    setIsOpen(newIsOpen)
+  }
 
   const handleSelect = (value: SortOption) => {
-    dispatch(setSortBy(value));
-    setIsOpen(false);
-  };
+    dispatch(setSortBy(value))
+    setIsOpen(false)
+  }
 
   return (
     <Dropdown
       className={styles.relative}
-      trigger={
+      trigger={(
         <div className={styles.button}>
           <SortIcon className={styles.sortIcon} />
           <span className={styles.buttonText}>{currentLabel}</span>
         </div>
-      }
+      )}
       isOpen={isOpen}
       onToggle={handleToggle}
       align="right"
@@ -59,7 +58,7 @@ export function SortButton() {
         ))}
       </ul>
     </Dropdown>
-  );
+  )
 }
 
-export default SortButton;
+export default SortButton

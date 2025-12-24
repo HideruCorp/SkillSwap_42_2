@@ -1,8 +1,8 @@
-import styles from './divider.module.scss';
+import styles from './divider.module.scss'
 
 export interface DividerProps {
-  text?: string;
-  className?: string;
+  text?: string
+  className?: string
 }
 
 export function Divider({ text = 'или', className = '' }: DividerProps) {
@@ -12,7 +12,7 @@ export function Divider({ text = 'или', className = '' }: DividerProps) {
       {text && <span className={styles.text}>{text}</span>}
       <span className={styles.line} />
     </div>
-  );
+  )
 }
 
-export default Divider;
+export default Divider

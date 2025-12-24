@@ -3,7 +3,7 @@
 
 .arrowButton {
   @include button-reset;
-  
+
   width: 32px;
   height: 32px;
   border-radius: 100px;
@@ -15,7 +15,10 @@
 
   background-color: $color-disabled;
   color: $color-text-caption;
-  transition: transform 0.08s ease, background-color 0.08s ease, opacity 0.08s ease;
+  transition:
+    transform 0.08s ease,
+    background-color 0.08s ease,
+    opacity 0.08s ease;
 
   /* Иконка внутри кнопки */
   .icon {
@@ -36,7 +39,7 @@
 
 /* modifiers */
 .left .icon {
- transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .right .icon {

@@ -4,7 +4,7 @@
 
 .tag-counter {
   @include mixins.text-caption;
-  
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -16,7 +16,9 @@
   cursor: default;
   white-space: nowrap;
   user-select: none;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
   transform-origin: center;
 
   &--clickable {

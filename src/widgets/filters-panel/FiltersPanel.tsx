@@ -1,75 +1,79 @@
-import { useMemo } from 'react';
-import { SkillsFilter } from '@features/filters/skillsFilter';
-import { CityFilter } from '@features/filters/cityFilter';
-import { RadioGroupUI } from '@shared/ui/radiogroup';
-import type { TSkillType, Gender } from '@shared/types';
-import CrossIcon from '@shared/assets/img/cross.svg?react';
-
-import { useDispatch, useSelector } from '@app/store';
+import type { Gender, TSkillType } from '@shared/types'
+import { useDispatch, useSelector } from '@app/store'
 import {
-  setSkillType,
-  setGender,
-  setCities,
-  setSubcategories,
   resetFilters,
-  selectSkillType,
-  selectGender,
   selectCities,
+  selectGender,
+  selectSkillType,
   selectSubcategories,
-} from '@features/filters';
+  setCities,
+  setGender,
+  setSkillType,
+  setSubcategories,
+} from '@features/filters'
+import { CityFilter } from '@features/filters/cityFilter'
+import { SkillsFilter } from '@features/filters/skillsFilter'
+import CrossIcon from '@shared/assets/img/cross.svg?react'
 
-import styles from './filters-panel.module.scss';
+import { RadioGroupUI } from '@shared/ui/radiogroup'
+import { useMemo } from 'react'
+
+import styles from './filters-panel.module.scss'
 
 function FiltersPanel() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
-  const skillType = useSelector(selectSkillType);
-  const gender = useSelector(selectGender);
-  const selectedCities = useSelector(selectCities);
-  const selectedSubcategories = useSelector(selectSubcategories);
+  const skillType = useSelector(selectSkillType)
+  const gender = useSelector(selectGender)
+  const selectedCities = useSelector(selectCities)
+  const selectedSubcategories = useSelector(selectSubcategories)
 
   const skillTypeOptions = [
     { label: 'Все', value: 'all' },
     { label: 'Хочу научиться', value: 'learn' },
     { label: 'Могу научить', value: 'teach' },
-  ];
+  ]
 
   const genderOptions = [
     { label: 'Не имеет значения', value: 'all' },
     { label: 'Мужской', value: 'male' },
     { label: 'Женский', value: 'female' },
-  ];
+  ]
 
   const handleSkillTypeChange = (value: string) => {
-    dispatch(setSkillType(value as TSkillType));
-  };
+    dispatch(setSkillType(value as TSkillType))
+  }
 
   const handleGenderChange = (value: string) => {
-    dispatch(setGender(value as Gender));
-  };
+    dispatch(setGender(value as Gender))
+  }
 
   const handleSkillsChange = (ids: number[]) => {
-    dispatch(setSubcategories(ids));
-  };
+    dispatch(setSubcategories(ids))
+  }
 
   const handleCitiesChange = (cities: string[]) => {
-    dispatch(setCities(cities));
-  };
+    dispatch(setCities(cities))
+  }
 
   const handleResetFilters = () => {
-    dispatch(resetFilters());
-  };
+    dispatch(resetFilters())
+  }
 
   const activeFiltersCount = useMemo(() => {
-    let count = 0;
-    if (selectedSubcategories.length > 0) count += selectedSubcategories.length;
-    if (selectedCities.length > 0) count += selectedCities.length;
-    if (skillType !== 'all') count += 1;
-    if (gender !== 'all') count += 1;
-    return count;
-  }, [selectedSubcategories, selectedCities, skillType, gender]);
+    let count = 0
+    if (selectedSubcategories.length > 0)
+      count += selectedSubcategories.length
+    if (selectedCities.length > 0)
+      count += selectedCities.length
+    if (skillType !== 'all')
+      count += 1
+    if (gender !== 'all')
+      count += 1
+    return count
+  }, [selectedSubcategories, selectedCities, skillType, gender])
 
-  const hasActiveFilters = activeFiltersCount > 0;
+  const hasActiveFilters = activeFiltersCount > 0
 
   return (
     <aside className={styles.filters}>
@@ -119,7 +123,7 @@ function FiltersPanel() {
         <CityFilter selectedCities={selectedCities} onSelectionChange={handleCitiesChange} />
       </div>
     </aside>
-  );
+  )
 }
 
-export default FiltersPanel;
+export default FiltersPanel

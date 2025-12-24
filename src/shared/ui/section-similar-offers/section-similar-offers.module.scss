@@ -4,7 +4,7 @@
 .section {
   display: flex;
   flex-direction: column;
-  gap: 32px; 
+  gap: 32px;
 }
 
 .wrapper {
@@ -40,8 +40,12 @@
   justify-content: center;
 }
 
-.arrowLeft { left: -20px; }
-.arrowRight { right: -20px; }
+.arrowLeft {
+  left: -20px;
+}
+.arrowRight {
+  right: -20px;
+}
 
 .empty {
   padding: 32px 0;
@@ -54,17 +58,16 @@
   min-width: 260px;
   height: 340px;
   border-radius: 16px;
-  background: linear-gradient(
-    90deg,
-    $color-surface 25%,
-    $color-disabled 37%,
-    $color-surface 63%
-  );
+  background: linear-gradient(90deg, $color-surface 25%, $color-disabled 37%, $color-surface 63%);
   background-size: 400% 100%;
   animation: shimmer 1.4s ease infinite;
 }
 
 @keyframes shimmer {
-  0% { background-position: 100% 0; }
-  100% { background-position: 0 0; }
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
 }

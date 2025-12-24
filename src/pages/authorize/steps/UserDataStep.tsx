@@ -1,13 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import cityApi from '@entities/city/api/citiesApi';
-import categoryApi from '@entities/category/api/categoriesApi';
-import { compressImage } from '@shared/lib/image/compressImage';
-import type { Category, City, Subcategory } from '@shared/types';
-import UserDataForm, {
-  type UserDataFormErrors,
-  type UserDataFormValues,
-} from '@widgets/forms/user-data-form';
-import { useStepUserData } from '@features/auth';
+import type { Category, City, Subcategory } from '@shared/types'
+import type { UserDataFormErrors, UserDataFormValues } from '@widgets/forms/user-data-form'
+import categoryApi from '@entities/category/api/categoriesApi'
+import cityApi from '@entities/city/api/citiesApi'
+import { useStepUserData } from '@features/auth'
+import { compressImage } from '@shared/lib/image/compressImage'
+import UserDataForm from '@widgets/forms/user-data-form'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 function UserDataStep() {
   const {
@@ -18,11 +16,11 @@ function UserDataStep() {
     submitStep,
     prevStep,
     clearErrors,
-  } = useStepUserData();
+  } = useStepUserData()
 
-  const [cities, setCities] = useState<City[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  const [cities, setCities] = useState<City[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([])
 
   useEffect(() => {
     const load = async () => {
@@ -30,20 +28,21 @@ function UserDataStep() {
         const [citiesData, categoriesData] = await Promise.all([
           cityApi.getCities(),
           categoryApi.getAll(),
-        ]);
-        setCities(citiesData);
-        setCategories(categoriesData.categories);
-        setSubcategories(categoriesData.subcategories);
+        ])
+        setCities(citiesData)
+        setCategories(categoriesData.categories)
+        setSubcategories(categoriesData.subcategories)
       } catch (e) {
-        console.error('Ошибка при загрузке данных шага 2:', e);
+        console.error('Ошибка при загрузке данных шага 2:', e)
       }
-    };
+    }
 
-    load();
-  }, []);
+    load()
+  }, [])
 
   const externalErrors: UserDataFormErrors | undefined = useMemo(() => {
-    if (!storeErrors) return undefined;
+    if (!storeErrors)
+      return undefined
 
     return {
       name: storeErrors.name,
@@ -52,40 +51,42 @@ function UserDataStep() {
       gender: storeErrors.gender,
       cityId: storeErrors.cityId,
       skillInterests: storeErrors.skillInterests,
-    };
-  }, [storeErrors]);
+    }
+  }, [storeErrors])
 
   const handleChange = useCallback(
     (patch: Partial<UserDataFormValues>) => {
-      if (storeErrors) clearErrors();
-      updateUserData(patch);
+      if (storeErrors)
+        clearErrors()
+      updateUserData(patch)
     },
-    [storeErrors, clearErrors, updateUserData]
-  );
+    [storeErrors, clearErrors, updateUserData],
+  )
 
   const handleAvatarChange = useCallback(
     async (file: File | null) => {
-      if (storeErrors) clearErrors();
+      if (storeErrors)
+        clearErrors()
 
       if (!file) {
-        updateUserData({ avatarUrl: '' });
-        return;
+        updateUserData({ avatarUrl: '' })
+        return
       }
 
       try {
-        const avatarUrl = await compressImage(file);
-        updateUserData({ avatarUrl });
+        const avatarUrl = await compressImage(file)
+        updateUserData({ avatarUrl })
       } catch (e) {
-        console.error('Ошибка при обработке аватара:', e);
+        console.error('Ошибка при обработке аватара:', e)
       }
     },
-    [storeErrors, clearErrors, updateUserData]
-  );
+    [storeErrors, clearErrors, updateUserData],
+  )
 
   const handleSubmit = useCallback(async () => {
-    await submitStep();
+    await submitStep()
     // currentStep переключится на 3 внутри registrationSlice при успехе
-  }, [submitStep]);
+  }, [submitStep])
 
   return (
     <UserDataForm
@@ -100,8 +101,8 @@ function UserDataStep() {
       onPrev={prevStep}
       onSubmit={handleSubmit}
     />
-  );
+  )
 }
 
-export default UserDataStep;
-export { UserDataStep };
+export default UserDataStep
+export { UserDataStep }

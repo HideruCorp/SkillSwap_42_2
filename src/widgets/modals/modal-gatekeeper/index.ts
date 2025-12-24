@@ -1,3 +1,3 @@
-import ModalGatekeeper from './ModalGatekeeper';
+import ModalGatekeeper from './ModalGatekeeper'
 
-export default ModalGatekeeper;
+export default ModalGatekeeper

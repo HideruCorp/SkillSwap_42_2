@@ -1,14 +1,14 @@
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from '@app/store';
-import { selectCurrentUserId } from '@features/auth';
+import { useDispatch, useSelector } from '@app/store'
+import { initializeExchanges, selectExchangesLoading } from '@entities/exchange'
+import { selectCurrentUserId } from '@features/auth'
 import {
   selectActiveExchangesByUserId,
   selectArchivedExchangesByUserId,
-} from '@features/exchanges';
-import { initializeExchanges, selectExchangesLoading } from '@entities/exchange';
-import { ExchangeCard } from '@widgets/exchange-card';
-import SectionHeaderUI from '@shared/ui/section-header/SectionHeaderUI';
-import styles from './profile-exchanges-page.module.scss';
+} from '@features/exchanges'
+import SectionHeaderUI from '@shared/ui/section-header/SectionHeaderUI'
+import { ExchangeCard } from '@widgets/exchange-card'
+import { useEffect } from 'react'
+import styles from './profile-exchanges-page.module.scss'
 
 /**
  * ProfileExchangesPage - страница "Мои обмены" в профиле пользователя
@@ -18,21 +18,21 @@ import styles from './profile-exchanges-page.module.scss';
  */
 
 function ProfileExchangesPage() {
-  const dispatch = useDispatch();
-  const currentUserId = useSelector(selectCurrentUserId);
-  const isLoading = useSelector(selectExchangesLoading);
+  const dispatch = useDispatch()
+  const currentUserId = useSelector(selectCurrentUserId)
+  const isLoading = useSelector(selectExchangesLoading)
 
   // Get exchanges data using selectors
   const activeExchanges = useSelector((state) =>
-    currentUserId ? selectActiveExchangesByUserId(state, currentUserId) : []
-  );
+    currentUserId ? selectActiveExchangesByUserId(state, currentUserId) : [],
+  )
   const archivedExchanges = useSelector((state) =>
-    currentUserId ? selectArchivedExchangesByUserId(state, currentUserId) : []
-  );
+    currentUserId ? selectArchivedExchangesByUserId(state, currentUserId) : [],
+  )
 
   useEffect(() => {
-    dispatch(initializeExchanges());
-  }, [dispatch]);
+    dispatch(initializeExchanges())
+  }, [dispatch])
 
   if (!currentUserId) {
     return (
@@ -40,14 +40,14 @@ function ProfileExchangesPage() {
         <SectionHeaderUI title="Мои обмены" />
         <div className={styles.loader}>Загрузка...</div>
       </section>
-    );
+    )
   }
 
   // Helper function to render a section
   const renderSection = (
     title: string,
     exchanges: ReturnType<typeof selectActiveExchangesByUserId>,
-    emptyMessage: string
+    emptyMessage: string,
   ) => {
     if (isLoading && exchanges.length === 0) {
       return (
@@ -55,7 +55,7 @@ function ProfileExchangesPage() {
           <SectionHeaderUI title={title} />
           <div className={styles.loader}>Загрузка...</div>
         </div>
-      );
+      )
     }
 
     if (exchanges.length === 0) {
@@ -64,7 +64,7 @@ function ProfileExchangesPage() {
           <SectionHeaderUI title={title} />
           <p className={styles.emptyState}>{emptyMessage}</p>
         </div>
-      );
+      )
     }
 
     return (
@@ -76,15 +76,15 @@ function ProfileExchangesPage() {
           ))}
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <section className={styles.profileExchanges}>
       {renderSection('Активные', activeExchanges, 'Нет активных обменов')}
       {renderSection('Архив', archivedExchanges, 'Архив пуст')}
     </section>
-  );
+  )
 }
 
-export default ProfileExchangesPage;
+export default ProfileExchangesPage

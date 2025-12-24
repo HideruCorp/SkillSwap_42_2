@@ -1,22 +1,22 @@
-import { useMemo } from 'react';
-import { useSelector } from '@app/store';
-import { selectAllUsers } from '@entities/user';
-import NotificationItemUI from '@features/notifications/ui/notification-item/NotificationItemUI';
-import { useNotificationPanel } from '../../hooks';
-import type { NotificationPanelProps } from '../../types';
-import styles from './notification-panel.module.scss';
+import type { NotificationPanelProps } from '../../types'
+import { useSelector } from '@app/store'
+import { selectAllUsers } from '@entities/user'
+import NotificationItemUI from '@features/notifications/ui/notification-item/NotificationItemUI'
+import { useMemo } from 'react'
+import { useNotificationPanel } from '../../hooks'
+import styles from './notification-panel.module.scss'
 
 function NotificationPanel({ userId, onClose }: NotificationPanelProps) {
-  const { newNotifications, viewedNotifications, readAll, clearViewed, onNotificationClick } =
-    useNotificationPanel(userId, onClose);
-  const allUsers = useSelector(selectAllUsers);
+  const { newNotifications, viewedNotifications, readAll, clearViewed, onNotificationClick }
+    = useNotificationPanel(userId, onClose)
+  const allUsers = useSelector(selectAllUsers)
 
   // Создаём Map для быстрого доступа к именам пользователей
-  const usersMap = useMemo(() => new Map(allUsers.map((u) => [u.id, u.name])), [allUsers]);
+  const usersMap = useMemo(() => new Map(allUsers.map((u) => [u.id, u.name])), [allUsers])
 
   // Функция для получения имени пользователя по ID (оптимизировано через Map)
   const getUserName = (fromUserId: number): string =>
-    usersMap.get(fromUserId) ?? 'Неизвестный пользователь';
+    usersMap.get(fromUserId) ?? 'Неизвестный пользователь'
 
   return (
     <div className={styles.panel}>
@@ -31,21 +31,23 @@ function NotificationPanel({ userId, onClose }: NotificationPanelProps) {
           )}
         </div>
         <div className={styles.notifications}>
-          {newNotifications.length > 0 ? (
-            newNotifications.map((notification) => (
-              <NotificationItemUI
-                key={notification.id}
-                readed={notification.readed}
-                userName={getUserName(notification.fromUserId)}
-                action={notification.action}
-                createdDate={notification.createdDate}
-                requestId={notification.requestId}
-                onClick={() => onNotificationClick(notification.id)}
-              />
-            ))
-          ) : (
-            <p className={styles.empty}>Нет новых уведомлений</p>
-          )}
+          {newNotifications.length > 0
+            ? (
+                newNotifications.map((notification) => (
+                  <NotificationItemUI
+                    key={notification.id}
+                    readed={notification.readed}
+                    userName={getUserName(notification.fromUserId)}
+                    action={notification.action}
+                    createdDate={notification.createdDate}
+                    requestId={notification.requestId}
+                    onClick={() => onNotificationClick(notification.id)}
+                  />
+                ))
+              )
+            : (
+                <p className={styles.empty}>Нет новых уведомлений</p>
+              )}
         </div>
       </section>
 
@@ -73,7 +75,7 @@ function NotificationPanel({ userId, onClose }: NotificationPanelProps) {
         </section>
       )}
     </div>
-  );
+  )
 }
 
-export default NotificationPanel;
+export default NotificationPanel

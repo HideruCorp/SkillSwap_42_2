@@ -1,5 +1,5 @@
-import type { RootState } from '@app/store';
-import type { Favorite } from './types';
+import type { RootState } from '@app/store'
+import type { Favorite } from './types'
 
 /**
  * Глобальный селектор: мапа skillId -> количество лайков
@@ -9,22 +9,22 @@ import type { Favorite } from './types';
  * Глобальный селектор: мапа skillId -> количество лайков
  * Используется для сортировки скиллов
  */
-const selectSkillLikesMap = (state: RootState): Record<number, number> => {
-  const map: Record<number, number> = {};
+function selectSkillLikesMap(state: RootState): Record<number, number> {
+  const map: Record<number, number> = {}
 
   // Защита от undefined/null
-  const favorites = state.favorites?.items;
+  const favorites = state.favorites?.items
   if (!favorites || !Array.isArray(favorites)) {
-    return map;
+    return map
   }
 
   favorites.forEach((fav: Favorite) => {
     if (fav?.skillId !== undefined) {
-      map[fav.skillId] = (map[fav.skillId] || 0) + 1;
+      map[fav.skillId] = (map[fav.skillId] || 0) + 1
     }
-  });
+  })
 
-  return map;
-};
+  return map
+}
 
-export default selectSkillLikesMap;
+export default selectSkillLikesMap

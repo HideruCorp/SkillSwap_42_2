@@ -1,25 +1,26 @@
 import type {
-  User,
-  Skill,
-  City,
   CategoriesResponse,
-  Subcategory,
-  TSkillType,
+  City,
   Gender,
+  Skill,
+  Subcategory,
   SubcategoryId,
-} from '@shared/types';
+  TSkillType,
+  User,
+} from '@shared/types'
 
 export interface FilterParams {
-  skillType: TSkillType;
-  gender: Gender;
-  cities: string[];
-  subcategories: number[];
-  textSearch: string;
+  skillType: TSkillType
+  gender: Gender
+  cities: string[]
+  subcategories: number[]
+  textSearch: string
 }
 
 // Функция для транслитерации русского текста в английский
-const transliterateToEnglish = (text: string): string => {
-  if (!text) return '';
+function transliterateToEnglish(text: string): string {
+  if (!text)
+    return ''
 
   const translitMap: Record<string, string> = {
     а: 'a',
@@ -88,17 +89,18 @@ const transliterateToEnglish = (text: string): string => {
     Э: 'E',
     Ю: 'Yu',
     Я: 'Ya',
-  };
+  }
 
   return text
     .split('')
     .map((char) => translitMap[char] || char)
-    .join('');
-};
+    .join('')
+}
 
 // Функция для транслитерации английского текста в русский
-const transliterateToRussian = (text: string): string => {
-  if (!text) return '';
+function transliterateToRussian(text: string): string {
+  if (!text)
+    return ''
 
   const translitMap: Record<string, string> = {
     shch: 'щ',
@@ -163,144 +165,140 @@ const transliterateToRussian = (text: string): string => {
     F: 'Ф',
     H: 'Х',
     C: 'Ц',
-  };
+  }
 
-  let result = text;
+  let result = text
   Object.entries(translitMap)
     .sort(([a], [b]) => b.length - a.length)
     .forEach(([eng, rus]) => {
-      result = result.replace(new RegExp(eng, 'gi'), rus);
-    });
+      result = result.replace(new RegExp(eng, 'gi'), rus)
+    })
 
-  return result;
-};
+  return result
+}
 
 // Функция для нормализации текста для поиска
-const normalizeForSearch = (text: string): string[] => {
-  if (!text) return [];
+function normalizeForSearch(text: string): string[] {
+  if (!text)
+    return []
 
-  const lowerText = text.toLowerCase();
+  const lowerText = text.toLowerCase()
 
   return [lowerText, transliterateToEnglish(lowerText), transliterateToRussian(lowerText)].filter(
-    (variant, index, array) => variant && array.indexOf(variant) === index
-  );
-};
+    (variant, index, array) => variant && array.indexOf(variant) === index,
+  )
+}
 
 // Функция проверки совпадения с учетом транслитерации
-const matchesWithTransliteration = (text: string, searchTerm: string): boolean => {
-  if (!text || !searchTerm) return false;
+function matchesWithTransliteration(text: string, searchTerm: string): boolean {
+  if (!text || !searchTerm)
+    return false
 
-  const searchVariants = normalizeForSearch(searchTerm);
-  const textVariants = normalizeForSearch(text);
+  const searchVariants = normalizeForSearch(searchTerm)
+  const textVariants = normalizeForSearch(text)
 
   for (const searchVariant of searchVariants) {
     for (const textVariant of textVariants) {
       if (textVariant.includes(searchVariant)) {
-        return true;
+        return true
       }
     }
   }
 
-  return false;
-};
+  return false
+}
 
 export default function filterUsers(
   users: User[],
   filters: FilterParams,
   skills: Skill[],
   cities: City[],
-  categories?: CategoriesResponse
+  categories?: CategoriesResponse,
 ): User[] {
   return users.filter((user) => {
     // 1. Фильтр по полу
     if (filters.gender !== 'all' && user.gender !== filters.gender) {
-      return false;
+      return false
     }
 
     // 2. Фильтр по городам
     if (filters.cities.length > 0) {
-      const userCity = cities.find((c) => c.id === user.cityId);
+      const userCity = cities.find((c) => c.id === user.cityId)
       if (!userCity || !filters.cities.includes(userCity.name)) {
-        return false;
+        return false
       }
     }
 
     // 3. Текстовый поиск
     if (filters.textSearch && filters.textSearch.trim() !== '') {
-      const searchTerm = filters.textSearch.trim();
+      const searchTerm = filters.textSearch.trim()
 
       // Поиск по имени пользователя (всегда работает)
-      const userName = user.name || '';
-      const userFullName = user.fullName || '';
+      const userName = user.name || ''
+      const userFullName = user.fullName || ''
 
-      const matchesName =
-        matchesWithTransliteration(userName, searchTerm) ||
-        matchesWithTransliteration(userFullName, searchTerm);
+      const matchesName
+        = matchesWithTransliteration(userName, searchTerm)
+          || matchesWithTransliteration(userFullName, searchTerm)
 
       // Получаем навыки пользователя
-      const userSkills = skills.filter((s) => s.userId === user.id);
+      const userSkills = skills.filter((s) => s.userId === user.id)
 
       // Разделение логики по фильтру хочу/могу:
 
       // А. "Может научить" - ищем по названиям навыков (skill.title/name)
       if (filters.skillType === 'teach') {
         const matchesSkillTitle = userSkills.some((skill) => {
-          const skillTitle = skill.title || skill.name || '';
-          return matchesWithTransliteration(skillTitle, searchTerm);
-        });
+          const skillTitle = skill.title || skill.name || ''
+          return matchesWithTransliteration(skillTitle, searchTerm)
+        })
 
         // Для "Может научить" проверяем только имя и названия навыков
         if (!matchesName && !matchesSkillTitle) {
-          return false;
+          return false
         }
-      }
-
+      } else if (filters.skillType === 'learn') {
       // Б. "Хочу научиться" - ищем по названиям подкатегорий интересов
-      else if (filters.skillType === 'learn') {
-        let matchesSubcategory = false;
+        let matchesSubcategory = false
 
         if (categories?.subcategories && user.skillInterests) {
           // Ищем только среди интересов пользователя
           matchesSubcategory = user.skillInterests.some((interestId) => {
-            const subcategory = categories.subcategories.find((sub) => sub.id === interestId);
-            return subcategory && matchesWithTransliteration(subcategory.name, searchTerm);
-          });
+            const subcategory = categories.subcategories.find((sub) => sub.id === interestId)
+            return subcategory && matchesWithTransliteration(subcategory.name, searchTerm)
+          })
         }
 
         // Для "Хочу научиться" проверяем имя и названия подкатегорий интересов
         if (!matchesName && !matchesSubcategory) {
-          return false;
+          return false
         }
-      }
-
-      // В. "Все" - ищем везде (по навыкам и подкатегориям)
-      else {
-        // Поиск по названиям навыков
+      } else {
         const matchesSkillTitle = userSkills.some((skill) => {
-          const skillTitle = skill.title || skill.name || '';
-          return matchesWithTransliteration(skillTitle, searchTerm);
-        });
+          const skillTitle = skill.title || skill.name || ''
+          return matchesWithTransliteration(skillTitle, searchTerm)
+        })
 
         // Поиск по названиям подкатегорий (и навыков, и интересов)
-        let matchesSubcategory = false;
+        let matchesSubcategory = false
         if (categories?.subcategories) {
           const userSkillSubcategoryIds = userSkills
             .map((s) => s.subcategoryId)
-            .filter((id): id is number => id != null && typeof id === 'number');
+            .filter((id): id is number => id != null && typeof id === 'number')
 
-          const userInterestIds = user.skillInterests || [];
+          const userInterestIds = user.skillInterests || []
           const allUserSubcategoryIds = [
             ...new Set([...userSkillSubcategoryIds, ...userInterestIds]),
-          ];
+          ]
 
           matchesSubcategory = categories.subcategories
             .filter((sub) => allUserSubcategoryIds.includes(sub.id))
-            .some((sub) => matchesWithTransliteration(sub.name, searchTerm));
+            .some((sub) => matchesWithTransliteration(sub.name, searchTerm))
         }
 
         // Для "все" проверяем имя, навыки И подкатегории
         if (!matchesName && !matchesSkillTitle && !matchesSubcategory) {
-          return false;
+          return false
         }
       }
     }
@@ -310,74 +308,74 @@ export default function filterUsers(
       const userTeachSkills = skills
         .filter((s) => s.userId === user.id)
         .map((s) => s.subcategoryId)
-        .filter((id): id is number => id != null && typeof id === 'number');
+        .filter((id): id is number => id != null && typeof id === 'number')
 
-      const userLearnSkills = user.skillInterests || [];
+      const userLearnSkills = user.skillInterests || []
 
       if (filters.skillType === 'teach') {
         if (filters.subcategories.length > 0) {
           const hasMatchingTeachSkill = filters.subcategories.some((subcategoryId) =>
-            userTeachSkills.includes(subcategoryId)
-          );
+            userTeachSkills.includes(subcategoryId),
+          )
 
           if (!hasMatchingTeachSkill) {
-            return false;
+            return false
           }
         } else if (userTeachSkills.length === 0) {
-          return false;
+          return false
         }
       } else if (filters.skillType === 'learn') {
         if (filters.subcategories.length > 0) {
           const hasMatchingLearnSkill = filters.subcategories.some((subcategoryId) =>
-            userLearnSkills.includes(subcategoryId)
-          );
+            userLearnSkills.includes(subcategoryId),
+          )
 
           if (!hasMatchingLearnSkill) {
-            return false;
+            return false
           }
         } else if (userLearnSkills.length === 0) {
-          return false;
+          return false
         }
       }
     }
 
     // 5. Фильтр по подкатегориям
     if (filters.subcategories && filters.subcategories.length > 0) {
-      const userSkills = skills.filter((s) => s && s.userId === user.id);
+      const userSkills = skills.filter((s) => s && s.userId === user.id)
       const userSkillSubcategories = userSkills
         .map((s) => s.subcategoryId)
-        .filter((id): id is number => id != null && typeof id === 'number');
-      const userInterestsSubcategories = user.skillInterests || [];
+        .filter((id): id is number => id != null && typeof id === 'number')
+      const userInterestsSubcategories = user.skillInterests || []
 
-      const expandedSubcategories = new Set<number>();
+      const expandedSubcategories = new Set<number>()
 
       filters.subcategories.forEach((id) => {
         if (categories && categories.categories && categories.subcategories) {
-          const isCategory = categories.categories.some((cat: any) => cat && cat.id === id);
+          const isCategory = categories.categories.some((cat: any) => cat && cat.id === id)
           if (isCategory) {
             const categorySubcategories = categories.subcategories
               .filter((sub: Subcategory) => sub && sub.categoryId === id)
               .map((sub: Subcategory) => sub.id)
-              .filter((subId: SubcategoryId): subId is number => typeof subId === 'number');
-            categorySubcategories.forEach((subId: number) => expandedSubcategories.add(subId));
+              .filter((subId: SubcategoryId): subId is number => typeof subId === 'number')
+            categorySubcategories.forEach((subId: number) => expandedSubcategories.add(subId))
           } else {
-            expandedSubcategories.add(id);
+            expandedSubcategories.add(id)
           }
         } else {
-          expandedSubcategories.add(id);
+          expandedSubcategories.add(id)
         }
-      });
+      })
 
       const hasMatchingSubcategory = Array.from(expandedSubcategories).some(
         (subId) =>
-          userSkillSubcategories.includes(subId) || userInterestsSubcategories.includes(subId)
-      );
+          userSkillSubcategories.includes(subId) || userInterestsSubcategories.includes(subId),
+      )
 
       if (!hasMatchingSubcategory) {
-        return false;
+        return false
       }
     }
 
-    return true;
-  });
+    return true
+  })
 }

@@ -5,15 +5,15 @@
  * Если произошла ошибка, сбрасывает кэш, чтобы можно было попробовать снова.
  */
 export default function memoizeRequest<T>(request: () => Promise<T>): () => Promise<T> {
-  let promise: Promise<T> | null = null;
+  let promise: Promise<T> | null = null
 
   return () => {
     if (!promise) {
       promise = request().catch((error) => {
-        promise = null; // Сбрасываем при ошибке
-        throw error;
-      });
+        promise = null // Сбрасываем при ошибке
+        throw error
+      })
     }
-    return promise;
-  };
+    return promise
+  }
 }

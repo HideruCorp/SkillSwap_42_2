@@ -1,47 +1,48 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import type { Category, City, Gender, Subcategory } from '@shared/types';
-import { InputUI } from '@shared/ui/Input';
-import DatePickerUI from '@shared/ui/date-picker/DatePickerUI';
-import { DropdownListUI, type OptionType } from '@shared/ui/dropdown-list';
-import { AvatarPicker } from '@features/avatar-picker';
-import Button from '@shared/ui/button/Button';
-import styles from './user-data-form.module.scss';
+import type { Category, City, Gender, Subcategory } from '@shared/types'
+import type { OptionType } from '@shared/ui/dropdown-list'
+import { AvatarPicker } from '@features/avatar-picker'
+import Button from '@shared/ui/button/Button'
+import DatePickerUI from '@shared/ui/date-picker/DatePickerUI'
+import { DropdownListUI } from '@shared/ui/dropdown-list'
+import { InputUI } from '@shared/ui/Input'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import styles from './user-data-form.module.scss'
 
-export type UserDataFormValues = {
-  name: string;
-  avatarUrl?: string;
-  dateOfBirth?: string;
-  gender: Gender;
-  cityId: number | null;
-  skillInterests: number[];
-};
+export interface UserDataFormValues {
+  name: string
+  avatarUrl?: string
+  dateOfBirth?: string
+  gender: Gender
+  cityId: number | null
+  skillInterests: number[]
+}
 
 export type UserDataFormErrors = Partial<
   Record<'name' | 'avatarUrl' | 'dateOfBirth' | 'gender' | 'cityId' | 'skillInterests', string>
->;
+>
 
 export interface UserDataFormProps {
-  values: UserDataFormValues;
+  values: UserDataFormValues
 
-  cities: City[];
-  categories: Category[];
-  subcategories: Subcategory[];
+  cities: City[]
+  categories: Category[]
+  subcategories: Subcategory[]
 
-  isSubmitting?: boolean;
-  externalErrors?: UserDataFormErrors;
+  isSubmitting?: boolean
+  externalErrors?: UserDataFormErrors
 
-  onChange: (patch: Partial<UserDataFormValues>) => void;
-  onAvatarChange: (file: File | null) => void;
+  onChange: (patch: Partial<UserDataFormValues>) => void
+  onAvatarChange: (file: File | null) => void
 
-  onPrev: () => void;
-  onSubmit: () => Promise<void> | void;
+  onPrev: () => void
+  onSubmit: () => Promise<void> | void
 }
 
 const genderOptions: OptionType[] = [
   { value: 'male', title: 'Мужской' },
   { value: 'female', title: 'Женский' },
   { value: 'all', title: 'Не указан' },
-];
+]
 
 export default function UserDataForm({
   values,
@@ -55,85 +56,90 @@ export default function UserDataForm({
   onPrev,
   onSubmit,
 }: UserDataFormProps) {
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
-  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<number | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null)
+  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState<number | null>(null)
 
   // Инициализация выбранной категории/подкатегории из values.skillInterests[0]
   useEffect(() => {
-    const firstInterestId = values.skillInterests?.[0];
+    const firstInterestId = values.skillInterests?.[0]
     if (!firstInterestId || subcategories.length === 0) {
-      setSelectedSubcategoryId(null);
-      return;
+      setSelectedSubcategoryId(null)
+      return
     }
 
-    const sub = subcategories.find((sc) => sc.id === firstInterestId);
+    const sub = subcategories.find((sc) => sc.id === firstInterestId)
     if (!sub) {
-      setSelectedSubcategoryId(null);
-      return;
+      setSelectedSubcategoryId(null)
+      return
     }
 
-    setSelectedCategoryId(sub.categoryId);
-    setSelectedSubcategoryId(sub.id);
-  }, [values.skillInterests, subcategories]);
+    setSelectedCategoryId(sub.categoryId)
+    setSelectedSubcategoryId(sub.id)
+  }, [values.skillInterests, subcategories])
 
   const birthDate = useMemo(() => {
-    if (!values.dateOfBirth) return undefined;
-    const d = new Date(values.dateOfBirth);
-    return Number.isNaN(d.getTime()) ? undefined : d;
-  }, [values.dateOfBirth]);
+    if (!values.dateOfBirth)
+      return undefined
+    const d = new Date(values.dateOfBirth)
+    return Number.isNaN(d.getTime()) ? undefined : d
+  }, [values.dateOfBirth])
 
   const cityOptions: OptionType[] = useMemo(
     () => cities.map((city) => ({ value: String(city.id), title: city.name })),
-    [cities]
-  );
+    [cities],
+  )
 
   const categoryOptions: OptionType[] = useMemo(
     () => categories.map((cat) => ({ value: String(cat.id), title: cat.name })),
-    [categories]
-  );
+    [categories],
+  )
 
   const filteredSubcategories = useMemo(() => {
-    if (!selectedCategoryId) return [];
-    return subcategories.filter((sc) => sc.categoryId === selectedCategoryId);
-  }, [subcategories, selectedCategoryId]);
+    if (!selectedCategoryId)
+      return []
+    return subcategories.filter((sc) => sc.categoryId === selectedCategoryId)
+  }, [subcategories, selectedCategoryId])
 
   const subcategoryOptions: OptionType[] = useMemo(
     () => filteredSubcategories.map((sc) => ({ value: String(sc.id), title: sc.name })),
-    [filteredSubcategories]
-  );
+    [filteredSubcategories],
+  )
 
   const selectedCityOption = useMemo(() => {
-    if (values.cityId === null) return [];
-    return cityOptions.filter((opt) => opt.value === String(values.cityId));
-  }, [cityOptions, values.cityId]);
+    if (values.cityId === null)
+      return []
+    return cityOptions.filter((opt) => opt.value === String(values.cityId))
+  }, [cityOptions, values.cityId])
 
   const selectedGenderOption = useMemo(
     () => genderOptions.filter((opt) => opt.value === values.gender),
-    [values.gender]
-  );
+    [values.gender],
+  )
 
   const selectedCategoryOption = useMemo(() => {
-    if (selectedCategoryId === null) return [];
-    return categoryOptions.filter((opt) => opt.value === String(selectedCategoryId));
-  }, [categoryOptions, selectedCategoryId]);
+    if (selectedCategoryId === null)
+      return []
+    return categoryOptions.filter((opt) => opt.value === String(selectedCategoryId))
+  }, [categoryOptions, selectedCategoryId])
 
   const selectedSubcategoryOption = useMemo(() => {
-    if (selectedSubcategoryId === null) return [];
-    return subcategoryOptions.filter((opt) => opt.value === String(selectedSubcategoryId));
-  }, [subcategoryOptions, selectedSubcategoryId]);
+    if (selectedSubcategoryId === null)
+      return []
+    return subcategoryOptions.filter((opt) => opt.value === String(selectedSubcategoryId))
+  }, [subcategoryOptions, selectedSubcategoryId])
 
   const getError = useCallback(
     (key: keyof UserDataFormErrors) => externalErrors?.[key] ?? '',
-    [externalErrors]
-  );
+    [externalErrors],
+  )
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
-      e.preventDefault();
-      await onSubmit();
+      e.preventDefault()
+      await onSubmit()
     },
-    [onSubmit]
-  );
+    [onSubmit],
+  )
 
   return (
     <div className={styles.formContainer}>
@@ -184,8 +190,8 @@ export default function UserDataForm({
                 selected={selectedGenderOption}
                 groupId="user-data-form"
                 onChange={(selected) => {
-                  const g = (selected?.[0]?.value as Gender | undefined) ?? 'all';
-                  onChange({ gender: g });
+                  const g = (selected?.[0]?.value as Gender | undefined) ?? 'all'
+                  onChange({ gender: g })
                 }}
                 placeholder="Не указан"
               />
@@ -204,9 +210,9 @@ export default function UserDataForm({
               groupId="user-data-form"
               onChange={(selected) => {
                 if (selected.length > 0) {
-                  onChange({ cityId: parseInt(selected[0].value, 10) });
+                  onChange({ cityId: Number.parseInt(selected[0].value, 10) })
                 } else {
-                  onChange({ cityId: null });
+                  onChange({ cityId: null })
                 }
               }}
               placeholder="Выберите город"
@@ -224,10 +230,10 @@ export default function UserDataForm({
               selected={selectedCategoryOption}
               groupId="user-data-form"
               onChange={(selected) => {
-                const categoryId = selected.length > 0 ? parseInt(selected[0].value, 10) : null;
-                setSelectedCategoryId(categoryId);
-                setSelectedSubcategoryId(null);
-                onChange({ skillInterests: [] });
+                const categoryId = selected.length > 0 ? Number.parseInt(selected[0].value, 10) : null
+                setSelectedCategoryId(categoryId)
+                setSelectedSubcategoryId(null)
+                onChange({ skillInterests: [] })
               }}
               placeholder="Выберите категорию"
             />
@@ -244,12 +250,12 @@ export default function UserDataForm({
               groupId="user-data-form"
               onChange={(selected) => {
                 if (selected.length > 0) {
-                  const subId = parseInt(selected[0].value, 10);
-                  setSelectedSubcategoryId(subId);
-                  onChange({ skillInterests: [subId] });
+                  const subId = Number.parseInt(selected[0].value, 10)
+                  setSelectedSubcategoryId(subId)
+                  onChange({ skillInterests: [subId] })
                 } else {
-                  setSelectedSubcategoryId(null);
-                  onChange({ skillInterests: [] });
+                  setSelectedSubcategoryId(null)
+                  onChange({ skillInterests: [] })
                 }
               }}
               placeholder={
@@ -283,5 +289,5 @@ export default function UserDataForm({
         </div>
       </form>
     </div>
-  );
+  )
 }

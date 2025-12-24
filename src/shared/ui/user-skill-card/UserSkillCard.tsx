@@ -1,7 +1,7 @@
-import { SkillTagListUI } from '@shared/ui/skill-tag-list';
-import { getAgeSuffix } from '@shared/lib/utils';
-import styles from './user-skill-card.module.scss';
-import type { UserSkillCardProps } from './types';
+import type { UserSkillCardProps } from './types'
+import { getAgeSuffix } from '@shared/lib/utils'
+import { SkillTagListUI } from '@shared/ui/skill-tag-list'
+import styles from './user-skill-card.module.scss'
 
 function UserSkillCard({
   name,
@@ -16,15 +16,21 @@ function UserSkillCard({
     <div className={styles.card}>
       <div className={styles.header}>
         <div className={styles.avatarSection}>
-          {avatarUrl ? (
-            <img src={avatarUrl} alt={name} className={styles.avatar} />
-          ) : (
-            <div className={styles.avatarPlaceholder}>{name.charAt(0).toUpperCase()}</div>
-          )}
+          {avatarUrl
+            ? (
+                <img src={avatarUrl} alt={name} className={styles.avatar} />
+              )
+            : (
+                <div className={styles.avatarPlaceholder}>{name.charAt(0).toUpperCase()}</div>
+              )}
           <div className={styles.userInfo}>
             <h3 className={styles.name}>{name}</h3>
             <p className={styles.location}>
-              {city}, {age} {getAgeSuffix(age)}
+              {city}
+              ,
+              {age}
+              {' '}
+              {getAgeSuffix(age)}
             </p>
           </div>
         </div>
@@ -46,7 +52,7 @@ function UserSkillCard({
         <SkillTagListUI tags={wantsToLearn} />
       </div>
     </div>
-  );
+  )
 }
 
-export default UserSkillCard;
+export default UserSkillCard

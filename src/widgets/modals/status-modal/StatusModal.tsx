@@ -1,12 +1,12 @@
-import Button from '@shared/ui/button/Button';
-import styles from './StatusModal.module.scss';
+import Button from '@shared/ui/button/Button'
+import styles from './StatusModal.module.scss'
 
 interface StatusModalProps {
-  onClose: () => void;
-  icon: string;
-  title: string;
-  text: string;
-  buttonText: string;
+  onClose: () => void
+  icon: string
+  title: string
+  text: string
+  buttonText: string
 }
 
 function StatusModal({ onClose, icon, title, text, buttonText }: StatusModalProps) {
@@ -17,7 +17,7 @@ function StatusModal({ onClose, icon, title, text, buttonText }: StatusModalProp
       <p className={styles.text}>{text}</p>
       <Button className={styles.button} variant="primary" onClick={onClose} title={buttonText} />
     </div>
-  );
+  )
 }
 
-export default StatusModal;
+export default StatusModal

@@ -1,4 +1,4 @@
-import styles from './profile-skills-page.module.scss';
+import styles from './profile-skills-page.module.scss'
 
 /**
  * ProfileSkillsPage - страница "Мои навыки" в профиле пользователя
@@ -15,7 +15,7 @@ function ProfileSkillsPage() {
       <h1>Мои навыки</h1>
       <p>Страница навыков пользователя</p>
     </section>
-  );
+  )
 }
 
-export default ProfileSkillsPage;
+export default ProfileSkillsPage

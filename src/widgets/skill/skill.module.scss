@@ -48,7 +48,6 @@
   }
 }
 
-
 // Левая колонка с описанием
 .descriptionBlock {
   display: flex;
@@ -57,9 +56,9 @@
   flex: 1;
 
   div {
-      overflow: hidden;
-      @include hide-scrollbar;
-    }
+    overflow: hidden;
+    @include hide-scrollbar;
+  }
 
   // Кнопка "Подробнее" прижата к низу
   > button {

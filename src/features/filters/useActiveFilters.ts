@@ -1,65 +1,65 @@
-import { useMemo, useCallback } from 'react';
-import { useDispatch, useSelector } from '@app/store';
+import { useDispatch, useSelector } from '@app/store'
+import { useCallback, useMemo } from 'react'
 import {
-  setSkillType,
-  setGender,
   setCities,
+  setGender,
+  setSkillType,
   setSubcategories,
   setTextSearch,
-} from './model/filtersSlice';
+} from './model/filtersSlice'
 
 export function useActiveFilters() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
-  const skillType = useSelector((state) => state.filters.skillType);
-  const gender = useSelector((state) => state.filters.gender);
-  const cities = useSelector((state) => state.filters.cities);
-  const subcategories = useSelector((state) => state.filters.subcategories);
-  const textSearch = useSelector((state) => state.filters.textSearch);
+  const skillType = useSelector((state) => state.filters.skillType)
+  const gender = useSelector((state) => state.filters.gender)
+  const cities = useSelector((state) => state.filters.cities)
+  const subcategories = useSelector((state) => state.filters.subcategories)
+  const textSearch = useSelector((state) => state.filters.textSearch)
 
   const hasActiveFilters = useMemo(() => {
     return (
-      skillType !== 'all' ||
-      gender !== 'all' ||
-      (cities && cities.length > 0) ||
-      (subcategories && subcategories.length > 0) ||
-      (textSearch && textSearch.trim() !== '')
-    );
-  }, [skillType, gender, cities, subcategories, textSearch]);
+      skillType !== 'all'
+      || gender !== 'all'
+      || (cities && cities.length > 0)
+      || (subcategories && subcategories.length > 0)
+      || (textSearch && textSearch.trim() !== '')
+    )
+  }, [skillType, gender, cities, subcategories, textSearch])
 
   // Обработчики удаления фильтров
   const handleRemoveSkillType = useCallback(() => {
-    dispatch(setSkillType('all'));
-  }, [dispatch]);
+    dispatch(setSkillType('all'))
+  }, [dispatch])
 
   const handleRemoveGender = useCallback(() => {
-    dispatch(setGender('all'));
-  }, [dispatch]);
+    dispatch(setGender('all'))
+  }, [dispatch])
 
   const handleRemoveCity = useCallback(
     (cityName: string) => {
-      dispatch(setCities(cities.filter((c: string) => c !== cityName)));
+      dispatch(setCities(cities.filter((c: string) => c !== cityName)))
     },
-    [dispatch, cities]
-  );
+    [dispatch, cities],
+  )
 
   const handleRemoveSubcategory = useCallback(
     (subcategoryId: number) => {
-      dispatch(setSubcategories(subcategories.filter((id: number) => id !== subcategoryId)));
+      dispatch(setSubcategories(subcategories.filter((id: number) => id !== subcategoryId)))
     },
-    [dispatch, subcategories]
-  );
+    [dispatch, subcategories],
+  )
 
   const handleRemoveTextSearch = useCallback(() => {
-    dispatch(setTextSearch(''));
-  }, [dispatch]);
+    dispatch(setTextSearch(''))
+  }, [dispatch])
 
   const handleSetSubcategories = useCallback(
     (newSubcategories: number[]) => {
-      dispatch(setSubcategories(newSubcategories));
+      dispatch(setSubcategories(newSubcategories))
     },
-    [dispatch]
-  );
+    [dispatch],
+  )
 
   return {
     // Данные фильтров
@@ -79,5 +79,5 @@ export function useActiveFilters() {
     handleRemoveSubcategory,
     handleRemoveTextSearch,
     handleSetSubcategories,
-  };
+  }
 }

@@ -13,7 +13,7 @@
   position: sticky;
   top: 0;
   z-index: 1;
-  background-color: variables.$color-surface  
+  background-color: variables.$color-surface;
 }
 
 .skillName {
@@ -31,10 +31,7 @@
 
 .description {
   @include mixins.text-body;
-  
+
   color: variables.$color-text;
   max-height: 200px;
 }
-
-
-

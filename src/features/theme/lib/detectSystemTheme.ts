@@ -1,4 +1,4 @@
-import type { ThemeMode } from '../model/types';
+import type { ThemeMode } from '../model/types'
 
 /**
  * Detects current system theme preference
@@ -6,16 +6,16 @@ import type { ThemeMode } from '../model/types';
  */
 export function detectSystemTheme(): ThemeMode {
   if (!window.matchMedia) {
-    return 'light';
+    return 'light'
   }
 
-  const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
-  return darkModeQuery.matches ? 'dark' : 'light';
+  const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)')
+  return darkModeQuery.matches ? 'dark' : 'light'
 }
 
 /**
  * Checks if browser supports prefers-color-scheme
  */
 export function isSystemThemeSupported(): boolean {
-  return Boolean(window.matchMedia);
+  return Boolean(window.matchMedia)
 }

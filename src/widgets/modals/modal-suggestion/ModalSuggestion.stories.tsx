@@ -1,6 +1,6 @@
 // ModalSuggestion.stories.tsx
-import type { Meta, StoryObj } from '@storybook/react';
-import ModalSuggestion from './ModalSuggestion';
+import type { Meta, StoryObj } from '@storybook/react'
+import ModalSuggestion from './ModalSuggestion'
 
 const meta: Meta<typeof ModalSuggestion> = {
   title: 'Widgets/ModalSuggestion',
@@ -36,10 +36,10 @@ const meta: Meta<typeof ModalSuggestion> = {
       </div>
     ),
   ],
-} satisfies Meta<typeof ModalSuggestion>;
+} satisfies Meta<typeof ModalSuggestion>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
@@ -57,4 +57,4 @@ export const Default: Story = {
     onEdit: () => console.log('Edit clicked'),
     onDone: () => console.log('Done clicked'),
   },
-};
+}

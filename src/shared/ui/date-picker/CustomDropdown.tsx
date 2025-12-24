@@ -1,27 +1,27 @@
-import { useMemo, useState } from 'react';
-import ChevronDown from '@shared/assets/img/chevron-Down.svg?react';
-import type { DropdownProps } from 'react-day-picker';
-import { Dropdown } from '../dropdown';
+import type { DropdownProps } from 'react-day-picker'
+import ChevronDown from '@shared/assets/img/chevron-Down.svg?react'
+import { useMemo, useState } from 'react'
+import { Dropdown } from '../dropdown'
 
-import styles from './date-picker.module.scss';
+import styles from './date-picker.module.scss'
 
 function CustomDropdown({ value, onChange, options }: Partial<DropdownProps>) {
-  const [isOpen, setIsOpen] = useState(false);
-  const selectedOption = options?.find((opt) => opt.value === value);
+  const [isOpen, setIsOpen] = useState(false)
+  const selectedOption = options?.find((opt) => opt.value === value)
   return (
     <Dropdown
       className={styles['select-wrapper']}
       isOpen={isOpen}
       align="left"
       onToggle={(newIsOpen) => {
-        setIsOpen(newIsOpen);
+        setIsOpen(newIsOpen)
       }}
-      trigger={
+      trigger={(
         <button type="button" className={styles.select}>
           {selectedOption?.label}
           <ChevronDown className={`${styles.chevron} ${isOpen ? styles['chevron--open'] : ''}`} />
         </button>
-      }
+      )}
     >
       <div className={styles['selector-dropdown']}>
         {options?.map((opt) => (
@@ -34,9 +34,9 @@ function CustomDropdown({ value, onChange, options }: Partial<DropdownProps>) {
             onClick={() => {
               const syntheticEvent = {
                 target: { value: opt.value.toString() },
-              } as React.ChangeEvent<HTMLSelectElement>;
-              onChange?.(syntheticEvent);
-              setIsOpen(false);
+              } as React.ChangeEvent<HTMLSelectElement>
+              onChange?.(syntheticEvent)
+              setIsOpen(false)
             }}
             disabled={opt.disabled}
           >
@@ -45,15 +45,15 @@ function CustomDropdown({ value, onChange, options }: Partial<DropdownProps>) {
         ))}
       </div>
     </Dropdown>
-  );
+  )
 }
 
 function CustomYearsDropdown({ value, onChange, options }: Partial<DropdownProps>) {
   // Reverse the options to show newest years first
-  const reversedOptions = useMemo(() => options?.slice().reverse(), [options]);
+  const reversedOptions = useMemo(() => options?.slice().reverse(), [options])
 
-  return <CustomDropdown value={value} onChange={onChange} options={reversedOptions} />;
+  return <CustomDropdown value={value} onChange={onChange} options={reversedOptions} />
 }
 
-export { CustomDropdown, CustomYearsDropdown, type DropdownProps };
-export default CustomDropdown;
+export { CustomDropdown, CustomYearsDropdown, type DropdownProps }
+export default CustomDropdown

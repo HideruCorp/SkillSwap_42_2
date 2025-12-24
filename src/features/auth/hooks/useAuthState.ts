@@ -1,28 +1,28 @@
-import { useSelector } from '@app/store';
+import { useSelector } from '@app/store'
 import {
-  selectTokens,
-  selectCurrentUserId,
   selectAuthChecked,
+  selectCurrentUser,
+  selectCurrentUserId,
+  selectIsAuthenticated,
   selectIsLoggingIn,
   selectLoginError,
-  selectIsAuthenticated,
-  selectCurrentUser,
-} from '../model';
+  selectTokens,
+} from '../model'
 
 /**
  * Хук для просмотра состояния авторизации
  * Предоставляет доступ ко всем данным auth в удобном формате
  */
 function useAuthState() {
-  const tokens = useSelector(selectTokens);
-  const currentUserId = useSelector(selectCurrentUserId);
-  const currentUser = useSelector(selectCurrentUser);
-  const isAuthenticated = useSelector(selectIsAuthenticated);
-  const isChecked = useSelector(selectAuthChecked);
-  const isLoggingIn = useSelector(selectIsLoggingIn);
-  const loginError = useSelector(selectLoginError);
+  const tokens = useSelector(selectTokens)
+  const currentUserId = useSelector(selectCurrentUserId)
+  const currentUser = useSelector(selectCurrentUser)
+  const isAuthenticated = useSelector(selectIsAuthenticated)
+  const isChecked = useSelector(selectAuthChecked)
+  const isLoggingIn = useSelector(selectIsLoggingIn)
+  const loginError = useSelector(selectLoginError)
 
-  const hasValidToken = Boolean(tokens && tokens.expiresAt > Date.now());
+  const hasValidToken = Boolean(tokens && tokens.expiresAt > Date.now())
 
   return {
     // Данные авторизации
@@ -38,7 +38,7 @@ function useAuthState() {
 
     // Ошибки
     loginError,
-  };
+  }
 }
 
-export default useAuthState;
+export default useAuthState

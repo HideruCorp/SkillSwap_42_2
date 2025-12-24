@@ -1,13 +1,13 @@
-import { createListenerMiddleware } from '@reduxjs/toolkit';
-import type { AppDispatch } from '@app/store';
-import { login, logout, bootstrapAuth } from './authSlice';
+import type { AppDispatch } from '@app/store'
+import { createListenerMiddleware } from '@reduxjs/toolkit'
+import { bootstrapAuth, login, logout } from './authSlice'
 
 /**
  * Listener middleware для автоматического логаута при истечении токена
  */
-const authListener = createListenerMiddleware();
+const authListener = createListenerMiddleware()
 
-let logoutTimer: ReturnType<typeof setTimeout> | null = null;
+let logoutTimer: ReturnType<typeof setTimeout> | null = null
 
 /**
  * Планирует автоматический logout по истечении токена
@@ -15,15 +15,15 @@ let logoutTimer: ReturnType<typeof setTimeout> | null = null;
 function scheduleAutoLogout(dispatch: AppDispatch, expiresAt: number): void {
   // Отменяем предыдущий таймер если был
   if (logoutTimer) {
-    clearTimeout(logoutTimer);
-    logoutTimer = null;
+    clearTimeout(logoutTimer)
+    logoutTimer = null
   }
 
-  const delay = Math.max(0, expiresAt - Date.now());
+  const delay = Math.max(0, expiresAt - Date.now())
 
   logoutTimer = setTimeout(() => {
-    dispatch(logout());
-  }, delay);
+    dispatch(logout())
+  }, delay)
 }
 
 /**
@@ -31,8 +31,8 @@ function scheduleAutoLogout(dispatch: AppDispatch, expiresAt: number): void {
  */
 function cancelAutoLogout(): void {
   if (logoutTimer) {
-    clearTimeout(logoutTimer);
-    logoutTimer = null;
+    clearTimeout(logoutTimer)
+    logoutTimer = null
   }
 }
 
@@ -42,28 +42,28 @@ authListener.startListening({
   effect: (action, listenerApi) => {
     const {
       tokens: { expiresAt },
-    } = action.payload;
-    scheduleAutoLogout(listenerApi.dispatch as AppDispatch, expiresAt);
+    } = action.payload
+    scheduleAutoLogout(listenerApi.dispatch as AppDispatch, expiresAt)
   },
-});
+})
 
 // Слушаем успешный bootstrap — планируем автологаут если есть токены
 authListener.startListening({
   actionCreator: bootstrapAuth.fulfilled,
   effect: (action, listenerApi) => {
-    const { tokens } = action.payload;
+    const { tokens } = action.payload
     if (tokens?.expiresAt) {
-      scheduleAutoLogout(listenerApi.dispatch as AppDispatch, tokens.expiresAt);
+      scheduleAutoLogout(listenerApi.dispatch as AppDispatch, tokens.expiresAt)
     }
   },
-});
+})
 
 // При logout отменяем таймер
 authListener.startListening({
   actionCreator: logout.fulfilled,
   effect: () => {
-    cancelAutoLogout();
+    cancelAutoLogout()
   },
-});
+})
 
-export default authListener;
+export default authListener

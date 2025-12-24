@@ -1,5 +1,5 @@
-import styles from './tag-counter-ui.module.scss';
-import type { TagCounterUIProps } from './type';
+import type { TagCounterUIProps } from './type'
+import styles from './tag-counter-ui.module.scss'
 /**
  * TagCounterUI - Компонент для отображения счетчика навыков, можно подвязать колбэк на нажатие
  *
@@ -25,13 +25,14 @@ import type { TagCounterUIProps } from './type';
 export function TagCounterUI({ count, onClick }: TagCounterUIProps) {
   const className = onClick
     ? `${styles['tag-counter']} ${styles['tag-counter--clickable']}`
-    : styles['tag-counter'];
+    : styles['tag-counter']
 
   return (
     <button type="button" className={className} onClick={onClick}>
-      +{count}
+      +
+      {count}
     </button>
-  );
+  )
 }
 
-export default TagCounterUI;
+export default TagCounterUI

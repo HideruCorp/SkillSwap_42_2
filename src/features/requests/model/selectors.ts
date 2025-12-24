@@ -1,6 +1,6 @@
-import { createSelector } from '@reduxjs/toolkit';
-import type { Request } from '@shared/types';
-import type { RootState } from '@app/store';
+import type { RootState } from '@app/store'
+import type { Request } from '@shared/types'
+import { createSelector } from '@reduxjs/toolkit'
 
 /**
  * Cross-slice селекторы для requests
@@ -9,9 +9,9 @@ import type { RootState } from '@app/store';
  */
 
 // Input selectors
-const selectRequestsItems = (state: RootState) => state.requests.items;
-const selectSkillsItems = (state: RootState) => state.skills.items;
-const selectUserId = (_state: RootState, userId: number) => userId;
+const selectRequestsItems = (state: RootState) => state.requests.items
+const selectSkillsItems = (state: RootState) => state.skills.items
+const selectUserId = (_state: RootState, userId: number) => userId
 
 /**
  * Входящие заявки (где skill.userId === currentUserId)
@@ -20,14 +20,14 @@ const selectUserId = (_state: RootState, userId: number) => userId;
 export const selectIncomingRequests = createSelector(
   [selectRequestsItems, selectSkillsItems, selectUserId],
   (requests, skills, userId): Request[] => {
-    const skillOwnerMap = new Map(skills.map((s) => [s.id, s.userId]));
+    const skillOwnerMap = new Map(skills.map((s) => [s.id, s.userId]))
 
     return requests.filter((request) => {
-      const skillOwnerId = skillOwnerMap.get(request.requestedSkill);
-      return skillOwnerId === userId;
-    });
-  }
-);
+      const skillOwnerId = skillOwnerMap.get(request.requestedSkill)
+      return skillOwnerId === userId
+    })
+  },
+)
 
 /**
  * Входящие pending заявки для текущего пользователя
@@ -35,14 +35,14 @@ export const selectIncomingRequests = createSelector(
 export const selectIncomingPendingRequests = createSelector(
   [selectRequestsItems, selectSkillsItems, selectUserId],
   (requests, skills, userId): Request[] => {
-    const skillOwnerMap = new Map(skills.map((s) => [s.id, s.userId]));
+    const skillOwnerMap = new Map(skills.map((s) => [s.id, s.userId]))
 
     return requests.filter((request) => {
-      const skillOwnerId = skillOwnerMap.get(request.requestedSkill);
-      return skillOwnerId === userId && request.status === 'pending';
-    });
-  }
-);
+      const skillOwnerId = skillOwnerMap.get(request.requestedSkill)
+      return skillOwnerId === userId && request.status === 'pending'
+    })
+  },
+)
 
 /**
  * Архивные заявки (accepted/rejected) — как входящие, так и исходящие
@@ -51,15 +51,16 @@ export const selectIncomingPendingRequests = createSelector(
 export const selectArchivedRequests = createSelector(
   [selectRequestsItems, selectSkillsItems, selectUserId],
   (requests, skills, userId): Request[] => {
-    const skillOwnerMap = new Map(skills.map((s) => [s.id, s.userId]));
+    const skillOwnerMap = new Map(skills.map((s) => [s.id, s.userId]))
 
     return requests
       .filter((request) => {
-        if (request.status === 'pending') return false;
-        const skillOwnerId = skillOwnerMap.get(request.requestedSkill);
+        if (request.status === 'pending')
+          return false
+        const skillOwnerId = skillOwnerMap.get(request.requestedSkill)
         // Include if user is sender OR skill owner
-        return skillOwnerId === userId || request.fromUser === userId;
+        return skillOwnerId === userId || request.fromUser === userId
       })
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  }
-);
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  },
+)

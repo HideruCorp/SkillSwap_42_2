@@ -3,8 +3,7 @@
 
 :root {
   // Transition for smooth theme switching
-  --theme-transition: background-color 0.3s ease, color 0.3s ease,
-    border-color 0.3s ease;
+  --theme-transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 // Light Theme (default)
@@ -69,7 +68,7 @@
 
   // UI elements
   // Исправлено: используем более темный зеленый для фона primary кнопки, чтобы белый текст читался
-  --color-accent: #5e9a32; 
+  --color-accent: #5e9a32;
   --color-button-hover: #508826; // Чуть светлее при наведении
   --color-button-pressed: #3d691e; // Темнее при нажатии
   --color-toggle: #48523f;

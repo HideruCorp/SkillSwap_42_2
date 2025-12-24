@@ -1,10 +1,10 @@
-import React from 'react';
-import cn from 'classnames';
-import Button from '@shared/ui/button/Button';
+import type { SectionHeaderProps } from './type'
+import ChevronRight from '@shared/assets/img/chevron-Right.svg?react'
+import Button from '@shared/ui/button/Button'
 
-import ChevronRight from '@shared/assets/img/chevron-Right.svg?react';
-import styles from './SectionHeaderUI.module.scss';
-import type { SectionHeaderProps } from './type';
+import cn from 'classnames'
+import React from 'react'
+import styles from './SectionHeaderUI.module.scss'
 
 const SectionHeaderUI: React.FC<SectionHeaderProps> = ({
   title,
@@ -13,7 +13,7 @@ const SectionHeaderUI: React.FC<SectionHeaderProps> = ({
   className,
   extraAction,
 }) => {
-  const hasAction = actionLabel && onAction;
+  const hasAction = actionLabel && onAction
 
   return (
     <div className={cn(styles.wrapper, className)}>
@@ -34,7 +34,7 @@ const SectionHeaderUI: React.FC<SectionHeaderProps> = ({
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SectionHeaderUI;
+export default SectionHeaderUI

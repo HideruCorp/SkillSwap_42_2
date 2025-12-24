@@ -1,13 +1,13 @@
-import { memo } from 'react';
-import { SkillTagListUI } from '@shared/ui/skill-tag-list';
-import { SkillTagUI } from '@shared/ui/skill-tag';
-import Button from '@shared/ui/button/Button';
-import { useNavigate } from 'react-router-dom';
-import { getAgeSuffix } from '@shared/lib/date';
-import styles from './skill-card.module.scss';
-import type { SkillCardProps } from './types';
+import type { SkillCardProps } from './types'
+import { getAgeSuffix } from '@shared/lib/date'
+import Button from '@shared/ui/button/Button'
+import { SkillTagUI } from '@shared/ui/skill-tag'
+import { SkillTagListUI } from '@shared/ui/skill-tag-list'
+import { memo } from 'react'
+import { useNavigate } from 'react-router-dom'
+import styles from './skill-card.module.scss'
 
-const SkillCard = memo(function SkillCard({
+const SkillCard = memo(({
   id,
   name,
   city,
@@ -16,22 +16,28 @@ const SkillCard = memo(function SkillCard({
   wantsToLearn,
   avatarUrl,
   actionSlot,
-}: SkillCardProps) {
-  const navigate = useNavigate();
+}: SkillCardProps) => {
+  const navigate = useNavigate()
 
   return (
     <div className={styles.card}>
       <div className={styles.header}>
         <div className={styles.avatarSection}>
-          {avatarUrl ? (
-            <img src={avatarUrl} alt={name} className={styles.avatar} />
-          ) : (
-            <div className={styles.avatarPlaceholder}>{name.charAt(0).toUpperCase()}</div>
-          )}
+          {avatarUrl
+            ? (
+                <img src={avatarUrl} alt={name} className={styles.avatar} />
+              )
+            : (
+                <div className={styles.avatarPlaceholder}>{name.charAt(0).toUpperCase()}</div>
+              )}
           <div className={styles.userInfo}>
             <h3 className={styles.name}>{name}</h3>
             <p className={styles.location}>
-              {city}, {age} {getAgeSuffix(age)}
+              {city}
+              ,
+              {age}
+              {' '}
+              {getAgeSuffix(age)}
             </p>
           </div>
         </div>
@@ -58,9 +64,9 @@ const SkillCard = memo(function SkillCard({
         />
       </div>
     </div>
-  );
-});
+  )
+})
 
-SkillCard.displayName = 'SkillCard';
+SkillCard.displayName = 'SkillCard'
 
-export default SkillCard;
+export default SkillCard

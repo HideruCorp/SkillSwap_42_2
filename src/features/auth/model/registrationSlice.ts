@@ -1,108 +1,109 @@
-import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
-import type { Nullable, User, Skill } from '@shared/types';
-import { addUser } from '@entities/user';
-import { addSkill } from '@entities/skill';
-import authApi from '../api/authApi';
+import type { PayloadAction } from '@reduxjs/toolkit'
+import type { Nullable, Skill, User } from '@shared/types'
 import type {
-  RegistrationStep,
-  RegistrationFormData,
-  StepCredentials,
-  StepUserData,
-  StepSkillData,
-  StepCredentialsErrors,
-  StepUserDataErrors,
-  StepSkillDataErrors,
-  StepValidationErrors,
-  RegistrationStepErrors,
   AuthTokens,
-} from './types';
+  RegistrationFormData,
+  RegistrationStep,
+  RegistrationStepErrors,
+  StepCredentials,
+  StepCredentialsErrors,
+  StepSkillData,
+  StepSkillDataErrors,
+  StepUserData,
+  StepUserDataErrors,
+  StepValidationErrors,
+} from './types'
+import { addSkill } from '@entities/skill'
+import { addUser } from '@entities/user'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import authApi from '../api/authApi'
 
 // ============ TYPES ============
 
 interface RegistrationState {
-  currentStep: RegistrationStep;
-  formData: RegistrationFormData;
-  isSubmitting: boolean;
-  isCheckingEmail: boolean;
-  stepErrors: RegistrationStepErrors;
-  error: Nullable<string>;
-  isCompleted: boolean;
+  currentStep: RegistrationStep
+  formData: RegistrationFormData
+  isSubmitting: boolean
+  isCheckingEmail: boolean
+  stepErrors: RegistrationStepErrors
+  error: Nullable<string>
+  isCompleted: boolean
 }
 
 // ============ VALIDATION ============
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@][^\s.@]*\.[^\s@]+$/
 
 function validateStepCredentials(credentials: StepCredentials): StepCredentialsErrors | null {
-  const errors: StepCredentialsErrors = {};
+  const errors: StepCredentialsErrors = {}
 
   if (!credentials.email.trim()) {
-    errors.email = 'Email обязателен';
+    errors.email = 'Email обязателен'
   } else if (!EMAIL_REGEX.test(credentials.email)) {
-    errors.email = 'Некорректный формат email';
+    errors.email = 'Некорректный формат email'
   }
 
   if (!credentials.password) {
-    errors.password = 'Пароль обязателен';
+    errors.password = 'Пароль обязателен'
   } else if (credentials.password.length < 6) {
-    errors.password = 'Пароль должен быть не менее 6 символов';
+    errors.password = 'Пароль должен быть не менее 6 символов'
   }
 
-  return Object.keys(errors).length > 0 ? errors : null;
+  return Object.keys(errors).length > 0 ? errors : null
 }
 
 function validateStepUserData(userData: StepUserData): StepUserDataErrors | null {
-  const errors: StepUserDataErrors = {};
+  const errors: StepUserDataErrors = {}
 
   if (!userData.name.trim()) {
-    errors.name = 'Имя обязательно';
+    errors.name = 'Имя обязательно'
   } else if (userData.name.trim().length < 2) {
-    errors.name = 'Имя должно быть не менее 2 символов';
+    errors.name = 'Имя должно быть не менее 2 символов'
   }
 
   if (userData.cityId === null) {
-    errors.cityId = 'Выберите город';
+    errors.cityId = 'Выберите город'
   }
 
   if (userData.gender === 'all') {
-    errors.gender = 'Выберите пол';
+    errors.gender = 'Выберите пол'
   }
 
   if (!userData.dateOfBirth) {
-    errors.dateOfBirth = 'Укажите дату рождения';
+    errors.dateOfBirth = 'Укажите дату рождения'
   }
 
   if (userData.skillInterests.length === 0) {
-    errors.skillInterests = 'Выберите хотя бы один интерес';
+    errors.skillInterests = 'Выберите хотя бы один интерес'
   }
 
-  return Object.keys(errors).length > 0 ? errors : null;
+  return Object.keys(errors).length > 0 ? errors : null
 }
 
 function validateStepSkillData(skillData: StepSkillData): StepSkillDataErrors | null {
-  const errors: StepSkillDataErrors = {};
+  const errors: StepSkillDataErrors = {}
 
   if (!skillData.skillTitle.trim()) {
-    errors.skillTitle = 'Название навыка обязательно';
+    errors.skillTitle = 'Название навыка обязательно'
   } else if (skillData.skillTitle.trim().length < 3) {
-    errors.skillTitle = 'Название должно быть не менее 3 символов';
+    errors.skillTitle = 'Название должно быть не менее 3 символов'
   }
 
   if (skillData.skillSubcategoryId === null) {
-    errors.skillSubcategoryId = 'Выберите категорию';
+    errors.skillSubcategoryId = 'Выберите категорию'
   }
 
   if (!skillData.skillDescription.trim()) {
-    errors.skillDescription = 'Описание обязательно';
+    errors.skillDescription = 'Описание обязательно'
   } else if (skillData.skillDescription.trim().length < 10) {
-    errors.skillDescription = 'Описание должно быть не менее 10 символов';
+    errors.skillDescription = 'Описание должно быть не менее 10 символов'
   }
 
   if (skillData.skillImages.length === 0) {
-    errors.skillImages = 'Добавьте хотя бы одно изображение';
+    errors.skillImages = 'Добавьте хотя бы одно изображение'
   }
 
-  return Object.keys(errors).length > 0 ? errors : null;
+  return Object.keys(errors).length > 0 ? errors : null
 }
 
 // ============ INITIAL STATE ============
@@ -126,7 +127,7 @@ const initialFormData: RegistrationFormData = {
     skillDescription: '',
     skillImages: [],
   },
-};
+}
 
 const initialState: RegistrationState = {
   currentStep: 1,
@@ -140,14 +141,14 @@ const initialState: RegistrationState = {
   },
   error: null,
   isCompleted: false,
-};
+}
 
 // ============ ASYNC THUNKS ============
 
 // Тип состояния для thunks, которым нужен доступ к users
 interface ThunkStateWithUsers {
-  registration: RegistrationState;
-  users: { items: User[] };
+  registration: RegistrationState
+  users: { items: User[] }
 }
 
 /**
@@ -157,77 +158,77 @@ interface ThunkStateWithUsers {
 export const checkEmailAvailability = createAsyncThunk<
   boolean,
   string,
-  { state: ThunkStateWithUsers; rejectValue: string }
+  { state: ThunkStateWithUsers, rejectValue: string }
 >('registration/checkEmail', async (email, { getState, rejectWithValue }) => {
   try {
-    const { users } = getState();
-    const normalizedEmail = email.toLowerCase();
-    const existingUser = users.items.find((user) => user.email.toLowerCase() === normalizedEmail);
+    const { users } = getState()
+    const normalizedEmail = email.toLowerCase()
+    const existingUser = users.items.find((user) => user.email.toLowerCase() === normalizedEmail)
 
     if (existingUser) {
-      return false;
+      return false
     }
-    return true;
+    return true
   } catch (error) {
-    return rejectWithValue(error instanceof Error ? error.message : 'Ошибка проверки email');
+    return rejectWithValue(error instanceof Error ? error.message : 'Ошибка проверки email')
   }
-});
+})
 
 /**
  * Валидация и переход на следующий шаг
  * Возвращает { nextStep, isLastStep } при успехе
  */
 export const submitStep = createAsyncThunk<
-  { nextStep: RegistrationStep; isLastStep: boolean },
+  { nextStep: RegistrationStep, isLastStep: boolean },
   RegistrationStep,
-  { state: ThunkStateWithUsers; rejectValue: StepValidationErrors }
+  { state: ThunkStateWithUsers, rejectValue: StepValidationErrors }
 >('registration/submitStep', async (step, { getState, dispatch, rejectWithValue }) => {
-  const { formData } = getState().registration;
+  const { formData } = getState().registration
 
-  let errors: StepValidationErrors | null = null;
+  let errors: StepValidationErrors | null = null
 
   switch (step) {
     case 2:
-      errors = validateStepUserData(formData.user);
-      break;
+      errors = validateStepUserData(formData.user)
+      break
     case 3:
-      errors = validateStepSkillData(formData.skill);
-      break;
+      errors = validateStepSkillData(formData.skill)
+      break
     default: {
       // Сначала локальная валидация
-      errors = validateStepCredentials(formData.credentials);
+      errors = validateStepCredentials(formData.credentials)
       if (errors) {
-        return rejectWithValue(errors);
+        return rejectWithValue(errors)
       }
       // Затем проверка email через API
-      const emailResult = await dispatch(checkEmailAvailability(formData.credentials.email));
+      const emailResult = await dispatch(checkEmailAvailability(formData.credentials.email))
       if (checkEmailAvailability.rejected.match(emailResult)) {
-        return rejectWithValue({ email: emailResult.payload as string });
+        return rejectWithValue({ email: emailResult.payload as string })
       }
-      break;
+      break
     }
   }
 
   if (errors) {
-    return rejectWithValue(errors);
+    return rejectWithValue(errors)
   }
 
-  const isLastStep = step === 3;
-  const nextStep = isLastStep ? 3 : ((step + 1) as RegistrationStep);
+  const isLastStep = step === 3
+  const nextStep = isLastStep ? 3 : ((step + 1) as RegistrationStep)
 
-  return { nextStep, isLastStep };
-});
+  return { nextStep, isLastStep }
+})
 
 /**
  * Финальная отправка регистрации (вызывается после подтверждения в ModalSuggestion)
  */
 export const submitRegistration = createAsyncThunk<
-  { tokens: AuthTokens; userId: number; skillId: number },
+  { tokens: AuthTokens, userId: number, skillId: number },
   void,
-  { state: { registration: RegistrationState }; rejectValue: string }
+  { state: { registration: RegistrationState }, rejectValue: string }
 >('registration/submit', async (_, { getState, rejectWithValue, dispatch }) => {
   try {
-    const { formData } = getState().registration;
+    const { formData } = getState().registration
 
     const response = await authApi.register({
       // User data
@@ -246,11 +247,11 @@ export const submitRegistration = createAsyncThunk<
         description: formData.skill.skillDescription,
         images: formData.skill.skillImages,
       },
-    });
+    })
 
     // 1) Обновляем Redux store (источник истины для UI)
     // passwordHash уходит в action.meta, persistMiddleware использует его для DeltaStorage.addUser
-    dispatch(addUser(response.user, response.passwordHash));
+    dispatch(addUser(response.user, response.passwordHash))
 
     const createdSkill: Skill = {
       id: response.skillId,
@@ -260,23 +261,23 @@ export const submitRegistration = createAsyncThunk<
       description: formData.skill.skillDescription,
       createdAt: new Date().toISOString(),
       images: formData.skill.skillImages,
-    };
+    }
 
-    dispatch(addSkill(createdSkill));
+    dispatch(addSkill(createdSkill))
 
     // 2) Сохраняем токены и userId
-    localStorage.setItem('auth_tokens', JSON.stringify(response.tokens));
-    localStorage.setItem('currentUserId', String(response.user.id));
+    localStorage.setItem('auth_tokens', JSON.stringify(response.tokens))
+    localStorage.setItem('currentUserId', String(response.user.id))
 
     return {
       tokens: response.tokens,
       userId: response.user.id,
       skillId: response.skillId,
-    };
+    }
   } catch (error) {
-    return rejectWithValue(error instanceof Error ? error.message : 'Ошибка регистрации');
+    return rejectWithValue(error instanceof Error ? error.message : 'Ошибка регистрации')
   }
-});
+})
 
 // ============ SLICE ============
 
@@ -287,82 +288,82 @@ const registrationSlice = createSlice({
     // Навигация
     prevStep(state) {
       if (state.currentStep > 1) {
-        state.currentStep = (state.currentStep - 1) as RegistrationStep;
+        state.currentStep = (state.currentStep - 1) as RegistrationStep
       }
     },
     goToStep(state, action: PayloadAction<RegistrationStep>) {
-      state.currentStep = action.payload;
+      state.currentStep = action.payload
     },
 
     // Обновление данных шагов
     updateCredentials(state, action: PayloadAction<Partial<StepCredentials>>) {
-      state.formData.credentials = { ...state.formData.credentials, ...action.payload };
+      state.formData.credentials = { ...state.formData.credentials, ...action.payload }
       // Сбрасываем ошибку email при изменении
       if (action.payload.email !== undefined && state.stepErrors[1]?.email) {
-        state.stepErrors[1] = { ...state.stepErrors[1], email: undefined };
+        state.stepErrors[1] = { ...state.stepErrors[1], email: undefined }
       }
     },
     updateUserData(state, action: PayloadAction<Partial<StepUserData>>) {
-      state.formData.user = { ...state.formData.user, ...action.payload };
+      state.formData.user = { ...state.formData.user, ...action.payload }
     },
     updateSkillData(state, action: PayloadAction<Partial<StepSkillData>>) {
-      state.formData.skill = { ...state.formData.skill, ...action.payload };
+      state.formData.skill = { ...state.formData.skill, ...action.payload }
     },
 
     // Управление ошибками
     clearStepErrors(state, action: PayloadAction<RegistrationStep>) {
-      state.stepErrors[action.payload] = null;
+      state.stepErrors[action.payload] = null
     },
     clearError(state) {
-      state.error = null;
+      state.error = null
     },
 
     // Сброс состояния
     resetRegistration() {
-      return initialState;
+      return initialState
     },
   },
   extraReducers: (builder) => {
     builder
       // Check email
       .addCase(checkEmailAvailability.pending, (state) => {
-        state.isCheckingEmail = true;
+        state.isCheckingEmail = true
       })
       .addCase(checkEmailAvailability.fulfilled, (state) => {
-        state.isCheckingEmail = false;
+        state.isCheckingEmail = false
       })
       .addCase(checkEmailAvailability.rejected, (state) => {
-        state.isCheckingEmail = false;
+        state.isCheckingEmail = false
       })
       // Submit step
       .addCase(submitStep.pending, (state) => {
-        state.isSubmitting = true;
+        state.isSubmitting = true
       })
       .addCase(submitStep.fulfilled, (state, action) => {
-        state.isSubmitting = false;
-        state.stepErrors[state.currentStep] = null;
+        state.isSubmitting = false
+        state.stepErrors[state.currentStep] = null
         if (!action.payload.isLastStep) {
-          state.currentStep = action.payload.nextStep;
+          state.currentStep = action.payload.nextStep
         }
       })
       .addCase(submitStep.rejected, (state, action) => {
-        state.isSubmitting = false;
-        const step = state.currentStep;
-        state.stepErrors[step] = action.payload as RegistrationStepErrors[typeof step];
+        state.isSubmitting = false
+        const step = state.currentStep
+        state.stepErrors[step] = action.payload as RegistrationStepErrors[typeof step]
       })
       // Submit registration
       .addCase(submitRegistration.pending, (state) => {
-        state.isSubmitting = true;
-        state.error = null;
+        state.isSubmitting = true
+        state.error = null
       })
       .addCase(submitRegistration.fulfilled, (state) => {
-        state.isSubmitting = false;
-        state.isCompleted = true;
+        state.isSubmitting = false
+        state.isCompleted = true
       })
       .addCase(submitRegistration.rejected, (state, action) => {
-        state.isSubmitting = false;
-        state.error = action.payload ?? 'Ошибка регистрации';
-      });
+        state.isSubmitting = false
+        state.error = action.payload ?? 'Ошибка регистрации'
+      })
   },
   selectors: {
     selectCurrentStep: (state) => state.currentStep,
@@ -379,7 +380,7 @@ const registrationSlice = createSlice({
     selectError: (state) => state.error,
     selectIsCompleted: (state) => state.isCompleted,
   },
-});
+})
 
 export const {
   prevStep,
@@ -390,7 +391,7 @@ export const {
   clearStepErrors,
   clearError,
   resetRegistration,
-} = registrationSlice.actions;
+} = registrationSlice.actions
 
 export const {
   selectCurrentStep,
@@ -406,6 +407,6 @@ export const {
   selectStepSkillDataErrors,
   selectError,
   selectIsCompleted,
-} = registrationSlice.selectors;
+} = registrationSlice.selectors
 
-export default registrationSlice.reducer;
+export default registrationSlice.reducer

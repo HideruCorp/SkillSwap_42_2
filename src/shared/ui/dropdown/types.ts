@@ -1,22 +1,22 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 
 export interface DropdownProps {
   /** Элемент-триггер, по клику на который открывается меню */
-  trigger: ReactNode;
+  trigger: ReactNode
   /** Содержимое выпадающего меню */
-  children: ReactNode;
+  children: ReactNode
   /** Выравнивание меню относительно триггера */
-  align?: 'left' | 'right' | 'center';
+  align?: 'left' | 'right' | 'center'
   /** Дополнительный класс для контейнера */
-  className?: string;
+  className?: string
   /** Дополнительный класс для меню */
-  menuClassName?: string;
+  menuClassName?: string
   /** Контролируемое состояние открытия (опционально) */
-  isOpen?: boolean;
+  isOpen?: boolean
   /** Callback при изменении состояния открытия */
-  onToggle?: (isOpen: boolean) => void;
+  onToggle?: (isOpen: boolean) => void
   /** Отключить автоматическое закрытие по клику вне */
-  disableClickOutside?: boolean;
+  disableClickOutside?: boolean
   /** Отключить автоматическое закрытие по Escape */
-  disableEscapeKey?: boolean;
+  disableEscapeKey?: boolean
 }

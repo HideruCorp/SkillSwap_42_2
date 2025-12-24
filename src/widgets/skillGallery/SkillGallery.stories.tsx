@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import SkillGallery from './SkillGallery';
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import SkillGallery from './SkillGallery'
 
 const meta: Meta<typeof SkillGallery> = {
   title: 'Widgets/SkillGallery',
@@ -7,10 +7,10 @@ const meta: Meta<typeof SkillGallery> = {
   parameters: {
     layout: 'centered',
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof SkillGallery>;
+export default meta
+type Story = StoryObj<typeof SkillGallery>
 
 // Одна картинка
 export const OneImage: Story = {
@@ -18,7 +18,7 @@ export const OneImage: Story = {
     images: ['https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=600&h=450&fit=crop'],
     title: 'Йога',
   },
-};
+}
 
 // Несколько картинок
 export const ManyImages: Story = {
@@ -31,7 +31,7 @@ export const ManyImages: Story = {
     ],
     title: 'Фотография',
   },
-};
+}
 
 // Пустой список
 export const NoImages: Story = {
@@ -39,4 +39,4 @@ export const NoImages: Story = {
     images: [],
     title: 'Пустой список',
   },
-};
+}

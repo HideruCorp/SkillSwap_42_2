@@ -1,11 +1,9 @@
-/* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable import/no-extraneous-dependencies */
-import { useState, useCallback } from 'react';
-import GalleryAddIcon from '@shared/assets/img/gallery-Add.svg?react';
-import CrossIcon from '@shared/assets/img/cross.svg?react';
-import { useDropzone } from 'react-dropzone';
-import type { FileWithPreview, DragDropProps } from './types';
-import styles from './drag-drop.module.scss';
+import type { DragDropProps, FileWithPreview } from './types'
+import CrossIcon from '@shared/assets/img/cross.svg?react'
+import GalleryAddIcon from '@shared/assets/img/gallery-Add.svg?react'
+import { useCallback, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import styles from './drag-drop.module.scss'
 
 export function DragDrop({
   onFilesChange,
@@ -15,16 +13,16 @@ export function DragDrop({
   buttonText = 'Выбрать изображения',
   className = '',
 }: DragDropProps) {
-  const [files, setFiles] = useState<FileWithPreview[]>([]);
-  const [error, setError] = useState<string>('');
+  const [files, setFiles] = useState<FileWithPreview[]>([])
+  const [error, setError] = useState<string>('')
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      setError('');
+      setError('')
 
       if (files.length + acceptedFiles.length > maxFiles) {
-        setError(`Максимальное количество файлов: ${maxFiles}`);
-        return;
+        setError(`Максимальное количество файлов: ${maxFiles}`)
+        return
       }
 
       const newFilesWithPreview: FileWithPreview[] = acceptedFiles.map((file) => ({
@@ -32,14 +30,14 @@ export function DragDrop({
         preview: URL.createObjectURL(file),
         id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
         name: file.name,
-      }));
+      }))
 
-      const updatedFiles = [...files, ...newFilesWithPreview];
-      setFiles(updatedFiles);
-      onFilesChange(updatedFiles);
+      const updatedFiles = [...files, ...newFilesWithPreview]
+      setFiles(updatedFiles)
+      onFilesChange(updatedFiles)
     },
-    [files, maxFiles, onFilesChange]
-  );
+    [files, maxFiles, onFilesChange],
+  )
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
@@ -53,45 +51,45 @@ export function DragDrop({
     maxFiles: maxFiles - files.length,
     multiple: true,
     noClick: true,
-  });
+  })
 
   const removeFile = useCallback(
     (index: number) => {
-      const fileToRemove = files[index];
+      const fileToRemove = files[index]
 
       if (fileToRemove.preview) {
-        URL.revokeObjectURL(fileToRemove.preview);
+        URL.revokeObjectURL(fileToRemove.preview)
       }
 
-      const updatedFiles = files.filter((_, i) => i !== index);
-      setFiles(updatedFiles);
-      onFilesChange(updatedFiles);
+      const updatedFiles = files.filter((_, i) => i !== index)
+      setFiles(updatedFiles)
+      onFilesChange(updatedFiles)
     },
-    [files, onFilesChange]
-  );
+    [files, onFilesChange],
+  )
 
   const clearAllFiles = useCallback(() => {
     files.forEach((file) => {
       if (file.preview) {
-        URL.revokeObjectURL(file.preview);
+        URL.revokeObjectURL(file.preview)
       }
-    });
+    })
 
-    setFiles([]);
-    onFilesChange([]);
-  }, [files, onFilesChange]);
+    setFiles([])
+    onFilesChange([])
+  }, [files, onFilesChange])
 
-  const isMaxFilesReached = files.length >= maxFiles;
+  const isMaxFilesReached = files.length >= maxFiles
 
   const handleButtonClick = useCallback(
     (e: React.MouseEvent) => {
-      e.stopPropagation();
+      e.stopPropagation()
       if (!isMaxFilesReached) {
-        open();
+        open()
       }
     },
-    [isMaxFilesReached, open]
-  );
+    [isMaxFilesReached, open],
+  )
 
   return (
     <div className={`${styles.container} ${className}`}>
@@ -125,7 +123,10 @@ export function DragDrop({
       {files.length > 0 && (
         <div className={styles.filesList}>
           <div className={styles.filesHeader}>
-            <span>Загружено файлов: {files.length}</span>
+            <span>
+              Загружено файлов:
+              {files.length}
+            </span>
             <button
               type="button"
               className={styles.clearButton}
@@ -167,7 +168,7 @@ export function DragDrop({
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default DragDrop;
+export default DragDrop

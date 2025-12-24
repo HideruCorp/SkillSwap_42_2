@@ -1,51 +1,49 @@
-import { useEffect, useMemo } from 'react';
+import type { UseNotificationsReturn } from '../types'
+import { useDispatch, useSelector } from '@app/store'
 import {
-  fetchNotifications,
-  markAsRead,
-  markAllAsReadForUser,
   clearViewedForUser,
+  markAllAsReadForUser,
+  markAsRead,
   selectNotificationsLoading,
-  selectAllNotifications,
-} from '@entities/notification';
-import { useDispatch, useSelector } from '@app/store';
+} from '@entities/notification'
+import { useMemo } from 'react'
 import {
+  selectHasUnreadByUserId,
   selectNewNotificationsByUserId,
   selectViewedNotificationsByUserId,
-  selectHasUnreadByUserId,
-} from '../model/selectors';
-import type { UseNotificationsReturn } from '../types';
+} from '../model/selectors'
 
 function useNotifications(userId: number): UseNotificationsReturn {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
-  const loading = useSelector(selectNotificationsLoading);
+  const loading = useSelector(selectNotificationsLoading)
 
-  const newNotifications = useSelector((state) => selectNewNotificationsByUserId(state, userId));
+  const newNotifications = useSelector((state) => selectNewNotificationsByUserId(state, userId))
   const viewedNotifications = useSelector((state) =>
-    selectViewedNotificationsByUserId(state, userId)
-  );
-  const hasUnread = useSelector((state) => selectHasUnreadByUserId(state, userId));
+    selectViewedNotificationsByUserId(state, userId),
+  )
+  const hasUnread = useSelector((state) => selectHasUnreadByUserId(state, userId))
 
   const readAll = useMemo(
     () => () => {
-      dispatch(markAllAsReadForUser(userId));
+      dispatch(markAllAsReadForUser(userId))
     },
-    [dispatch, userId]
-  );
+    [dispatch, userId],
+  )
 
   const clearViewed = useMemo(
     () => () => {
-      dispatch(clearViewedForUser(userId));
+      dispatch(clearViewedForUser(userId))
     },
-    [dispatch, userId]
-  );
+    [dispatch, userId],
+  )
 
   const markNotificationAsRead = useMemo(
     () => (id: number) => {
-      dispatch(markAsRead(id));
+      dispatch(markAsRead(id))
     },
-    [dispatch]
-  );
+    [dispatch],
+  )
 
   return {
     newNotifications,
@@ -55,7 +53,7 @@ function useNotifications(userId: number): UseNotificationsReturn {
     readAll,
     clearViewed,
     markAsRead: markNotificationAsRead,
-  };
+  }
 }
 
-export default useNotifications;
+export default useNotifications

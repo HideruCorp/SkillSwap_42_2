@@ -1,5 +1,5 @@
-import { ru } from 'date-fns/locale';
-import type { FormatRelativeToken, Locale } from 'date-fns';
+import type { FormatRelativeToken, Locale } from 'date-fns'
+import { ru } from 'date-fns/locale'
 
 /**
  * Кастомная русская локаль для date-fns с сокращёнными относительными датами
@@ -14,7 +14,7 @@ export const customRu: Locale = {
       tomorrow: 'завтра',
       nextWeek: 'на след. неделе',
       other: 'P',
-    };
-    return map[token];
+    }
+    return map[token]
   },
-};
+}

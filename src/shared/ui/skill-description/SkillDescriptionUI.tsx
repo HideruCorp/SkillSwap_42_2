@@ -1,5 +1,5 @@
-import styles from './skill-description-ui.module.scss';
-import type { SkillDescriptionUIProps } from './type';
+import type { SkillDescriptionUIProps } from './type'
+import styles from './skill-description-ui.module.scss'
 
 export function SkillDescriptionUI({
   skillName,
@@ -12,12 +12,15 @@ export function SkillDescriptionUI({
       <div className={styles.head}>
         <h1 className={styles.skillName}>{skillName}</h1>
         <h3 className={styles.category}>
-          {category} / {subcategory}
+          {category}
+          {' '}
+          /
+          {subcategory}
         </h3>
       </div>
       <h4 className={styles.description}>{description}</h4>
     </div>
-  );
+  )
 }
 
-export default SkillDescriptionUI;
+export default SkillDescriptionUI

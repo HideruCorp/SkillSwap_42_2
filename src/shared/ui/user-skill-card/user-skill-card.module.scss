@@ -4,7 +4,7 @@
 
 .card {
   @extend %card-base;
-  
+
   width: 324px;
   flex-shrink: 0;
   height: auto;
@@ -68,7 +68,7 @@
 
 .skillsTitle {
   @include text-h4;
-  padding-bottom: 10px
+  padding-bottom: 10px;
 }
 
 .aboutSection {
@@ -88,4 +88,3 @@
   color: $color-text-caption;
   margin: 0;
 }
-

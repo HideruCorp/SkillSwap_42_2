@@ -1,3 +1,3 @@
-import StatusModal from './StatusModal';
+import StatusModal from './StatusModal'
 
-export default StatusModal;
+export default StatusModal

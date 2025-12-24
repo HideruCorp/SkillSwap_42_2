@@ -1,6 +1,6 @@
-import ErrorPageContent from '@widgets/ErrorPageContent/ErrorPageContent';
-import imageError500 from '@shared/assets/img/error 404.svg';
-import styles from './not-found-page.module.scss';
+import imageError500 from '@shared/assets/img/error 404.svg'
+import ErrorPageContent from '@widgets/ErrorPageContent/ErrorPageContent'
+import styles from './not-found-page.module.scss'
 
 function ServerErrorPage() {
   return (
@@ -11,7 +11,7 @@ function ServerErrorPage() {
         description="Попробуйте позже или вернитесь на главную страницу"
       />
     </div>
-  );
+  )
 }
 
-export default ServerErrorPage;
+export default ServerErrorPage

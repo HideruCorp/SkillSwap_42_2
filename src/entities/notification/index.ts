@@ -1,36 +1,36 @@
-import fetchNotifications from './api/notificationsApi';
+import fetchNotifications from './api/notificationsApi'
 import notificationsReducer, {
   addNotification,
-  updateNotification,
-  deleteNotification,
-  markAsRead,
-  markAllAsReadForUser,
   clearViewedForUser,
+  deleteNotification,
   initializeNotifications,
-} from './model/notificationsSlice';
-
-export type { Notification, NotificationsState } from './model/types';
+  markAllAsReadForUser,
+  markAsRead,
+  updateNotification,
+} from './model/notificationsSlice'
 
 export {
-  fetchNotifications,
-  notificationsReducer,
-  addNotification,
-  updateNotification,
-  deleteNotification,
-  markAsRead,
-  markAllAsReadForUser,
-  clearViewedForUser,
-  initializeNotifications,
-};
-
-export {
-  selectNotificationsState,
   selectAllNotifications,
-  selectNotificationsLoading,
-  selectNotificationsError,
   selectNotificationById,
-  selectNotificationsByUserId,
   selectNotificationsByRequestId,
-} from './model/selectors';
+  selectNotificationsByUserId,
+  selectNotificationsError,
+  selectNotificationsLoading,
+  selectNotificationsState,
+} from './model/selectors'
 
-export default notificationsReducer;
+export {
+  addNotification,
+  clearViewedForUser,
+  deleteNotification,
+  fetchNotifications,
+  initializeNotifications,
+  markAllAsReadForUser,
+  markAsRead,
+  notificationsReducer,
+  updateNotification,
+}
+
+export type { Notification, NotificationsState } from './model/types'
+
+export default notificationsReducer

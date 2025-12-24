@@ -1,7 +1,7 @@
-import styles from './SkillLayout.module.scss';
+import styles from './SkillLayout.module.scss'
 
 interface SkillLayoutProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 function SkillLayout({ children }: SkillLayoutProps) {
@@ -9,7 +9,7 @@ function SkillLayout({ children }: SkillLayoutProps) {
     <div className={styles.container}>
       <main className={styles.main}>{children}</main>
     </div>
-  );
+  )
 }
 
-export default SkillLayout;
+export default SkillLayout

@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
-import styles from './dropdown.module.scss';
-import type { DropdownProps } from './types';
+import type { DropdownProps } from './types'
+import { useEffect, useRef, useState } from 'react'
+import styles from './dropdown.module.scss'
 
 export function Dropdown({
   trigger,
@@ -13,73 +13,76 @@ export function Dropdown({
   disableClickOutside = false,
   disableEscapeKey = false,
 }: DropdownProps) {
-  const [internalIsOpen, setInternalIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [internalIsOpen, setInternalIsOpen] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
 
-  const isControlled = controlledIsOpen !== undefined;
-  const isOpen = isControlled ? controlledIsOpen : internalIsOpen;
+  const isControlled = controlledIsOpen !== undefined
+  const isOpen = isControlled ? controlledIsOpen : internalIsOpen
 
   const closeAndBlur = () => {
     if (!isControlled) {
-      setInternalIsOpen(false);
+      setInternalIsOpen(false)
     }
-    onToggle?.(false);
-    const active = document.activeElement as HTMLElement | null;
+    onToggle?.(false)
+    const active = document.activeElement as HTMLElement | null
     if (active && containerRef.current?.contains(active)) {
-      active.blur();
+      active.blur()
     }
-  };
+  }
 
   const handleToggle = () => {
-    const newState = !isOpen;
+    const newState = !isOpen
     if (!isControlled) {
-      setInternalIsOpen(newState);
+      setInternalIsOpen(newState)
     }
-    onToggle?.(newState);
-  };
+    onToggle?.(newState)
+  }
 
   // Закрытие по клику вне
   useEffect(() => {
-    if (!isOpen || disableClickOutside) return undefined;
+    if (!isOpen || disableClickOutside)
+      return undefined
 
     const handleClickOutside = (event: MouseEvent) => {
-      event.stopPropagation();
+      event.stopPropagation()
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         if (!isControlled) {
-          setInternalIsOpen(false);
+          setInternalIsOpen(false)
         }
-        onToggle?.(false);
+        onToggle?.(false)
       }
-    };
+    }
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside)
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen, disableClickOutside, isControlled, onToggle]);
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isOpen, disableClickOutside, isControlled, onToggle])
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
-      event.preventDefault();
-      handleToggle();
-      return;
+      event.preventDefault()
+      handleToggle()
+      return
     }
     if (event.key === 'Escape') {
-      event.stopPropagation();
-      event.preventDefault();
-      if (disableEscapeKey) return;
-      closeAndBlur();
+      event.stopPropagation()
+      event.preventDefault()
+      if (disableEscapeKey)
+        return
+      closeAndBlur()
     }
-  };
+  }
 
   const handleMenuKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Escape') {
-      event.stopPropagation();
-      event.preventDefault();
-      if (disableEscapeKey) return;
-      closeAndBlur();
+      event.stopPropagation()
+      event.preventDefault()
+      if (disableEscapeKey)
+        return
+      closeAndBlur()
     }
-  };
+  }
 
   return (
     <div ref={containerRef} className={`${styles.dropdown} ${className}`}>
@@ -106,7 +109,7 @@ export function Dropdown({
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default Dropdown;
+export default Dropdown

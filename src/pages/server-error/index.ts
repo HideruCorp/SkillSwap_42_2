@@ -1,4 +1,4 @@
-import ServerErrorPage from './ServerErrorPage';
+import ServerErrorPage from './ServerErrorPage'
 
-export { ServerErrorPage };
-export default ServerErrorPage;
+export { ServerErrorPage }
+export default ServerErrorPage

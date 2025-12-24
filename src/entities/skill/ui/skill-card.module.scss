@@ -4,7 +4,7 @@
 
 .card {
   @extend %card-base;
-  
+
   width: 324px;
   height: auto;
   min-height: 368px;
@@ -91,7 +91,7 @@
 
 .likeButton {
   @extend %icon-button;
-  
+
   align-self: flex-start;
   margin-top: 0;
 }

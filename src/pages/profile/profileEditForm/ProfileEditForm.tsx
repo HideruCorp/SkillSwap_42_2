@@ -1,100 +1,102 @@
-import { DatePickerUI } from '@shared/ui/date-picker';
-import DropdownListUI from '@shared/ui/dropdown-list/DropdownListUI';
-import Textarea from '@shared/ui/textarea/Textarea';
-import { AvatarPicker } from '@features/avatar-picker';
-import type { OptionType } from '@shared/ui/dropdown-list';
-import Button from '@shared/ui/button/Button';
-import { InputUI } from '@shared/ui/Input';
-import type { City } from '@shared/types';
-import { useEffect, useState, type SyntheticEvent } from 'react';
-import cityApi from '@entities/city/api/citiesApi';
-import { useAuthState } from '@features/auth';
-import styles from './profile-edit-form.module.scss';
+import type { City } from '@shared/types'
+import type { OptionType } from '@shared/ui/dropdown-list'
+import type { SyntheticEvent } from 'react'
+import cityApi from '@entities/city/api/citiesApi'
+import { useAuthState } from '@features/auth'
+import { AvatarPicker } from '@features/avatar-picker'
+import Button from '@shared/ui/button/Button'
+import { DatePickerUI } from '@shared/ui/date-picker'
+import DropdownListUI from '@shared/ui/dropdown-list/DropdownListUI'
+import { InputUI } from '@shared/ui/Input'
+import Textarea from '@shared/ui/textarea/Textarea'
+import { useEffect, useState } from 'react'
+import styles from './profile-edit-form.module.scss'
 
 const sex: OptionType[] = [
   { value: 'male', title: 'Мужской' },
   { value: 'female', title: 'Женский' },
-];
+]
 
 function ProfileEditForm() {
-  const { currentUser } = useAuthState();
-  const [cities, setCities] = useState<City[]>([]);
-  const [selectedCity, setSelectedCity] = useState<OptionType>();
+  const { currentUser } = useAuthState()
+  const [cities, setCities] = useState<City[]>([])
+  const [selectedCity, setSelectedCity] = useState<OptionType>()
   const [selectedSex, setSelectedSex] = useState<OptionType>(
-    sex.find((item) => item.value === currentUser?.gender)!
-  );
-  const [email, setEmail] = useState(currentUser?.email || '');
-  const [userName, setUserName] = useState(currentUser?.name || '');
-  const [textAbout, setTextAbout] = useState(currentUser?.about || '');
-  const [dateOfBirth, setDateOfBirth] = useState<Date>(new Date(currentUser?.dateOfBirth!));
-  const [avatar, setAvatar] = useState(currentUser?.avatarUrl);
-  const [editFormChange, setEditFormChange] = useState(false);
+    sex.find((item) => item.value === currentUser?.gender) ?? sex[0],
+  )
+  const [email, setEmail] = useState(currentUser?.email || '')
+  const [userName, setUserName] = useState(currentUser?.name || '')
+  const [textAbout, setTextAbout] = useState(currentUser?.about || '')
+  const [dateOfBirth, setDateOfBirth] = useState<Date>(
+    currentUser?.dateOfBirth ? new Date(currentUser.dateOfBirth) : new Date(),
+  )
+  const [avatar, setAvatar] = useState(currentUser?.avatarUrl)
+  const [editFormChange, setEditFormChange] = useState(false)
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const citiesRes = await cityApi.getCities();
-        setCities(citiesRes);
-        const userCity = citiesRes.find((city) => city.id === currentUser?.cityId);
+        const citiesRes = await cityApi.getCities()
+        setCities(citiesRes)
+        const userCity = citiesRes.find((city) => city.id === currentUser?.cityId)
         setSelectedCity({
           value: (userCity || cities[0]).id.toString(),
           title: (userCity || cities[0]).name,
-        });
+        })
       } catch (error) {
-        console.error('Error loading cities data:', error);
+        console.error('Error loading cities data:', error)
       }
-    };
+    }
 
-    loadData();
-  }, []);
+    loadData()
+  }, [])
 
   const cityOptions = cities.map((city) => ({
     value: city.id.toString(),
     title: city.name,
-  })) as OptionType[];
+  })) as OptionType[]
 
   const handleCityChange = (selected: OptionType[]) => {
-    setSelectedCity(selected[0]);
-    setEditFormChange(true);
-  };
+    setSelectedCity(selected[0])
+    setEditFormChange(true)
+  }
 
   const handleSexChange = (selected: OptionType[]) => {
-    setSelectedSex(selected[0]);
-    setEditFormChange(true);
-  };
+    setSelectedSex(selected[0])
+    setEditFormChange(true)
+  }
 
   const onChangeEmail = (value: string) => {
-    setEmail(value);
-    setEditFormChange(true);
-  };
+    setEmail(value)
+    setEditFormChange(true)
+  }
 
   const onChangeName = (value: string) => {
-    setUserName(value);
-    setEditFormChange(true);
-  };
+    setUserName(value)
+    setEditFormChange(true)
+  }
 
   const onChangeText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setTextAbout(e.currentTarget.value);
-    setEditFormChange(true);
-  };
+    setTextAbout(e.currentTarget.value)
+    setEditFormChange(true)
+  }
 
   const onChangeDateOfBirth = (value: Date | undefined) => {
     if (value) {
-      setDateOfBirth(value);
-      setEditFormChange(true);
+      setDateOfBirth(value)
+      setEditFormChange(true)
     }
-  };
+  }
 
   const onChangeAvatar = (value: File | null) => {
-    setAvatar(value ? URL.createObjectURL(value) : undefined);
-    setEditFormChange(true);
-  };
+    setAvatar(value ? URL.createObjectURL(value) : undefined)
+    setEditFormChange(true)
+  }
 
   const onSumbitEditForm = (e: SyntheticEvent) => {
-    e.preventDefault();
-    console.log('Данные обновлены');
-    setEditFormChange(false);
-  };
+    e.preventDefault()
+    setEditFormChange(false)
+  }
 
   return (
     <div className={styles.mainInfo}>
@@ -143,7 +145,7 @@ function ProfileEditForm() {
         />
       </div>
     </div>
-  );
+  )
 }
 
-export default ProfileEditForm;
+export default ProfileEditForm

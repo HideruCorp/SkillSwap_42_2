@@ -1,2 +1,2 @@
-export { default as Skill } from './Skill';
-export type { SkillProps } from './Skill';
+export { default as Skill } from './Skill'
+export type { SkillProps } from './Skill'

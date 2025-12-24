@@ -1,13 +1,14 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Gender, TSkillType } from '@shared/types/index';
+import type { PayloadAction } from '@reduxjs/toolkit'
+import type { Gender, TSkillType } from '@shared/types/index'
+import { createSlice } from '@reduxjs/toolkit'
 
-type TFiltersState = {
-  skillType: TSkillType;
-  gender: Gender;
-  cities: string[];
-  subcategories: number[];
-  textSearch: string;
-};
+interface TFiltersState {
+  skillType: TSkillType
+  gender: Gender
+  cities: string[]
+  subcategories: number[]
+  textSearch: string
+}
 
 const initialState: TFiltersState = {
   skillType: 'all',
@@ -15,29 +16,29 @@ const initialState: TFiltersState = {
   cities: [],
   subcategories: [],
   textSearch: '',
-};
+}
 
 export const filtersSlice = createSlice({
   name: 'filters',
   initialState,
   reducers: {
     setSkillType: (state, action: PayloadAction<TSkillType>) => {
-      state.skillType = action.payload;
+      state.skillType = action.payload
     },
     setGender: (state, action: PayloadAction<Gender>) => {
-      state.gender = action.payload;
+      state.gender = action.payload
     },
     setCities: (state, action: PayloadAction<string[]>) => {
-      state.cities = action.payload;
+      state.cities = action.payload
     },
     setSubcategories: (state, action: PayloadAction<number[]>) => {
-      state.subcategories = action.payload;
+      state.subcategories = action.payload
     },
     setTextSearch: (state, action: PayloadAction<string>) => {
-      state.textSearch = action.payload;
+      state.textSearch = action.payload
     },
     resetFilters() {
-      return initialState;
+      return initialState
     },
   },
   selectors: {
@@ -47,10 +48,10 @@ export const filtersSlice = createSlice({
     selectSubcategories: (state) => state.subcategories,
     selectTextSearch: (state) => state.textSearch,
   },
-});
+})
 
-export const { setSkillType, setGender, setCities, setSubcategories, setTextSearch, resetFilters } =
-  filtersSlice.actions;
+export const { setSkillType, setGender, setCities, setSubcategories, setTextSearch, resetFilters }
+  = filtersSlice.actions
 
 export const {
   selectSkillType,
@@ -58,6 +59,6 @@ export const {
   selectCities,
   selectSubcategories,
   selectTextSearch,
-} = filtersSlice.selectors;
+} = filtersSlice.selectors
 
-export default filtersSlice.reducer;
+export default filtersSlice.reducer

@@ -9,9 +9,9 @@
  * - HtmlType - HTML типы кнопки
  */
 
-export { default as Button } from './Button';
-export type { ButtonProps } from './Button';
-export type { ButtonVariant, ButtonSize, HtmlType } from './Button';
+export { default as Button } from './Button'
+export type { ButtonProps } from './Button'
+export type { ButtonSize, ButtonVariant, HtmlType } from './Button'
 
 // Переэкспорт типов для удобства использования
-export type { ButtonVariant as Variant, ButtonSize as Size, HtmlType as Type } from './Button';
+export type { ButtonSize as Size, HtmlType as Type, ButtonVariant as Variant } from './Button'

@@ -1,9 +1,9 @@
-import styles from './component-with-img.module.scss';
+import styles from './component-with-img.module.scss'
 
 interface ComponentWithImgProps {
-  img: string;
-  title: string;
-  text: string;
+  img: string
+  title: string
+  text: string
 }
 
 function ComponentWithImg({ img, title, text }: ComponentWithImgProps) {
@@ -13,7 +13,7 @@ function ComponentWithImg({ img, title, text }: ComponentWithImgProps) {
       <h2 className={styles.title}>{title}</h2>
       <p className={styles.text}>{text}</p>
     </div>
-  );
+  )
 }
 
-export default ComponentWithImg;
+export default ComponentWithImg

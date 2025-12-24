@@ -1,4 +1,4 @@
-import ProfileSkillsPage from './ProfileSkillsPage';
+import ProfileSkillsPage from './ProfileSkillsPage'
 
-export { ProfileSkillsPage };
-export default ProfileSkillsPage;
+export { ProfileSkillsPage }
+export default ProfileSkillsPage

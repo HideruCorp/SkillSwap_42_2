@@ -1,4 +1,4 @@
-import useExchangesApi from './useExchangesApi';
+import useExchangesApi from './useExchangesApi'
 
-export { useExchangesApi };
-export default useExchangesApi;
+export { useExchangesApi }
+export default useExchangesApi

@@ -1,2 +1,2 @@
-export { DropdownListUI } from './DropdownListUI';
-export type { SelectProps, OptionType } from './types';
+export { DropdownListUI } from './DropdownListUI'
+export type { OptionType, SelectProps } from './types'

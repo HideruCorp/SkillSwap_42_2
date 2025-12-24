@@ -1,10 +1,10 @@
-import type { ReactNode } from 'react';
-import styles from './Layout.module.scss';
-import Header from '../header/Header';
-import Footer from '../footer/Footer';
+import type { ReactNode } from 'react'
+import Footer from '../footer/Footer'
+import Header from '../header/Header'
+import styles from './Layout.module.scss'
 
 interface LayoutProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 function Layout({ children }: LayoutProps) {
@@ -16,7 +16,7 @@ function Layout({ children }: LayoutProps) {
         <Footer />
       </div>
     </div>
-  );
+  )
 }
 
-export default Layout;
+export default Layout

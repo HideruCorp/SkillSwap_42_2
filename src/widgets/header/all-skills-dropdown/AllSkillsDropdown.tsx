@@ -1,34 +1,35 @@
-import { useEffect, useState, type SyntheticEvent } from 'react';
-import type { Category, Subcategory } from '@shared/types';
-import categoriesApi from '@entities/category/api/categoriesApi';
-import Modal from '@features/modal/Modal';
-import ChevronDownIcon from '@shared/assets/img/chevron-Down.svg?react';
-import styles from './all-skills-dropdown.module.scss';
-import AllSkillsModal from './all-skills-modal/AllSkillsModal';
+import type { Category, Subcategory } from '@shared/types'
+import type { SyntheticEvent } from 'react'
+import categoriesApi from '@entities/category/api/categoriesApi'
+import Modal from '@features/modal/Modal'
+import ChevronDownIcon from '@shared/assets/img/chevron-Down.svg?react'
+import { useEffect, useState } from 'react'
+import styles from './all-skills-dropdown.module.scss'
+import AllSkillsModal from './all-skills-modal/AllSkillsModal'
 
 function AllSkillsDropdown() {
-  const [categories, setCategory] = useState<Category[]>([]);
-  const [subcategories, setSubcategory] = useState<Subcategory[]>([]);
-  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [categories, setCategory] = useState<Category[]>([])
+  const [subcategories, setSubcategory] = useState<Subcategory[]>([])
+  const [isOpenModal, setIsOpenModal] = useState(false)
 
   // если categories/subcategories будут храниться в общем сторе, можно брать их оттуда, без запроса
   const fetchData = async () => {
-    const result = await categoriesApi.getAll();
-    setCategory(result.categories);
-    setSubcategory(result.subcategories);
-  };
+    const result = await categoriesApi.getAll()
+    setCategory(result.categories)
+    setSubcategory(result.subcategories)
+  }
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   const handleClose = () => {
-    setIsOpenModal(false);
-  };
+    setIsOpenModal(false)
+  }
   const handleOpen = (e: SyntheticEvent) => {
-    e.preventDefault();
-    setIsOpenModal(true);
-  };
+    e.preventDefault()
+    setIsOpenModal(true)
+  }
 
   return (
     <>
@@ -42,7 +43,7 @@ function AllSkillsDropdown() {
         </Modal>
       )}
     </>
-  );
+  )
 }
 
-export default AllSkillsDropdown;
+export default AllSkillsDropdown

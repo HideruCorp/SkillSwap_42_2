@@ -1,10 +1,10 @@
-import type { ThemeMode, ThemeSource } from '../model/types';
-import { THEME_STORAGE_KEY } from '../model/types';
+import type { ThemeMode, ThemeSource } from '../model/types'
+import { THEME_STORAGE_KEY } from '../model/types'
 
 interface StoredTheme {
-  mode: ThemeMode;
-  source: ThemeSource;
-  timestamp: number;
+  mode: ThemeMode
+  source: ThemeSource
+  timestamp: number
 }
 
 /**
@@ -16,10 +16,10 @@ export function saveTheme(mode: ThemeMode, source: ThemeSource): void {
       mode,
       source,
       timestamp: Date.now(),
-    };
-    localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(data));
+    }
+    localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(data))
   } catch (error) {
-    console.error('[ThemeStorage] Failed to save theme:', error);
+    console.error('[ThemeStorage] Failed to save theme:', error)
   }
 }
 
@@ -28,20 +28,21 @@ export function saveTheme(mode: ThemeMode, source: ThemeSource): void {
  */
 export function loadTheme(): StoredTheme | null {
   try {
-    const stored = localStorage.getItem(THEME_STORAGE_KEY);
-    if (!stored) return null;
+    const stored = localStorage.getItem(THEME_STORAGE_KEY)
+    if (!stored)
+      return null
 
-    const parsed = JSON.parse(stored) as StoredTheme;
+    const parsed = JSON.parse(stored) as StoredTheme
 
     // Validate stored data
     if (!parsed.mode || !['light', 'dark'].includes(parsed.mode)) {
-      return null;
+      return null
     }
 
-    return parsed;
+    return parsed
   } catch (error) {
-    console.error('[ThemeStorage] Failed to load theme:', error);
-    return null;
+    console.error('[ThemeStorage] Failed to load theme:', error)
+    return null
   }
 }
 
@@ -50,8 +51,8 @@ export function loadTheme(): StoredTheme | null {
  */
 export function removeTheme(): void {
   try {
-    localStorage.removeItem(THEME_STORAGE_KEY);
+    localStorage.removeItem(THEME_STORAGE_KEY)
   } catch (error) {
-    console.error('[ThemeStorage] Failed to remove theme:', error);
+    console.error('[ThemeStorage] Failed to remove theme:', error)
   }
 }
