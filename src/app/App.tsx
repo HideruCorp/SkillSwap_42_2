@@ -1,31 +1,31 @@
-import './App.scss';
-import Layout from '@widgets/layout';
-import { useEffect, useState } from 'react';
-import DeltaStorage from '@shared/lib/storage';
-import { initializeUsers } from '@entities/user/model/usersSlice';
-import { initializeSkills } from '@entities/skill/model/skillsSlice';
-import { initializeFavorites } from '@entities/favorites';
-import { bootstrapAuth } from '@features/auth';
-import { useDispatch } from '@app/store';
-import { initializeRequests } from '@entities/request';
-import { initializeExchanges } from '@entities/exchange';
-import { initializeNotifications } from '@entities/notification';
-import { useThemeInit } from '@features/theme';
-import AppRouter from './router';
+import { useDispatch } from '@app/store'
+import { initializeExchanges } from '@entities/exchange'
+import { initializeFavorites } from '@entities/favorites'
+import { initializeNotifications } from '@entities/notification'
+import { initializeRequests } from '@entities/request'
+import { initializeSkills } from '@entities/skill/model/skillsSlice'
+import { initializeUsers } from '@entities/user/model/usersSlice'
+import { bootstrapAuth } from '@features/auth'
+import { useThemeInit } from '@features/theme'
+import DeltaStorage from '@shared/lib/storage'
+import Layout from '@widgets/layout'
+import { useEffect, useState } from 'react'
+import AppRouter from './router'
+import './App.scss'
 
 function App() {
   // Initialize theme system (loads from localStorage/system preference)
-  useThemeInit();
+  useThemeInit()
 
-  const dispatch = useDispatch();
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch()
+  const [isInitialized, setIsInitialized] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const init = async () => {
       try {
         // Сначала инициализируем IndexedDB
-        await DeltaStorage.init();
+        await DeltaStorage.init()
 
         // Затем загружаем данные в Redux
         await Promise.all([
@@ -35,35 +35,35 @@ function App() {
           dispatch(initializeRequests()),
           dispatch(initializeExchanges()),
           dispatch(initializeNotifications()),
-        ]);
+        ])
 
         // Bootstrap auth после загрузки users (для проверки существования пользователя)
-        await dispatch(bootstrapAuth());
+        await dispatch(bootstrapAuth())
 
-        setIsInitialized(true);
+        setIsInitialized(true)
       } catch (err) {
-        console.error('Ошибка инициализации приложения:', err);
-        setError(err instanceof Error ? err.message : 'Неизвестная ошибка');
-        setIsInitialized(true); // Разрешаем рендер даже при ошибке
+        console.error('Ошибка инициализации приложения:', err)
+        setError(err instanceof Error ? err.message : 'Неизвестная ошибка')
+        setIsInitialized(true) // Разрешаем рендер даже при ошибке
       }
-    };
+    }
 
-    init();
-  }, [dispatch]);
+    init()
+  }, [dispatch])
 
   if (!isInitialized) {
-    return <div>Загрузка...</div>;
+    return <div>Загрузка...</div>
   }
 
   if (error) {
-    console.error('Ошибка приложения:', error);
+    console.error('Ошибка приложения:', error)
   }
 
   return (
     <Layout>
       <AppRouter />
     </Layout>
-  );
+  )
 }
 
-export default App;
+export default App

@@ -1,10 +1,10 @@
-import { NavLink } from 'react-router-dom';
-import RequestIcon from '@shared/assets/img/request.svg?react';
-import MessageIcon from '@shared/assets/img/message-Text.svg?react';
-import LikeIcon from '@shared/assets/img/like-Default.svg?react';
-import IdeaIcon from '@shared/assets/img/idea.svg?react';
-import UserIcon from '@shared/assets/img/user.svg?react';
-import styles from './sidebar.module.scss';
+import IdeaIcon from '@shared/assets/img/idea.svg?react'
+import LikeIcon from '@shared/assets/img/like-Default.svg?react'
+import MessageIcon from '@shared/assets/img/message-Text.svg?react'
+import RequestIcon from '@shared/assets/img/request.svg?react'
+import UserIcon from '@shared/assets/img/user.svg?react'
+import { NavLink } from 'react-router-dom'
+import styles from './sidebar.module.scss'
 
 function SideBar() {
   return (
@@ -56,7 +56,7 @@ function SideBar() {
         </NavLink>
       </li>
     </ul>
-  );
+  )
 }
 
-export default SideBar;
+export default SideBar

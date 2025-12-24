@@ -1,4 +1,4 @@
-import styles from './about-page.module.scss';
+import styles from './about-page.module.scss'
 
 /*
 className={styles['about__some-bem--specific']}
@@ -10,7 +10,7 @@ function AboutPage() {
       <h1>О проекте</h1>
       <p>Страница с информацией о проекте SkillSwap</p>
     </section>
-  );
+  )
 }
 
-export default AboutPage;
+export default AboutPage

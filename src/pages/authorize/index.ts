@@ -1,4 +1,4 @@
-import AuthorizePage from './AuthorizePage';
+import AuthorizePage from './AuthorizePage'
 
-export { AuthorizePage };
-export default AuthorizePage;
+export { AuthorizePage }
+export default AuthorizePage

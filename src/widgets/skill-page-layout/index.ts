@@ -1,1 +1,1 @@
-export { default } from './SkillLayout';
+export { default } from './SkillLayout'

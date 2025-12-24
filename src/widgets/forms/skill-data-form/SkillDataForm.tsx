@@ -1,65 +1,67 @@
-import { DragDrop, type FileWithPreview } from '@features/drag-drop';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { ThirdStepValidationSchema } from '@shared/lib/validationSchema';
-import type { Category, Subcategory } from '@shared/types';
-import { InputUI } from '@shared/ui/Input';
-import Button from '@shared/ui/button/Button';
-import { DropdownListUI, type OptionType } from '@shared/ui/dropdown-list';
-import Textarea from '@shared/ui/textarea/Textarea';
-import { useEffect, useMemo, useState, useCallback } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import styles from './skill-data-form.module.scss';
+import type { FileWithPreview } from '@features/drag-drop'
+import type { Category, Subcategory } from '@shared/types'
+import type { OptionType } from '@shared/ui/dropdown-list'
+import { DragDrop } from '@features/drag-drop'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { ThirdStepValidationSchema } from '@shared/lib/validationSchema'
+import Button from '@shared/ui/button/Button'
+import { DropdownListUI } from '@shared/ui/dropdown-list'
+import { InputUI } from '@shared/ui/Input'
+import Textarea from '@shared/ui/textarea/Textarea'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import styles from './skill-data-form.module.scss'
 
-export type ThirdStepFormData = {
-  skillName: string;
-  category: OptionType[];
-  subcategory: OptionType[];
-  description: string;
-  images: FileWithPreview[];
-};
+export interface ThirdStepFormData {
+  skillName: string
+  category: OptionType[]
+  subcategory: OptionType[]
+  description: string
+  images: FileWithPreview[]
+}
 
-export type SkillDataFormSubmitPayload = {
-  skillTitle: string;
-  skillDescription: string;
-  skillSubcategoryId: number | null;
-  images: FileWithPreview[];
-};
+export interface SkillDataFormSubmitPayload {
+  skillTitle: string
+  skillDescription: string
+  skillSubcategoryId: number | null
+  images: FileWithPreview[]
+}
 
 export type SkillDataFormExternalErrors = Partial<
   Record<'skillName' | 'category' | 'subcategory' | 'description' | 'images', string>
->;
+>
 
 interface SkillDataFormProps {
   /** Начальные значения из wizard store */
   initialValues: {
-    skillTitle: string;
-    skillDescription: string;
-    skillSubcategoryId: number | null;
-  };
+    skillTitle: string
+    skillDescription: string
+    skillSubcategoryId: number | null
+  }
 
   /** Справочники (загружает контейнер) */
-  categories: Category[];
-  subcategories: Subcategory[];
+  categories: Category[]
+  subcategories: Subcategory[]
 
   /** Статусы */
-  isSubmitting?: boolean;
+  isSubmitting?: boolean
 
   /** Ошибки “снаружи” (например, из redux stepErrors) */
-  externalErrors?: SkillDataFormExternalErrors;
+  externalErrors?: SkillDataFormExternalErrors
 
   /** Навигация */
-  onPrev: () => void;
+  onPrev: () => void
 
   /** Сабмит шага (контейнер сделает updateSkillData + submitStep + onSubmitSuccess и т.д.) */
-  onSubmit: (payload: SkillDataFormSubmitPayload) => Promise<void> | void;
+  onSubmit: (payload: SkillDataFormSubmitPayload) => Promise<void> | void
 
   /**
    * Опционально: уведомление контейнера об изменениях (для синхронизации со стором/сброса ошибок)
    * Важно: не делайте здесь тяжёлые операции (конвертацию файлов) — лучше в контейнере на submit.
    */
   onChange?: (
-    patch: Partial<Omit<SkillDataFormSubmitPayload, 'images'> & { images: FileWithPreview[] }>
-  ) => void;
+    patch: Partial<Omit<SkillDataFormSubmitPayload, 'images'> & { images: FileWithPreview[] }>,
+  ) => void
 }
 
 function SkillDataForm({
@@ -88,43 +90,44 @@ function SkillDataForm({
       images: [],
     },
     mode: 'onChange',
-  });
+  })
 
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false)
 
-  const selectedCategory = watch('category');
+  const selectedCategory = watch('category')
 
   const selectedCategoryId = useMemo(() => {
     if (selectedCategory && selectedCategory.length > 0) {
-      return parseInt(selectedCategory[0].value, 10);
+      return Number.parseInt(selectedCategory[0].value, 10)
     }
-    return null;
-  }, [selectedCategory]);
+    return null
+  }, [selectedCategory])
 
   // Инициализация категории/подкатегории из initialValues.skillSubcategoryId
   useEffect(() => {
     if (
-      initialValues.skillSubcategoryId !== null &&
-      subcategories.length > 0 &&
-      categories.length > 0 &&
-      !isInitialized
+      initialValues.skillSubcategoryId !== null
+      && subcategories.length > 0
+      && categories.length > 0
+      && !isInitialized
     ) {
       const storedSubcategory = subcategories.find(
-        (sc) => sc.id === initialValues.skillSubcategoryId
-      );
-      if (!storedSubcategory) return;
+        (sc) => sc.id === initialValues.skillSubcategoryId,
+      )
+      if (!storedSubcategory)
+        return
 
-      const parentCategory = categories.find((cat) => cat.id === storedSubcategory.categoryId);
+      const parentCategory = categories.find((cat) => cat.id === storedSubcategory.categoryId)
       if (parentCategory) {
-        setValue('category', [{ title: parentCategory.name, value: String(parentCategory.id) }]);
+        setValue('category', [{ title: parentCategory.name, value: String(parentCategory.id) }])
       }
 
       setValue('subcategory', [
         { title: storedSubcategory.name, value: String(storedSubcategory.id) },
-      ]);
-      setIsInitialized(true);
+      ])
+      setIsInitialized(true)
     }
-  }, [initialValues.skillSubcategoryId, subcategories, categories, setValue, isInitialized]);
+  }, [initialValues.skillSubcategoryId, subcategories, categories, setValue, isInitialized])
 
   const categoryOptions = useMemo(
     () =>
@@ -132,13 +135,14 @@ function SkillDataForm({
         title: cat.name,
         value: String(cat.id),
       })),
-    [categories]
-  );
+    [categories],
+  )
 
   const filteredSubcategories = useMemo(() => {
-    if (!selectedCategoryId || selectedCategoryId === 0) return [];
-    return subcategories.filter((sc) => sc.categoryId === selectedCategoryId);
-  }, [subcategories, selectedCategoryId]);
+    if (!selectedCategoryId || selectedCategoryId === 0)
+      return []
+    return subcategories.filter((sc) => sc.categoryId === selectedCategoryId)
+  }, [subcategories, selectedCategoryId])
 
   const subcategoryOptions = useMemo(
     () =>
@@ -146,44 +150,44 @@ function SkillDataForm({
         title: sc.name,
         value: String(sc.id),
       })),
-    [filteredSubcategories]
-  );
+    [filteredSubcategories],
+  )
 
   const getFieldError = useCallback(
     (fieldName: keyof ThirdStepFormData | 'subcategory') => {
-      const formError =
-        fieldName === 'subcategory'
+      const formError
+        = fieldName === 'subcategory'
           ? errors.subcategory?.message
-          : errors[fieldName as keyof ThirdStepFormData]?.message;
+          : errors[fieldName as keyof ThirdStepFormData]?.message
 
-      const external =
-        fieldName === 'subcategory'
+      const external
+        = fieldName === 'subcategory'
           ? externalErrors?.subcategory
-          : externalErrors?.[fieldName as keyof SkillDataFormExternalErrors];
+          : externalErrors?.[fieldName as keyof SkillDataFormExternalErrors]
 
-      return formError || external || '';
+      return formError || external || ''
     },
-    [errors, externalErrors]
-  );
+    [errors, externalErrors],
+  )
 
   const handlePrevStep = useCallback(() => {
-    onPrev();
-  }, [onPrev]);
+    onPrev()
+  }, [onPrev])
 
   const handleInternalSubmit = useCallback(
     async (data: ThirdStepFormData) => {
-      const skillSubcategoryId =
-        data.subcategory.length > 0 ? parseInt(data.subcategory[0].value, 10) : null;
+      const skillSubcategoryId
+        = data.subcategory.length > 0 ? Number.parseInt(data.subcategory[0].value, 10) : null
 
       await onSubmit({
         skillTitle: data.skillName,
         skillDescription: data.description,
         skillSubcategoryId,
         images: data.images,
-      });
+      })
     },
-    [onSubmit]
-  );
+    [onSubmit],
+  )
 
   return (
     <div className={styles.container}>
@@ -201,8 +205,8 @@ function SkillDataForm({
                 error={getFieldError('skillName')}
                 value={field.value}
                 onChange={(value) => {
-                  field.onChange(value);
-                  onChange?.({ skillTitle: value });
+                  field.onChange(value)
+                  onChange?.({ skillTitle: value })
                 }}
               />
             )}
@@ -221,10 +225,10 @@ function SkillDataForm({
                 type="list"
                 selected={field.value || []}
                 onChange={(value: OptionType[]) => {
-                  field.onChange(value);
-                  setValue('subcategory', []);
+                  field.onChange(value)
+                  setValue('subcategory', [])
                   // Сбрасываем subcategoryId в контейнер
-                  onChange?.({ skillSubcategoryId: null });
+                  onChange?.({ skillSubcategoryId: null })
                 }}
                 groupId="skill-data-form"
                 placeholder="Выберите категорию навыка"
@@ -246,12 +250,12 @@ function SkillDataForm({
                 type="list"
                 selected={field.value || []}
                 onChange={(value) => {
-                  field.onChange(value);
+                  field.onChange(value)
 
-                  const subcategoryId =
-                    value && value.length > 0 ? parseInt(value[0].value, 10) : null;
+                  const subcategoryId
+                    = value && value.length > 0 ? Number.parseInt(value[0].value, 10) : null
 
-                  onChange?.({ skillSubcategoryId: subcategoryId });
+                  onChange?.({ skillSubcategoryId: subcategoryId })
                 }}
                 groupId="skill-data-form"
                 disabled={!selectedCategoryId}
@@ -279,8 +283,8 @@ function SkillDataForm({
                 value={field.value}
                 placeholder="Коротко опишите, чему можете научить"
                 onChange={(e) => {
-                  field.onChange(e.target.value);
-                  onChange?.({ skillDescription: e.target.value });
+                  field.onChange(e.target.value)
+                  onChange?.({ skillDescription: e.target.value })
                 }}
               />
             )}
@@ -296,8 +300,8 @@ function SkillDataForm({
             render={({ field }) => (
               <DragDrop
                 onFilesChange={(files) => {
-                  field.onChange(files);
-                  onChange?.({ images: files });
+                  field.onChange(files)
+                  onChange?.({ images: files })
                 }}
               />
             )}
@@ -322,7 +326,7 @@ function SkillDataForm({
         </div>
       </form>
     </div>
-  );
+  )
 }
 
-export default SkillDataForm;
+export default SkillDataForm

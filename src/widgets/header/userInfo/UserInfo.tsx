@@ -1,10 +1,10 @@
-import styles from './userInfo.module.scss';
+import styles from './userInfo.module.scss'
 
 interface UserInfoProps {
-  userName: string;
-  userAvatarUrl?: string;
+  userName: string
+  userAvatarUrl?: string
 }
-function UserInfo({ userName, userAvatarUrl }: UserInfoProps) {
+function UserInfo({ userName, userAvatarUrl = undefined }: UserInfoProps) {
   return (
     <div className={`${styles.userInfo}`}>
       <p className={`${styles.userInfoName}`}>{userName}</p>
@@ -14,11 +14,7 @@ function UserInfo({ userName, userAvatarUrl }: UserInfoProps) {
         alt="фото пользователя"
       />
     </div>
-  );
+  )
 }
 
-UserInfo.defaultProps = {
-  userAvatarUrl: undefined,
-};
-
-export default UserInfo;
+export default UserInfo

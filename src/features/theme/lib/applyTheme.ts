@@ -1,4 +1,4 @@
-import type { ThemeMode } from '../model/types';
+import type { ThemeMode } from '../model/types'
 
 /**
  * Applies theme to document element
@@ -6,17 +6,17 @@ import type { ThemeMode } from '../model/types';
  */
 export function applyTheme(mode: ThemeMode): void {
   if (typeof document === 'undefined') {
-    return;
+    return
   }
 
-  const root = document.documentElement;
+  const root = document.documentElement
 
   // Set data-theme attribute for CSS selectors
-  root.setAttribute('data-theme', mode);
+  root.setAttribute('data-theme', mode)
 
   // Also set as class for backward compatibility
-  root.classList.remove('theme-light', 'theme-dark');
-  root.classList.add(`theme-${mode}`);
+  root.classList.remove('theme-light', 'theme-dark')
+  root.classList.add(`theme-${mode}`)
 }
 
 /**
@@ -25,17 +25,17 @@ export function applyTheme(mode: ThemeMode): void {
  */
 export function preventThemeFlash(): void {
   if (typeof document === 'undefined' || typeof localStorage === 'undefined') {
-    return;
+    return
   }
 
-  const stored = localStorage.getItem('skillswap-theme');
+  const stored = localStorage.getItem('skillswap-theme')
 
   if (stored) {
     try {
-      const parsed = JSON.parse(stored) as { mode?: string };
+      const parsed = JSON.parse(stored) as { mode?: string }
       if (parsed.mode === 'dark' || parsed.mode === 'light') {
-        document.documentElement.setAttribute('data-theme', parsed.mode);
-        return;
+        document.documentElement.setAttribute('data-theme', parsed.mode)
+        return
       }
     } catch {
       // Continue to system detection
@@ -44,8 +44,8 @@ export function preventThemeFlash(): void {
 
   // Fallback to system preference
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.documentElement.setAttribute('data-theme', 'dark');
+    document.documentElement.setAttribute('data-theme', 'dark')
   } else {
-    document.documentElement.setAttribute('data-theme', 'light');
+    document.documentElement.setAttribute('data-theme', 'light')
   }
 }

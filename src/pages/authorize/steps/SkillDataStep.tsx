@@ -1,19 +1,17 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import categoryApi from '@entities/category/api/categoriesApi';
-import { useDebouncedCallback } from '@shared/hooks/useDebounce';
-import { filesToDataUrls } from '@shared/lib/image/compressImage';
-import type { Category, Subcategory } from '@shared/types';
-import SkillDataForm, {
-  type SkillDataFormExternalErrors,
-  type SkillDataFormSubmitPayload,
-} from '@widgets/forms/skill-data-form';
-import { useStepSkillData } from '@features/auth';
+import type { Category, Subcategory } from '@shared/types'
+import type { SkillDataFormExternalErrors, SkillDataFormSubmitPayload } from '@widgets/forms/skill-data-form'
+import categoryApi from '@entities/category/api/categoriesApi'
+import { useStepSkillData } from '@features/auth'
+import { useDebouncedCallback } from '@shared/hooks/useDebounce'
+import { filesToDataUrls } from '@shared/lib/image/compressImage'
+import SkillDataForm from '@widgets/forms/skill-data-form'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
-const DEBOUNCE_DELAY = 300;
+const DEBOUNCE_DELAY = 300
 
 interface SkillDataStepContainerProps {
   /** Вызывается после успешного submitStep(3) */
-  onStepCompleted: () => void;
+  onStepCompleted: () => void
 }
 
 function SkillDataStep({ onStepCompleted }: SkillDataStepContainerProps) {
@@ -25,74 +23,75 @@ function SkillDataStep({ onStepCompleted }: SkillDataStepContainerProps) {
     submitStep,
     prevStep,
     clearErrors,
-  } = useStepSkillData();
+  } = useStepSkillData()
 
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  const [categories, setCategories] = useState<Category[]>([])
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([])
 
   // Загружаем справочники (UI-данные, но это side-effect — держим в контейнере)
   useEffect(() => {
     const load = async () => {
       try {
-        const result = await categoryApi.getAll();
-        setCategories(result.categories);
-        setSubcategories(result.subcategories);
+        const result = await categoryApi.getAll()
+        setCategories(result.categories)
+        setSubcategories(result.subcategories)
       } catch (e) {
         // Можно прокинуть в ErrorBoundary/notification, но пока оставим console
-        console.error('Ошибка при загрузке категорий:', e);
+        console.error('Ошибка при загрузке категорий:', e)
       }
-    };
+    }
 
-    load();
-  }, []);
+    load()
+  }, [])
 
   const externalErrors: SkillDataFormExternalErrors | undefined = useMemo(() => {
-    if (!storeErrors) return undefined;
+    if (!storeErrors)
+      return undefined
 
     const mapped: SkillDataFormExternalErrors = {
       skillName: storeErrors.skillTitle,
       subcategory: storeErrors.skillSubcategoryId,
       description: storeErrors.skillDescription,
       images: storeErrors.skillImages,
-    };
+    }
 
-    return mapped;
-  }, [storeErrors]);
+    return mapped
+  }, [storeErrors])
 
   const updateTitleDebounced = useDebouncedCallback((value: string) => {
-    updateSkillData({ skillTitle: value });
-  }, DEBOUNCE_DELAY);
+    updateSkillData({ skillTitle: value })
+  }, DEBOUNCE_DELAY)
 
   const updateDescriptionDebounced = useDebouncedCallback((value: string) => {
-    updateSkillData({ skillDescription: value });
-  }, DEBOUNCE_DELAY);
+    updateSkillData({ skillDescription: value })
+  }, DEBOUNCE_DELAY)
 
   const handleFormChange = useCallback(
     (
       patch: Partial<{
-        skillTitle: string;
-        skillDescription: string;
-        skillSubcategoryId: number | null;
-      }>
+        skillTitle: string
+        skillDescription: string
+        skillSubcategoryId: number | null
+      }>,
     ) => {
       if (storeErrors) {
-        clearErrors();
+        clearErrors()
       }
 
       if (patch.skillTitle !== undefined) {
-        updateTitleDebounced(patch.skillTitle);
+        updateTitleDebounced(patch.skillTitle)
       }
 
       if (patch.skillDescription !== undefined) {
-        updateDescriptionDebounced(patch.skillDescription);
+        updateDescriptionDebounced(patch.skillDescription)
       }
 
       if (patch.skillSubcategoryId !== undefined) {
-        updateSkillData({ skillSubcategoryId: patch.skillSubcategoryId });
+        updateSkillData({ skillSubcategoryId: patch.skillSubcategoryId })
       }
     },
-    [storeErrors, clearErrors, updateSkillData, updateTitleDebounced, updateDescriptionDebounced]
-  );
+    [storeErrors, clearErrors, updateSkillData, updateTitleDebounced, updateDescriptionDebounced],
+  )
 
   const handleSubmit = useCallback(
     async (payload: SkillDataFormSubmitPayload) => {
@@ -101,20 +100,20 @@ function SkillDataStep({ onStepCompleted }: SkillDataStepContainerProps) {
         skillTitle: payload.skillTitle,
         skillDescription: payload.skillDescription,
         skillSubcategoryId: payload.skillSubcategoryId,
-      });
+      })
 
       // Конвертация изображений — бизнес/side-effect: в контейнер
-      const files = payload.images.map((i) => i.file);
-      const dataUrls = await filesToDataUrls(files);
-      updateSkillData({ skillImages: dataUrls });
+      const files = payload.images.map((i) => i.file)
+      const dataUrls = await filesToDataUrls(files)
+      updateSkillData({ skillImages: dataUrls })
 
-      const success = await submitStep();
+      const success = await submitStep()
       if (success) {
-        onStepCompleted();
+        onStepCompleted()
       }
     },
-    [updateSkillData, submitStep, onStepCompleted]
-  );
+    [updateSkillData, submitStep, onStepCompleted],
+  )
 
   return (
     <SkillDataForm
@@ -131,8 +130,8 @@ function SkillDataStep({ onStepCompleted }: SkillDataStepContainerProps) {
       onSubmit={handleSubmit}
       onChange={handleFormChange}
     />
-  );
+  )
 }
 
-export default SkillDataStep;
-export { SkillDataStep };
+export default SkillDataStep
+export { SkillDataStep }

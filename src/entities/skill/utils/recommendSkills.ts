@@ -1,5 +1,5 @@
-import type { Skill, SubcategoryId } from '@shared/types';
-import sortSkills from './sortSkills';
+import type { Skill, SubcategoryId } from '@shared/types'
+import sortSkills from './sortSkills'
 
 /**
  * Возвращает навыки с интересами пользователя в первую очередь, затем остальные
@@ -13,29 +13,29 @@ import sortSkills from './sortSkills';
 export default function recommendSkills(
   skills: Skill[],
   userInterests: SubcategoryId[] | undefined,
-  likesMap: Record<number, number> = {}
+  likesMap: Record<number, number> = {},
 ): Skill[] {
   // Если интересов нет, вернуть все навыки, отсортированные по дате создания
   if (!userInterests || userInterests.length === 0) {
-    return sortSkills(skills, 'created', likesMap);
+    return sortSkills(skills, 'created', likesMap)
   }
 
   // Разделить навыки на соответствующие и несоответствующие
-  const matching: Skill[] = [];
-  const nonMatching: Skill[] = [];
+  const matching: Skill[] = []
+  const nonMatching: Skill[] = []
 
   skills.forEach((skill) => {
     if (userInterests.includes(skill.subcategoryId)) {
-      matching.push(skill);
+      matching.push(skill)
     } else {
-      nonMatching.push(skill);
+      nonMatching.push(skill)
     }
-  });
+  })
 
   // Отсортировать обе группы по дате создания (новые первыми)
-  const sortedMatching = sortSkills(matching, 'created', likesMap);
-  const sortedNonMatching = sortSkills(nonMatching, 'created', likesMap);
+  const sortedMatching = sortSkills(matching, 'created', likesMap)
+  const sortedNonMatching = sortSkills(nonMatching, 'created', likesMap)
 
   // Вернуть соответствующие навыки первыми, затем несоответствующие
-  return [...sortedMatching, ...sortedNonMatching];
+  return [...sortedMatching, ...sortedNonMatching]
 }

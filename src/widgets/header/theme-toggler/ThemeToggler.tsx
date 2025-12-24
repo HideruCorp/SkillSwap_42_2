@@ -1,7 +1,7 @@
-import SunIcon from '@shared/assets/img/sun.svg?react';
-import MoonIcon from '@shared/assets/img/moon.svg?react';
-import { useTheme } from '@features/theme';
-import styles from './theme-toggler.module.scss';
+import { useTheme } from '@features/theme'
+import MoonIcon from '@shared/assets/img/moon.svg?react'
+import SunIcon from '@shared/assets/img/sun.svg?react'
+import styles from './theme-toggler.module.scss'
 
 /**
  * ThemeToggler Component
@@ -10,7 +10,7 @@ import styles from './theme-toggler.module.scss';
  * Uses theme state from Redux and persists preference to localStorage.
  */
 function ThemeToggler() {
-  const { isDarkMode, toggleTheme } = useTheme();
+  const { isDarkMode, toggleTheme } = useTheme()
 
   return (
     <button
@@ -21,7 +21,7 @@ function ThemeToggler() {
     >
       {isDarkMode ? <SunIcon /> : <MoonIcon />}
     </button>
-  );
+  )
 }
 
-export default ThemeToggler;
+export default ThemeToggler

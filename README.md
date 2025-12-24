@@ -22,5 +22,5 @@ npm run dev
   | **Утилиты/Хелперы** | `camelCase` | `formatDate.ts`, `apiClient.ts` |
   | **Типы/Интерфейсы** | `PascalCase` | `types.ts` (файл), `interface UserData` (внутри) |
   | **Константы** | `UPPER_SNAKE_CASE` | `API_BASE_URL`, `MAX_ITEMS` |
-  | **Директории (слайсы)** | `kebab-case` | `user-profile/`, `skill-management/` |        
+  | **Директории (слайсы)** | `kebab-case` | `user-profile/`, `skill-management/` |
   | **Storybook stories** | `PascalCase.stories` | `Button.stories.ts` |

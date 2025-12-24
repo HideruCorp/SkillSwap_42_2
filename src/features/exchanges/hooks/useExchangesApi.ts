@@ -1,16 +1,16 @@
-import { useCallback } from 'react';
+import { useDispatch } from '@app/store'
 import {
-  completeExchange as handleCompleteExchange,
   cancelExchange as handleCancelExchange,
-} from '@entities/exchange';
-import { useDispatch } from '@app/store';
+  completeExchange as handleCompleteExchange,
+} from '@entities/exchange'
+import { useCallback } from 'react'
 
 /**
  * Хук для работы с API обменов
  * Управление жизненным циклом обменов (завершение, отмена)
  */
 export default function useExchangesApi() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
   /**
    * Завершает обмен: меняет статус на 'completed' и устанавливает completedAt
@@ -18,10 +18,10 @@ export default function useExchangesApi() {
    */
   const completeExchange = useCallback(
     (id: number): void => {
-      dispatch(handleCompleteExchange(id));
+      dispatch(handleCompleteExchange(id))
     },
-    [dispatch]
-  );
+    [dispatch],
+  )
 
   /**
    * Отменяет обмен: меняет статус на 'cancelled' и устанавливает completedAt
@@ -29,13 +29,13 @@ export default function useExchangesApi() {
    */
   const cancelExchange = useCallback(
     (id: number): void => {
-      dispatch(handleCancelExchange(id));
+      dispatch(handleCancelExchange(id))
     },
-    [dispatch]
-  );
+    [dispatch],
+  )
 
   return {
     completeExchange,
     cancelExchange,
-  };
+  }
 }

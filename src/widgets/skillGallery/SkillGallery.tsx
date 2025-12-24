@@ -1,49 +1,53 @@
-import ImageGallery, { type ReactImageGalleryItem } from 'react-image-gallery';
-import 'react-image-gallery/styles/css/image-gallery.css';
-import ArrowLeft from '@shared/assets/img/arrow-Gallery-Left.svg?react';
-import ArrowRight from '@shared/assets/img/arrow-Gallery-Right.svg?react';
-import styles from './skill-gallery.module.scss';
+import type { ReactImageGalleryItem } from 'react-image-gallery'
+import ArrowLeft from '@shared/assets/img/arrow-Gallery-Left.svg?react'
+import ArrowRight from '@shared/assets/img/arrow-Gallery-Right.svg?react'
+import ImageGallery from 'react-image-gallery'
+import styles from './skill-gallery.module.scss'
+import 'react-image-gallery/styles/css/image-gallery.css'
 
 interface SkillGalleryProps {
-  images: string[];
-  title?: string;
+  images: string[]
+  title?: string
 }
 
 function SkillGallery({ images, title = 'Изображение' }: SkillGalleryProps) {
   if (!images || images.length === 0) {
-    return <div className={styles.placeholder}>Нет изображений</div>;
+    return <div className={styles.placeholder}>Нет изображений</div>
   }
 
   const galleryImages: ReactImageGalleryItem[] = images.map((img) => {
-    const src = img.startsWith('http') || img.startsWith('data:image') ? img : `/skills/${img}`;
+    const src = img.startsWith('http') || img.startsWith('data:image') ? img : `/skills/${img}`
     return {
       original: src,
       thumbnail: src,
       originalAlt: title,
       thumbnailAlt: title,
-    };
-  });
+    }
+  })
 
-  const totalImages = galleryImages.length;
-  const visibleThumbnails = 3;
-  const remainingCount = totalImages > visibleThumbnails ? totalImages - visibleThumbnails : 0;
+  const totalImages = galleryImages.length
+  const visibleThumbnails = 3
+  const remainingCount = totalImages > visibleThumbnails ? totalImages - visibleThumbnails : 0
 
   const renderThumbInner = (item: ReactImageGalleryItem) => {
-    const index = galleryImages.findIndex((img) => img.thumbnail === item.thumbnail);
-    const isLastVisible = index === visibleThumbnails - 1;
+    const index = galleryImages.findIndex((img) => img.thumbnail === item.thumbnail)
+    const isLastVisible = index === visibleThumbnails - 1
 
     return (
       <div className={styles.thumbnailWrapper}>
         <img src={String(item.thumbnail)} alt={String(item.thumbnailAlt ?? '')} />
         {isLastVisible && remainingCount > 0 && (
-          <div className={styles.overlay}>+{remainingCount}</div>
+          <div className={styles.overlay}>
+            +
+            {remainingCount}
+          </div>
         )}
       </div>
-    );
-  };
+    )
+  }
 
-  const hasMany = galleryImages.length > 1;
-  const rootClassName = `${styles.skillGallery} ${!hasMany ? styles.single : ''}`;
+  const hasMany = galleryImages.length > 1
+  const rootClassName = `${styles.skillGallery} ${!hasMany ? styles.single : ''}`
 
   return (
     <div className={rootClassName}>
@@ -80,7 +84,7 @@ function SkillGallery({ images, title = 'Изображение' }: SkillGallery
         showBullets={false}
       />
     </div>
-  );
+  )
 }
 
-export default SkillGallery;
+export default SkillGallery

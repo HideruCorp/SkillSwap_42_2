@@ -1,64 +1,65 @@
-import { loadMergedData } from '@shared/lib/storage';
-import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Skill, Nullable } from '@shared/types';
+import type { PayloadAction } from '@reduxjs/toolkit'
+import type { Nullable, Skill } from '@shared/types'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { loadMergedData } from '@shared/lib/storage'
 
 interface SkillsState {
-  items: Skill[];
-  isLoading: boolean;
-  error: Nullable<string>;
+  items: Skill[]
+  isLoading: boolean
+  error: Nullable<string>
 }
 
 const initialState: SkillsState = {
   items: [],
   isLoading: false,
   error: null,
-};
+}
 
 export const initializeSkills = createAsyncThunk('skills/initialize', async () => {
-  const { skills } = await loadMergedData();
-  return skills;
-});
+  const { skills } = await loadMergedData()
+  return skills
+})
 
 const skillsSlice = createSlice({
   name: 'skills',
   initialState,
   reducers: {
     setSkills(state, action: PayloadAction<Skill[]>) {
-      state.items = action.payload;
+      state.items = action.payload
     },
     addSkill(state, action: PayloadAction<Skill>) {
-      state.items.push(action.payload);
+      state.items.push(action.payload)
     },
-    updateSkill(state, action: PayloadAction<{ id: number; changes: Partial<Skill> }>) {
-      const index = state.items.findIndex((s) => s.id === action.payload.id);
+    updateSkill(state, action: PayloadAction<{ id: number, changes: Partial<Skill> }>) {
+      const index = state.items.findIndex((s) => s.id === action.payload.id)
       if (index !== -1) {
-        state.items[index] = { ...state.items[index], ...action.payload.changes };
+        state.items[index] = { ...state.items[index], ...action.payload.changes }
       }
     },
     deleteSkill(state, action: PayloadAction<number>) {
-      state.items = state.items.filter((s) => s.id !== action.payload);
+      state.items = state.items.filter((s) => s.id !== action.payload)
     },
     setSkillsLoading(state, action: PayloadAction<boolean>) {
-      state.isLoading = action.payload;
+      state.isLoading = action.payload
     },
     setSkillsError(state, action: PayloadAction<Nullable<string>>) {
-      state.error = action.payload;
+      state.error = action.payload
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(initializeSkills.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
+        state.isLoading = true
+        state.error = null
       })
       .addCase(initializeSkills.fulfilled, (state, action) => {
-        state.items = action.payload;
-        state.isLoading = false;
+        state.items = action.payload
+        state.isLoading = false
       })
       .addCase(initializeSkills.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.error.message || 'Failed to load skills';
-      });
+        state.isLoading = false
+        state.error = action.error.message || 'Failed to load skills'
+      })
   },
   selectors: {
     selectAllSkills: (state) => state.items,
@@ -67,10 +68,10 @@ const skillsSlice = createSlice({
     selectSkillsLoading: (state) => state.isLoading,
     selectSkillsError: (state) => state.error,
   },
-});
+})
 
-export const { setSkills, addSkill, updateSkill, deleteSkill, setSkillsLoading, setSkillsError } =
-  skillsSlice.actions;
+export const { setSkills, addSkill, updateSkill, deleteSkill, setSkillsLoading, setSkillsError }
+  = skillsSlice.actions
 
 export const {
   selectAllSkills,
@@ -78,6 +79,6 @@ export const {
   selectSkillsByUserId,
   selectSkillsLoading,
   selectSkillsError,
-} = skillsSlice.selectors;
+} = skillsSlice.selectors
 
-export default skillsSlice.reducer;
+export default skillsSlice.reducer

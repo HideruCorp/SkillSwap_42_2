@@ -1,10 +1,10 @@
-export { filtersSlice } from './filtersSlice';
+export { filtersSlice } from './filtersSlice'
 export {
-  setSkillType,
-  setGender,
+  resetFilters,
   setCities,
+  setGender,
+  setSkillType,
   setSubcategories,
   setTextSearch,
-  resetFilters,
-} from './filtersSlice';
-export type { default as FiltersState } from './filtersSlice';
+} from './filtersSlice'
+export type { default as FiltersState } from './filtersSlice'

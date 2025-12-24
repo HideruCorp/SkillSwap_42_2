@@ -1,34 +1,34 @@
-// Model layer exports
-export type { ThemeMode, ThemeSource, ThemeState } from './model';
-export {
-  THEME_STORAGE_KEY,
-  DEFAULT_THEME,
-  toggleTheme,
-  setTheme,
-  initializeTheme,
-  setSystemPreference,
-  resetToSystemPreference,
-  themeReducer,
-  selectThemeState,
-  selectThemeMode,
-  selectThemeSource,
-  selectIsThemeInitialized,
-  selectSystemPreference,
-  selectIsDarkMode,
-  selectIsUsingSystemPreference,
-} from './model';
-
+// Hooks exports
+export { useTheme, useThemeInit, type UseThemeReturn } from './hooks'
 // Lib layer exports
 export {
-  saveTheme,
-  loadTheme,
-  removeTheme,
+  applyTheme,
+  createThemeListener,
   detectSystemTheme,
   isSystemThemeSupported,
-  applyTheme,
+  loadTheme,
   preventThemeFlash,
-  createThemeListener,
-} from './lib';
+  removeTheme,
+  saveTheme,
+} from './lib'
 
-// Hooks exports
-export { useTheme, type UseThemeReturn, useThemeInit } from './hooks';
+// Model layer exports
+export type { ThemeMode, ThemeSource, ThemeState } from './model'
+
+export {
+  DEFAULT_THEME,
+  initializeTheme,
+  resetToSystemPreference,
+  selectIsDarkMode,
+  selectIsThemeInitialized,
+  selectIsUsingSystemPreference,
+  selectSystemPreference,
+  selectThemeMode,
+  selectThemeSource,
+  selectThemeState,
+  setSystemPreference,
+  setTheme,
+  THEME_STORAGE_KEY,
+  themeReducer,
+  toggleTheme,
+} from './model'

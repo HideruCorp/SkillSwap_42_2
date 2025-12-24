@@ -1,2 +1,2 @@
-export { customRu } from './locale';
-export { formatRelativeDate, calculateAge, getDaysLabel, getAgeSuffix } from './formatDate';
+export { calculateAge, formatRelativeDate, getAgeSuffix, getDaysLabel } from './formatDate'
+export { customRu } from './locale'

@@ -1,10 +1,10 @@
-import type { ReactElement } from 'react';
-import styles from './registerLayout.module.scss';
+import type { ReactElement } from 'react'
+import styles from './registerLayout.module.scss'
 
 interface RegisterLayoutProps {
-  leftPart: ReactElement;
-  rightPart: ReactElement;
-  header: ReactElement;
+  leftPart: ReactElement
+  rightPart: ReactElement
+  header: ReactElement
 }
 
 function RegisterLayout({ leftPart, rightPart, header }: RegisterLayoutProps) {
@@ -16,7 +16,7 @@ function RegisterLayout({ leftPart, rightPart, header }: RegisterLayoutProps) {
         <div className={styles.right}>{rightPart}</div>
       </div>
     </div>
-  );
+  )
 }
 
-export default RegisterLayout;
+export default RegisterLayout

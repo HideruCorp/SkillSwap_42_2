@@ -1,4 +1,4 @@
-export type TagCounterUIProps = {
-  count: number;
-  onClick?: () => void;
-};
+export interface TagCounterUIProps {
+  count: number
+  onClick?: () => void
+}

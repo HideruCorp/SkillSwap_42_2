@@ -1,17 +1,17 @@
 export interface DatePickerProps {
-  name?: string;
+  name?: string
   /** Выбранная дата */
-  value?: Date | undefined;
+  value?: Date | undefined
   /** Callback при изменении даты */
-  onChange: (date: Date | undefined) => void;
+  onChange: (date: Date | undefined) => void
   /** Placeholder для пустого поля */
-  placeholder?: string;
+  placeholder?: string
   /** Отключить компонент */
-  disabled?: boolean;
+  disabled?: boolean
   /** Текст ошибки */
-  error?: string;
+  error?: string
   /** Минимальная дата для выбора */
-  minDate?: Date;
+  minDate?: Date
   /** Максимальная дата для выбора */
-  maxDate?: Date;
+  maxDate?: Date
 }

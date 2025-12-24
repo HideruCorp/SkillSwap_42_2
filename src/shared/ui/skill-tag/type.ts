@@ -1,5 +1,5 @@
-export type SkillTagUIProps = {
-  bgColor: string;
-  text: string;
-  className?: string;
-};
+export interface SkillTagUIProps {
+  bgColor: string
+  text: string
+  className?: string
+}

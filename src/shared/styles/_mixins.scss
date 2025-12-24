@@ -60,7 +60,7 @@
 @mixin page-grid-layout {
   display: grid;
   // 324px - ширина сайдбара, 1fr - остальной контент
-  grid-template-columns: 324px 1fr; 
+  grid-template-columns: 324px 1fr;
   gap: 24px;
   align-items: start;
   width: 100%;
@@ -97,7 +97,7 @@
 
 @mixin hide-scrollbar {
   scrollbar-width: none;
-  
+
   &::-webkit-scrollbar {
     display: none;
   }

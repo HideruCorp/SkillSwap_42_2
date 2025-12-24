@@ -3,7 +3,7 @@
 
 .notification {
   @include m.flex($align: center, $justify: center);
-  
+
   position: relative;
   cursor: pointer;
   color: $color-text;

@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import EyeIcon from '../../assets/img/visible.svg?react';
-import EditIcon from '../../assets/img/edit.svg?react';
-import styles from './InputUI.module.scss';
-import type { InputProps } from './type';
+import type { InputProps } from './type'
+import { useState } from 'react'
+import EditIcon from '../../assets/img/edit.svg?react'
+import EyeIcon from '../../assets/img/visible.svg?react'
+import styles from './InputUI.module.scss'
 
 function Input({
   value,
@@ -15,13 +15,13 @@ function Input({
   disabled,
   placeholder,
 }: InputProps) {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false)
 
-  const inputType = type === 'password' && showPassword ? 'text' : type;
+  const inputType = type === 'password' && showPassword ? 'text' : type
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+    setShowPassword(!showPassword)
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -62,7 +62,7 @@ function Input({
       {error && <span className={styles.errorText}>{error}</span>}
       {!error && message && <span className={styles.messageText}>{message}</span>}
     </div>
-  );
+  )
 }
 
-export default Input;
+export default Input

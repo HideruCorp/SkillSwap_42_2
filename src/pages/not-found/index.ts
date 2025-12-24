@@ -1,4 +1,4 @@
-import NotFoundPage from './NotFoundPage';
+import NotFoundPage from './NotFoundPage'
 
-export { NotFoundPage };
-export default NotFoundPage;
+export { NotFoundPage }
+export default NotFoundPage

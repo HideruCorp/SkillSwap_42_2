@@ -1,4 +1,4 @@
-import SearchInput from './SearchInput';
+import SearchInput from './SearchInput'
 
-export { SearchInput };
-export default SearchInput;
+export { SearchInput }
+export default SearchInput

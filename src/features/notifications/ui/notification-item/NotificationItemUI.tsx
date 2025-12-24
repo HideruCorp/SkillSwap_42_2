@@ -1,10 +1,10 @@
-import { formatRelativeDate } from '@shared/lib/date';
-import Button from '@shared/ui/button/Button';
-import Idea from '@shared/assets/img/idea.svg?react';
-import type { NotificationItemProps } from './type';
-import styles from './notification-item-ui.module.scss';
+import type { NotificationItemProps } from './type'
+import Idea from '@shared/assets/img/idea.svg?react'
+import { formatRelativeDate } from '@shared/lib/date'
+import Button from '@shared/ui/button/Button'
+import styles from './notification-item-ui.module.scss'
 
-const doNothing = () => {};
+function doNothing() {}
 
 function NotificationItemUI({
   readed,
@@ -13,9 +13,9 @@ function NotificationItemUI({
   createdDate,
   onClick,
 }: NotificationItemProps) {
-  const title = `${userName} ${action === 'accept' ? 'принял ваш обмен' : 'предлагает вам обмен'}`;
-  const description = `${action === 'accept' ? 'Перейдите в профиль, чтобы обсудить детали' : 'Примите обмен, чтобы обсудить детали'}`;
-  const formattedDate = formatRelativeDate(new Date(createdDate));
+  const title = `${userName} ${action === 'accept' ? 'принял ваш обмен' : 'предлагает вам обмен'}`
+  const description = `${action === 'accept' ? 'Перейдите в профиль, чтобы обсудить детали' : 'Примите обмен, чтобы обсудить детали'}`
+  const formattedDate = formatRelativeDate(new Date(createdDate))
 
   return (
     <div className={styles.container}>
@@ -29,18 +29,20 @@ function NotificationItemUI({
         </div>
         <div className={styles.date}>{formattedDate}</div>
       </div>
-      {!readed ? (
-        <Button
-          className={styles.button}
-          title="Перейти"
-          variant="primary"
-          onClick={onClick || doNothing}
-        />
-      ) : (
-        ''
-      )}
+      {!readed
+        ? (
+            <Button
+              className={styles.button}
+              title="Перейти"
+              variant="primary"
+              onClick={onClick || doNothing}
+            />
+          )
+        : (
+            ''
+          )}
     </div>
-  );
+  )
 }
 
-export default NotificationItemUI;
+export default NotificationItemUI

@@ -1,4 +1,4 @@
-import validateDateInput from './validateDateInput';
+import validateDateInput from './validateDateInput'
 
-export { validateDateInput };
-export default validateDateInput;
+export { validateDateInput }
+export default validateDateInput

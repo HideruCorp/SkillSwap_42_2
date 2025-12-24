@@ -1,113 +1,113 @@
 // Базовые утилитарные типы
-export type Nullable<T> = T | null;
-export type IsoDate = string; /// ISO-date string alias for structures
+export type Nullable<T> = T | null
+export type IsoDate = string /// ISO-date string alias for structures
 
 // ID типы для type-safety
-export type UserId = number;
-export type SkillId = number;
-export type CityId = number;
-export type CategoryId = number;
-export type SubcategoryId = number;
-export type NotificationId = number;
-export type RequestId = number;
-export type ExchangeId = number;
+export type UserId = number
+export type SkillId = number
+export type CityId = number
+export type CategoryId = number
+export type SubcategoryId = number
+export type NotificationId = number
+export type RequestId = number
+export type ExchangeId = number
 
 // Типы для навыков
 export interface Skill {
-  id: number;
-  subcategoryId: number;
-  userId: number;
-  title: string;
-  description: string;
-  createdAt: string;
-  images: string[];
+  id: number
+  subcategoryId: number
+  userId: number
+  title: string
+  description: string
+  createdAt: string
+  images: string[]
 }
 
 // Тип навыка для фильтра
-export type TSkillType = 'all' | 'learn' | 'teach';
+export type TSkillType = 'all' | 'learn' | 'teach'
 
 // Типы для пользователей
-export type Gender = 'all' | 'male' | 'female';
+export type Gender = 'all' | 'male' | 'female'
 
 export interface User {
-  id: UserId;
-  avatarUrl: string;
-  name: string;
-  email: string;
-  about: string;
-  cityId: CityId;
-  dateOfBirth: string;
-  gender: Gender;
-  registrationDate: string;
-  skillInterests: number[];
+  id: UserId
+  avatarUrl: string
+  name: string
+  email: string
+  about: string
+  cityId: CityId
+  dateOfBirth: string
+  gender: Gender
+  registrationDate: string
+  skillInterests: number[]
 }
 
 // Типы для категорий
 export interface Category {
-  id: number;
-  name: string;
-  color: string;
-  icon: string;
+  id: number
+  name: string
+  color: string
+  icon: string
 }
 
 export interface Subcategory {
-  id: number;
-  name: string;
-  categoryId: number;
+  id: number
+  name: string
+  categoryId: number
 }
 
 // Типы для городов
 export interface City {
-  id: CityId;
-  name: string;
+  id: CityId
+  name: string
 }
 
 // Типы для заявок на обмен (для localStorage)
 export interface Request {
-  id: RequestId;
-  requestedSkill: SkillId;
-  fromUser: UserId;
-  status: RequestStatus;
-  createdAt: IsoDate;
+  id: RequestId
+  requestedSkill: SkillId
+  fromUser: UserId
+  status: RequestStatus
+  createdAt: IsoDate
 }
 
 export interface Exchange {
-  id: ExchangeId;
-  requestId: RequestId;
-  skills: [SkillId, SkillId]; // навыки обоих участников
-  status: ExchangeStatus;
-  createdAt: IsoDate;
-  completedAt?: IsoDate;
+  id: ExchangeId
+  requestId: RequestId
+  skills: [SkillId, SkillId] // навыки обоих участников
+  status: ExchangeStatus
+  createdAt: IsoDate
+  completedAt?: IsoDate
 }
 
-export type RequestStatus = 'pending' | 'accepted' | 'rejected';
-export type ExchangeStatus = 'inProgress' | 'completed' | 'cancelled';
+export type RequestStatus = 'pending' | 'accepted' | 'rejected'
+export type ExchangeStatus = 'inProgress' | 'completed' | 'cancelled'
 
 // Типы для уведомлений
 export interface Notification {
-  id: NotificationId;
-  userId: UserId; // Кому уведомление (получатель)
-  fromUserId: UserId; // От кого уведомление (отправитель)
-  action: 'accept' | 'offer' | 'reject';
-  createdDate: IsoDate; // ISO date string from JSON
-  readed: boolean;
-  requestId?: RequestId; // ID связанной заявки (для перехода при клике)
+  id: NotificationId
+  userId: UserId // Кому уведомление (получатель)
+  fromUserId: UserId // От кого уведомление (отправитель)
+  action: 'accept' | 'offer' | 'reject'
+  createdDate: IsoDate // ISO date string from JSON
+  readed: boolean
+  requestId?: RequestId // ID связанной заявки (для перехода при клике)
 }
 
 // Типы для ответов API (обертки JSON)
 export interface SkillsResponse {
-  skills: Skill[];
+  skills: Skill[]
 }
 
 export interface UsersResponse {
-  users: User[];
+  users: User[]
 }
 
 export interface CategoriesResponse {
-  categories: Category[];
-  subcategories: Subcategory[];
+  categories: Category[]
+  subcategories: Subcategory[]
 }
 
 export interface CitiesResponse {
-  cities: City[];
+  cities: City[]
 }

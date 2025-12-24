@@ -1,7 +1,8 @@
-import { createSlice, type PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import DeltaStorage from '@shared/lib/storage';
-import type { Notification, NotificationsState } from './types';
-import fetchNotifications from '../api/notificationsApi';
+import type { PayloadAction } from '@reduxjs/toolkit'
+import type { Notification, NotificationsState } from './types'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import DeltaStorage from '@shared/lib/storage'
+import fetchNotifications from '../api/notificationsApi'
 
 export const initializeNotifications = createAsyncThunk<
   Notification[],
@@ -9,86 +10,86 @@ export const initializeNotifications = createAsyncThunk<
   { rejectValue: string }
 >('notifications/initialize', async (_, { rejectWithValue }) => {
   try {
-    const notifications = await DeltaStorage.getAllNotifications();
-    return notifications;
+    const notifications = await DeltaStorage.getAllNotifications()
+    return notifications
   } catch (error) {
     return rejectWithValue(
-      error instanceof Error ? error.message : 'Failed to initialize notifications'
-    );
+      error instanceof Error ? error.message : 'Failed to initialize notifications',
+    )
   }
-});
+})
 
 const initialState: NotificationsState = {
   items: [],
   loading: false,
   error: null,
-};
+}
 
 const notificationsSlice = createSlice({
   name: 'notifications',
   initialState,
   reducers: {
     addNotification(state, action: PayloadAction<Notification>) {
-      state.items.push(action.payload);
+      state.items.push(action.payload)
     },
     updateNotification(
       state,
-      action: PayloadAction<{ id: number; changes: Partial<Notification> }>
+      action: PayloadAction<{ id: number, changes: Partial<Notification> }>,
     ) {
-      const { id, changes } = action.payload;
-      const notification = state.items.find((item) => item.id === id);
+      const { id, changes } = action.payload
+      const notification = state.items.find((item) => item.id === id)
       if (notification) {
-        Object.assign(notification, changes);
+        Object.assign(notification, changes)
       }
     },
     deleteNotification(state, action: PayloadAction<number>) {
-      state.items = state.items.filter((item) => item.id !== action.payload);
+      state.items = state.items.filter((item) => item.id !== action.payload)
     },
     markAsRead(state, action: PayloadAction<number>) {
-      const notification = state.items.find((item) => item.id === action.payload);
+      const notification = state.items.find((item) => item.id === action.payload)
       if (notification) {
-        notification.readed = true;
+        notification.readed = true
       }
     },
     markAllAsReadForUser(state, action: PayloadAction<number>) {
       state.items.forEach((item) => {
         if (item.userId === action.payload) {
-          item.readed = true;
+          item.readed = true
         }
-      });
+      })
     },
     clearViewedForUser(state, action: PayloadAction<number>) {
-      state.items = state.items.filter((item) => item.userId !== action.payload || !item.readed);
+      state.items = state.items.filter((item) => item.userId !== action.payload || !item.readed)
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchNotifications.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.loading = true
+        state.error = null
       })
       .addCase(fetchNotifications.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = action.payload;
+        state.loading = false
+        state.items = action.payload
       })
       .addCase(fetchNotifications.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload ?? 'Failed to fetch notifications';
+        state.loading = false
+        state.error = action.payload ?? 'Failed to fetch notifications'
       })
       .addCase(initializeNotifications.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.loading = true
+        state.error = null
       })
       .addCase(initializeNotifications.fulfilled, (state, action) => {
-        state.loading = false;
-        state.items = action.payload;
+        state.loading = false
+        state.items = action.payload
       })
       .addCase(initializeNotifications.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload ?? 'Failed to initialize notifications';
-      });
+        state.loading = false
+        state.error = action.payload ?? 'Failed to initialize notifications'
+      })
   },
-});
+})
 
 export const {
   addNotification,
@@ -97,6 +98,6 @@ export const {
   markAsRead,
   markAllAsReadForUser,
   clearViewedForUser,
-} = notificationsSlice.actions;
+} = notificationsSlice.actions
 
-export default notificationsSlice.reducer;
+export default notificationsSlice.reducer

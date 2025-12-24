@@ -1,13 +1,13 @@
-import { useNavigate } from 'react-router-dom';
-import Button from '@shared/ui/button/Button';
-import type { ErrorPageContentProps } from './type';
-import styles from './ErrorPageContent.module.scss';
+import type { ErrorPageContentProps } from './type'
+import Button from '@shared/ui/button/Button'
+import { useNavigate } from 'react-router-dom'
+import styles from './ErrorPageContent.module.scss'
 
 export default function ErrorPageContent({ image, title, description }: ErrorPageContentProps) {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const handleRedirectHome = () => {
-    navigate('/');
-  };
+    navigate('/')
+  }
 
   return (
     <div className={styles.container}>
@@ -19,6 +19,7 @@ export default function ErrorPageContent({ image, title, description }: ErrorPag
           className={styles.fullWidthButton}
           title="Сообщить об ошибке"
           variant="secondary"
+          // eslint-disable-next-line no-alert
           onClick={() => alert('Отчёт об ошибке отправлен')}
         />
         <Button
@@ -29,5 +30,5 @@ export default function ErrorPageContent({ image, title, description }: ErrorPag
         />
       </div>
     </div>
-  );
+  )
 }

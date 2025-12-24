@@ -1,8 +1,8 @@
-import Logo from '@shared/ui/logo/Logo';
-import styles from './footer.module.scss';
+import Logo from '@shared/ui/logo/Logo'
+import styles from './footer.module.scss'
 
 function Footer() {
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear()
 
   return (
     <footer className={styles.footer}>
@@ -11,7 +11,10 @@ function Footer() {
           <div className={styles.logoSection}>
             <Logo />
           </div>
-          <span className={styles.copyright}>Skillswap – {currentYear}</span>
+          <span className={styles.copyright}>
+            Skillswap –
+            {currentYear}
+          </span>
         </div>
 
         <div className={styles.linksSection}>
@@ -44,7 +47,7 @@ function Footer() {
         </div>
       </div>
     </footer>
-  );
+  )
 }
 
-export default Footer;
+export default Footer

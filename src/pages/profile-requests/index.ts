@@ -1,4 +1,4 @@
-import ProfileRequestsPage from './ProfileRequestsPage';
+import ProfileRequestsPage from './ProfileRequestsPage'
 
-export { ProfileRequestsPage };
-export default ProfileRequestsPage;
+export { ProfileRequestsPage }
+export default ProfileRequestsPage

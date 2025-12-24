@@ -21,7 +21,9 @@
   color: $color-button-pressed;
   font-weight: 400;
   font-size: 16px;
-  transition: opacity 0.3s, color 0.3s;
+  transition:
+    opacity 0.3s,
+    color 0.3s;
 }
 
 .toggleVisibility {
@@ -31,7 +33,9 @@
   padding: 0;
   background-color: transparent;
   cursor: pointer;
-  transition: opacity 0.3s, color 0.3s;
+  transition:
+    opacity 0.3s,
+    color 0.3s;
   color: $color-button-pressed;
 }
 
@@ -47,6 +51,8 @@
   width: 24px;
   height: 24px;
   margin-top: 3px;
-  transition: transform 0.2s, fill 0.3s;
+  transition:
+    transform 0.2s,
+    fill 0.3s;
   fill: currentcolor;
 }

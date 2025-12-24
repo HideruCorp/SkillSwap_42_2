@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
-import type { MouseEventHandler } from 'react';
-import CheckboxDefaultIcon from '@shared/assets/img/checkbox-Default.svg?react';
-import CheckboxDoneIcon from '@shared/assets/img/checkbox-Done-Active.svg?react';
-import arrowDown from '../../assets/img/chevron-Down.svg';
-import type { OptionType, SelectProps } from './types';
+import type { MouseEventHandler } from 'react'
+import type { OptionType, SelectProps } from './types'
+import CheckboxDefaultIcon from '@shared/assets/img/checkbox-Default.svg?react'
+import CheckboxDoneIcon from '@shared/assets/img/checkbox-Done-Active.svg?react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import arrowDown from '../../assets/img/chevron-Down.svg'
 
-import styles from './dropdown-list-ui.module.scss';
+import styles from './dropdown-list-ui.module.scss'
 
 export function DropdownListUI(props: SelectProps) {
   const {
@@ -17,125 +17,138 @@ export function DropdownListUI(props: SelectProps) {
     type,
     disabled = false,
     groupId,
-  } = props;
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isChoose, setIsChoose] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const rootRef = useRef<HTMLDivElement>(null);
-  const placeholderRef = useRef<HTMLDivElement>(null);
-  const instanceIdRef = useRef(`ddl-${Date.now()}-${Math.random().toString(16).slice(2)}`);
-  const effectiveGroupId = groupId ?? '__global__';
+  } = props
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [isChoose, setIsChoose] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const rootRef = useRef<HTMLDivElement>(null)
+  const placeholderRef = useRef<HTMLDivElement>(null)
+  const instanceIdRef = useRef(`ddl-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+  const effectiveGroupId = groupId ?? '__global__'
 
   const broadcastOpen = useCallback(() => {
     window.dispatchEvent(
       new CustomEvent('skillswap:dropdownlistui-open', {
         detail: { groupId: effectiveGroupId, id: instanceIdRef.current },
-      })
-    );
-  }, [effectiveGroupId]);
+      }),
+    )
+  }, [effectiveGroupId])
 
   useEffect(() => {
-    setIsChoose(selected.length > 0);
-  }, [selected]);
+    setIsChoose(selected.length > 0)
+  }, [selected])
 
   // Если компонент стал disabled — закрываем его
   useEffect(() => {
-    if (disabled && isOpen) setIsOpen(false);
-  }, [disabled, isOpen]);
+    if (disabled && isOpen)
+      setIsOpen(false)
+  }, [disabled, isOpen])
 
   // Закрывать остальные DropdownListUI в рамках groupId
   useEffect(() => {
     const handler = (event: Event) => {
-      const e = event as CustomEvent<{ groupId?: string; id?: string }>;
-      if (!e.detail) return;
-      if ((e.detail.groupId ?? '__global__') !== effectiveGroupId) return;
-      if (e.detail.id === instanceIdRef.current) return;
-      setIsOpen(false);
-    };
+      const e = event as CustomEvent<{ groupId?: string, id?: string }>
+      if (!e.detail)
+        return
+      if ((e.detail.groupId ?? '__global__') !== effectiveGroupId)
+        return
+      if (e.detail.id === instanceIdRef.current)
+        return
+      setIsOpen(false)
+    }
 
-    window.addEventListener('skillswap:dropdownlistui-open', handler as EventListener);
+    window.addEventListener('skillswap:dropdownlistui-open', handler as EventListener)
     return () => {
-      window.removeEventListener('skillswap:dropdownlistui-open', handler as EventListener);
-    };
-  }, [effectiveGroupId]);
+      window.removeEventListener('skillswap:dropdownlistui-open', handler as EventListener)
+    }
+  }, [effectiveGroupId])
 
   // Закрытие по клику вне и по Escape
   useEffect(() => {
     const onPointerDown = (e: MouseEvent | TouchEvent) => {
-      const target = e.target as Node | null;
-      if (!target) return;
-      if (rootRef.current && rootRef.current.contains(target)) return;
-      setIsOpen(false);
-    };
+      const target = e.target as Node | null
+      if (!target)
+        return
+      if (rootRef.current && rootRef.current.contains(target))
+        return
+      setIsOpen(false)
+    }
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsOpen(false);
-    };
+      if (e.key === 'Escape')
+        setIsOpen(false)
+    }
 
-    document.addEventListener('mousedown', onPointerDown);
-    document.addEventListener('touchstart', onPointerDown);
-    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('mousedown', onPointerDown)
+    document.addEventListener('touchstart', onPointerDown)
+    document.addEventListener('keydown', onKeyDown)
     return () => {
-      document.removeEventListener('mousedown', onPointerDown);
-      document.removeEventListener('touchstart', onPointerDown);
-      document.removeEventListener('keydown', onKeyDown);
-    };
-  }, []);
+      document.removeEventListener('mousedown', onPointerDown)
+      document.removeEventListener('touchstart', onPointerDown)
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [])
 
   const handleOptionClick = (option: OptionType) => {
-    if (disabled) return;
+    if (disabled)
+      return
     if (type === 'list') {
-      setIsOpen(false);
-      onChange?.([option]);
+      setIsOpen(false)
+      onChange?.([option])
     }
     if (type === 'сheckbox') {
-      const isSelected = selected.some((element) => element === option);
+      const isSelected = selected.includes(option)
       if (isSelected) {
-        onChange?.(selected.filter((element) => element !== option));
+        onChange?.(selected.filter((element) => element !== option))
       }
       if (!isSelected) {
-        onChange?.([...selected, option]);
+        onChange?.([...selected, option])
       }
     }
     if (type === 'input') {
-      setIsOpen(false);
-      onChange?.([option]);
-      setSearchQuery(option.value);
+      setIsOpen(false)
+      onChange?.([option])
+      setSearchQuery(option.value)
     }
-  };
+  }
 
   const handlePlaceHolderClick: MouseEventHandler<HTMLDivElement> = () => {
-    if (disabled) return;
+    if (disabled)
+      return
     setIsOpen((currentIsOpen) => {
-      const next = !currentIsOpen;
-      if (next) broadcastOpen();
-      return next;
-    });
-  };
+      const next = !currentIsOpen
+      if (next)
+        broadcastOpen()
+      return next
+    })
+  }
 
   const handleOptionKeyPress = (event: React.KeyboardEvent, option: OptionType) => {
     if (event.key === 'Enter') {
-      handleOptionClick(option);
+      handleOptionClick(option)
     }
-  };
+  }
 
   const handlePlaceHolderKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
-      if (disabled) return;
+      if (disabled)
+        return
       setIsOpen((currentIsOpen) => {
-        const next = !currentIsOpen;
-        if (next) broadcastOpen();
-        return next;
-      });
+        const next = !currentIsOpen
+        if (next)
+          broadcastOpen()
+        return next
+      })
     }
-  };
+  }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (disabled) return;
-    setSearchQuery(event.target.value);
-    setIsOpen(true);
-    broadcastOpen();
-  };
+    if (disabled)
+      return
+    setSearchQuery(event.target.value)
+    setIsOpen(true)
+    broadcastOpen()
+  }
 
   return (
     <div className={styles.container}>
@@ -185,9 +198,9 @@ export function DropdownListUI(props: SelectProps) {
               {options
                 .filter((option) => option.title.toLowerCase().includes(searchQuery.toLowerCase()))
                 .sort((a, b) => {
-                  const aMatch = a.title.toLowerCase().indexOf(searchQuery.toLowerCase());
-                  const bMatch = b.title.toLowerCase().indexOf(searchQuery.toLowerCase());
-                  return aMatch - bMatch;
+                  const aMatch = a.title.toLowerCase().indexOf(searchQuery.toLowerCase())
+                  const bMatch = b.title.toLowerCase().indexOf(searchQuery.toLowerCase())
+                  return aMatch - bMatch
                 })
                 .map((option) => (
                   <li key={option.value}>
@@ -199,10 +212,10 @@ export function DropdownListUI(props: SelectProps) {
                       tabIndex={disabled ? -1 : 0}
                       aria-disabled={disabled}
                     >
-                      {type === 'сheckbox' && !selected.some((element) => element === option) && (
+                      {type === 'сheckbox' && !selected.includes(option) && (
                         <CheckboxDefaultIcon className={styles.checkbox} aria-hidden="true" />
                       )}
-                      {type === 'сheckbox' && selected.some((element) => element === option) && (
+                      {type === 'сheckbox' && selected.includes(option) && (
                         <CheckboxDoneIcon className={styles.checkbox} aria-hidden="true" />
                       )}
                       <h5 className={styles.point}>{option.title}</h5>
@@ -214,7 +227,7 @@ export function DropdownListUI(props: SelectProps) {
         )}
       </div>
     </div>
-  );
+  )
 }
 
-export default DropdownListUI;
+export default DropdownListUI

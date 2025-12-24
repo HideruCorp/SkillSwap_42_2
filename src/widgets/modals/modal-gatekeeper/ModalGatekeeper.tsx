@@ -1,18 +1,18 @@
-import { useNavigate } from 'react-router-dom';
-import Button from '@shared/ui/button/Button';
-import styles from './modal-gatekeeper.module.scss';
+import Button from '@shared/ui/button/Button'
+import { useNavigate } from 'react-router-dom'
+import styles from './modal-gatekeeper.module.scss'
 
 interface ModalGatekeeperProps {
-  onClose: () => void;
+  onClose: () => void
 }
 
 function ModalGatekeeper({ onClose }: ModalGatekeeperProps) {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const handleLogin = () => {
-    onClose();
-    navigate('/auth');
-  };
+    onClose()
+    navigate('/auth')
+  }
 
   return (
     <div className={styles.container}>
@@ -26,7 +26,7 @@ function ModalGatekeeper({ onClose }: ModalGatekeeperProps) {
         <Button className={styles.button} variant="primary" onClick={handleLogin} title="Войти" />
       </div>
     </div>
-  );
+  )
 }
 
-export default ModalGatekeeper;
+export default ModalGatekeeper

@@ -10,7 +10,7 @@
 .button {
   @include button-reset;
   @include text-body;
-  
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -23,39 +23,39 @@
   user-select: none;
   transition: all 0.2s ease;
   white-space: nowrap;
-  
+
   // Позиционирование контента
   & {
     padding: 12px 24px;
   }
-  
+
   // Полная ширина
   &--fullWidth {
     width: 100%;
     justify-content: center;
   }
-  
+
   // Размеры по спецификации
   &--default {
     min-width: 200px;
   }
-  
+
   &--large {
     min-width: 284px;
   }
-  
+
   // Состояния
   &--disabled {
     cursor: not-allowed;
     pointer-events: none;
     opacity: 0.6;
   }
-  
+
   &--loading {
     cursor: wait;
     pointer-events: none;
   }
-  
+
   // Фокус
   &:focus-visible {
     outline: 2px solid var(--color-accent);
@@ -76,7 +76,7 @@
 // Текст кнопки
 .text {
   @include text-body;
-  
+
   font-weight: 500;
   letter-spacing: 0.02em;
   text-align: center;
@@ -93,7 +93,7 @@
   width: 24px;
   height: 24px;
   flex-shrink: 0;
-  
+
   svg {
     width: 100%;
     height: 100%;
@@ -124,18 +124,20 @@
   background-color: currentColor;
   opacity: 0.4;
   animation: spinner 1.4s infinite ease-in-out;
-  
+
   &:nth-child(1) {
     animation-delay: -0.32s;
   }
-  
+
   &:nth-child(2) {
     animation-delay: -0.16s;
   }
 }
 
 @keyframes spinner {
-  0%, 80%, 100% {
+  0%,
+  80%,
+  100% {
     opacity: 0.4;
     transform: scale(0.8);
   }
@@ -150,60 +152,60 @@
   background-color: var(--color-accent);
   color: var(--color-text-primary);
   border: 1px solid var(--color-accent);
-  
+
   .text {
     color: var(--color-text-primary);
   }
-  
+
   .icon svg {
     stroke: var(--color-text-primary);
   }
-  
+
   &:hover:not(.button--disabled):not(.button--loading) {
     background-color: var(--color-button-hover);
     border-color: var(--color-button-hover);
-    
+
     .text {
       color: var(--color-text-primary);
     }
-    
+
     .icon svg {
       stroke: var(--color-text-primary);
     }
   }
-  
+
   &:active:not(.button--disabled):not(.button--loading) {
     background-color: var(--color-button-pressed);
     border-color: var(--color-button-pressed);
     transform: translateY(1px);
-    
+
     .text {
       color: var(--color-bg-primary);
     }
-    
+
     .icon svg {
       stroke: var(--color-bg-primary);
     }
   }
-  
+
   &.button--disabled {
     background-color: var(--color-disabled);
     border-color: var(--color-disabled);
-    
+
     .text {
       color: var(--color-text-disabled);
     }
-    
+
     .icon svg {
       stroke: var(--color-text-disabled);
     }
   }
-  
+
   &.button--loading {
     .text {
       opacity: 0.8;
     }
-    
+
     .spinnerDot {
       background-color: var(--color-text-primary);
     }
@@ -215,60 +217,60 @@
   background-color: var(--color-surface);
   color: var(--color-text-primary);
   border: 1px solid var(--color-border);
-  
+
   .text {
     color: var(--color-text-primary);
   }
-  
+
   .icon svg {
     stroke: var(--color-text-primary);
   }
-  
+
   &:hover:not(.button--disabled):not(.button--loading) {
     background-color: var(--color-surface);
     border-color: var(--color-accent);
-    
+
     .text {
       color: var(--color-text-primary);
     }
-    
+
     .icon svg {
       stroke: var(--color-text-primary);
     }
   }
-  
+
   &:active:not(.button--disabled):not(.button--loading) {
     background-color: var(--color-surface);
     border-color: var(--color-button-pressed);
     transform: translateY(1px);
-    
+
     .text {
       color: var(--color-text-primary);
     }
-    
+
     .icon svg {
       stroke: var(--color-text-primary);
     }
   }
-  
+
   &.button--disabled {
     background-color: var(--color-surface);
     border-color: var(--color-disabled);
-    
+
     .text {
       color: var(--color-text-disabled);
     }
-    
+
     .icon svg {
       stroke: var(--color-text-disabled);
     }
   }
-  
+
   &.button--loading {
     .text {
       opacity: 0.8;
     }
-    
+
     .spinnerDot {
       background-color: var(--color-text-primary);
     }
@@ -280,60 +282,60 @@
   background-color: var(--color-surface);
   color: var(--color-text-primary);
   border: 1px solid transparent;
-  
+
   .text {
     color: var(--color-text-primary);
   }
-  
+
   .icon svg {
     stroke: var(--color-text-primary);
   }
-  
+
   &:hover:not(.button--disabled):not(.button--loading) {
     background-color: var(--color-button-hover);
     border-color: var(--color-button-hover);
-    
+
     .text {
       color: var(--color-text-primary);
     }
-    
+
     .icon svg {
       stroke: var(--color-text-primary);
     }
   }
-  
+
   &:active:not(.button--disabled):not(.button--loading) {
     background-color: var(--color-button-pressed);
     border-color: var(--color-button-pressed);
     transform: translateY(1px);
-    
+
     .text {
       color: var(--color-bg-primary);
     }
-    
+
     .icon svg {
       stroke: var(--color-bg-primary);
     }
   }
-  
+
   &.button--disabled {
     background-color: var(--color-disabled);
     border-color: var(--color-disabled);
-    
+
     .text {
       color: var(--color-text-disabled);
     }
-    
+
     .icon svg {
       stroke: var(--color-text-disabled);
     }
   }
-  
+
   &.button--loading {
     .text {
       opacity: 0.8;
     }
-    
+
     .spinnerDot {
       background-color: var(--color-text-primary);
     }
@@ -344,20 +346,20 @@
 @media (max-width: 768px) {
   .button {
     min-height: 44px;
-    
+
     & {
       padding: 10px 20px;
     }
-    
+
     &--default {
       min-width: 160px;
     }
-    
+
     &--large {
       min-width: 240px;
     }
   }
-  
+
   .text {
     font-size: 14px;
     line-height: 20px;

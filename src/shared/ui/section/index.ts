@@ -1,2 +1,2 @@
-export { default } from './SectionUI';
-export type { SectionUIProps } from './type';
+export { default } from './SectionUI'
+export type { SectionUIProps } from './type'

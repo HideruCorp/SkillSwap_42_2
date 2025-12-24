@@ -1,38 +1,38 @@
-import type { User } from '@entities/user';
-import { hashPassword, verifyPassword } from '@shared/lib/crypto';
-import type { StoredUser } from '@shared/lib/storage';
-import DeltaStorage, { loadStoredUserByEmail, loadUserById } from '@shared/lib/storage';
-import generateNumericId from '@shared/lib/utils';
+import type { User } from '@entities/user'
+import type { StoredUser } from '@shared/lib/storage'
 import type {
   AuthTokens,
   LoginCredentials,
   LoginResponse,
   RegisterRequest,
   RegisterResponse,
-} from '../model/types';
+} from '../model/types'
+import { hashPassword, verifyPassword } from '@shared/lib/crypto'
+import DeltaStorage, { loadStoredUserByEmail, loadUserById } from '@shared/lib/storage'
+import generateNumericId from '@shared/lib/utils'
 
-type RegisterResponseWithPasswordHash = RegisterResponse & { passwordHash: string };
+type RegisterResponseWithPasswordHash = RegisterResponse & { passwordHash: string }
 
 /**
  * Генерация mock JWT токенов
  */
 function generateTokens(userId: number): AuthTokens {
-  const now = Date.now();
-  const randomPart = Math.random().toString(36).slice(2);
+  const now = Date.now()
+  const randomPart = Math.random().toString(36).slice(2)
 
   return {
     accessToken: `mock_${userId}_${now}_${randomPart}`,
     refreshToken: `refresh_${userId}_${now}_${randomPart}`,
     expiresAt: now + 24 * 60 * 60 * 1000, // 24 часа
-  };
+  }
 }
 
 /**
  * StoredUser → User (убираем passwordHash)
  */
 function toPublicUser(stored: StoredUser): User {
-  const { passwordHash, ...user } = stored;
-  return user;
+  const { passwordHash, ...user } = stored
+  return user
 }
 
 const authApi = {
@@ -42,25 +42,25 @@ const authApi = {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     // Имитация задержки сети
     await new Promise((r) => {
-      setTimeout(r, 500);
-    });
+      setTimeout(r, 500)
+    })
 
-    const stored = await loadStoredUserByEmail(credentials.email);
+    const stored = await loadStoredUserByEmail(credentials.email)
 
     if (!stored) {
-      throw new Error('Пользователь с таким email не найден');
+      throw new Error('Пользователь с таким email не найден')
     }
 
-    const isValid = await verifyPassword(credentials.password, stored.passwordHash);
+    const isValid = await verifyPassword(credentials.password, stored.passwordHash)
 
     if (!isValid) {
-      throw new Error('Неверный логин или пароль');
+      throw new Error('Неверный логин или пароль')
     }
 
     return {
       tokens: generateTokens(stored.id),
       user: toPublicUser(stored),
-    };
+    }
   },
 
   /**
@@ -70,21 +70,21 @@ const authApi = {
    */
   async register(data: RegisterRequest): Promise<RegisterResponseWithPasswordHash> {
     await new Promise((r) => {
-      setTimeout(r, 500);
-    });
+      setTimeout(r, 500)
+    })
 
     // Проверяем email
-    const existing = await DeltaStorage.getUserByEmail(data.email);
+    const existing = await DeltaStorage.getUserByEmail(data.email)
     if (existing) {
-      throw new Error('Пользователь с таким email уже существует');
+      throw new Error('Пользователь с таким email уже существует')
     }
 
     // Хэшируем пароль
-    const passwordHash = await hashPassword(data.password);
+    const passwordHash = await hashPassword(data.password)
 
     // Генерируем ID
-    const userId = generateNumericId();
-    const skillId = generateNumericId();
+    const userId = generateNumericId()
+    const skillId = generateNumericId()
 
     // Формируем пользователя для Redux (без сохранения в IndexedDB здесь)
     const storedUser: StoredUser = {
@@ -99,29 +99,29 @@ const authApi = {
       gender: data.gender,
       registrationDate: new Date().toISOString(),
       skillInterests: data.skillInterests,
-    };
+    }
 
     return {
       tokens: generateTokens(userId),
       user: toPublicUser(storedUser),
       skillId,
       passwordHash,
-    };
+    }
   },
 
   /**
    * Проверка email
    */
   async checkEmailAvailability(email: string): Promise<boolean> {
-    const existing = await loadStoredUserByEmail(email);
-    return !existing;
+    const existing = await loadStoredUserByEmail(email)
+    return !existing
   },
 
   /**
    * Получить пользователя по ID
    */
   async getUserById(userId: number): Promise<User | null> {
-    return loadUserById(userId);
+    return loadUserById(userId)
   },
 
   /**
@@ -130,6 +130,6 @@ const authApi = {
   async logout(): Promise<void> {
     // Ничего не делаем на "сервере"
   },
-};
+}
 
-export default authApi;
+export default authApi

@@ -1,19 +1,19 @@
-import { useMemo, useCallback } from 'react';
-import { isBefore, isAfter } from 'date-fns';
-import { ru } from 'react-day-picker/locale';
-import { DayPicker } from 'react-day-picker';
-import CalendarIcon from '@shared/assets/img/calendar.svg?react';
-import Button from '@shared/ui/button/Button';
-import type { DatePickerProps } from './type';
-import styles from './date-picker.module.scss';
-import { CustomDropdown, CustomYearsDropdown } from './CustomDropdown';
-import { Dropdown } from '../dropdown';
-import { useDateInput, useCalendarState } from './hooks';
+import type { DatePickerProps } from './type'
+import CalendarIcon from '@shared/assets/img/calendar.svg?react'
+import Button from '@shared/ui/button/Button'
+import { isAfter, isBefore } from 'date-fns'
+import { useCallback, useMemo } from 'react'
+import { DayPicker } from 'react-day-picker'
+import { ru } from 'react-day-picker/locale'
+import { Dropdown } from '../dropdown'
+import { CustomDropdown, CustomYearsDropdown } from './CustomDropdown'
+import styles from './date-picker.module.scss'
+import { useCalendarState, useDateInput } from './hooks'
 
 // Generate years range (50 years back from current)
-const currentYear = new Date().getFullYear();
-const START_YEAR = currentYear - 50;
-const END_YEAR = currentYear;
+const currentYear = new Date().getFullYear()
+const START_YEAR = currentYear - 50
+const END_YEAR = currentYear
 
 export function DatePickerUI({
   name,
@@ -28,12 +28,14 @@ export function DatePickerUI({
   // Memoize date validation
   const isDateDisabled = useCallback(
     (date: Date): boolean => {
-      if (minDate && isBefore(date, minDate)) return true;
-      if (maxDate && isAfter(date, maxDate)) return true;
-      return false;
+      if (minDate && isBefore(date, minDate))
+        return true
+      if (maxDate && isAfter(date, maxDate))
+        return true
+      return false
     },
-    [minDate, maxDate]
-  );
+    [minDate, maxDate],
+  )
 
   // Use extracted hooks
   const { inputRef, inputValue, handleInputChange, handleInputBlur, setInputValue } = useDateInput({
@@ -42,7 +44,7 @@ export function DatePickerUI({
     minDate,
     maxDate,
     isDateDisabled,
-  });
+  })
 
   const {
     isOpen,
@@ -60,7 +62,7 @@ export function DatePickerUI({
     isDateDisabled,
     setInputValue,
     disabled,
-  });
+  })
 
   // Memoize input wrapper classes
   const inputWrapperClass = useMemo(
@@ -73,16 +75,18 @@ export function DatePickerUI({
       ]
         .filter(Boolean)
         .join(' '),
-    [isOpen, error, disabled]
-  );
+    [isOpen, error, disabled],
+  )
 
   // Memoize disabled matcher for DayPicker
   const disabledMatcher = useMemo(() => {
-    const matcher = [];
-    if (minDate) matcher.push({ before: minDate });
-    if (maxDate) matcher.push({ after: maxDate });
-    return matcher;
-  }, [minDate, maxDate]);
+    const matcher = []
+    if (minDate)
+      matcher.push({ before: minDate })
+    if (maxDate)
+      matcher.push({ after: maxDate })
+    return matcher
+  }, [minDate, maxDate])
 
   // Memoize month boundaries
   const { startMonth, endMonth } = useMemo(
@@ -94,13 +98,13 @@ export function DatePickerUI({
         ? new Date(maxDate.getFullYear(), maxDate.getMonth(), 1)
         : new Date(END_YEAR, 11, 1),
     }),
-    [minDate, maxDate]
-  );
+    [minDate, maxDate],
+  )
 
   return (
     <Dropdown
       className={styles.container}
-      trigger={
+      trigger={(
         <>
           <div className={inputWrapperClass}>
             <input
@@ -118,7 +122,7 @@ export function DatePickerUI({
           </div>
           {error && <span className={styles['error-text']}>{error}</span>}
         </>
-      }
+      )}
       isOpen={isOpen}
       align="left"
       onToggle={handleToggle}
@@ -174,7 +178,7 @@ export function DatePickerUI({
         </div>
       </div>
     </Dropdown>
-  );
+  )
 }
 
-export default DatePickerUI;
+export default DatePickerUI

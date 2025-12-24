@@ -1,199 +1,211 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useSelector } from '@app/store';
-import { selectUserById } from '@entities/user';
-import { selectSkillById, selectSkillsByUserId } from '@entities/skill';
-import { selectExchangeByRequestId } from '@entities/exchange';
-import cityApi from '@entities/city/api/citiesApi';
-import categoryApi from '@entities/category/api/categoriesApi';
-import { useRequestsApi } from '@features/requests';
-import type { Request, Category, Subcategory } from '@shared/types';
-import { SkillTagUI } from '@shared/ui/skill-tag';
-import { DropdownListUI, type OptionType } from '@shared/ui/dropdown-list';
-import Button from '@shared/ui/button/Button';
-import { formatRelativeDate, calculateAge, getAgeSuffix } from '@shared/lib/date';
-import { getCategoryColorBySubcategoryId } from '@shared/lib/utils';
-import styles from './skill-request-card.module.scss';
+import type { Category, Request, Subcategory } from '@shared/types'
+import type { OptionType } from '@shared/ui/dropdown-list'
+import { useSelector } from '@app/store'
+import categoryApi from '@entities/category/api/categoriesApi'
+import cityApi from '@entities/city/api/citiesApi'
+import { selectExchangeByRequestId } from '@entities/exchange'
+import { selectSkillById, selectSkillsByUserId } from '@entities/skill'
+import { selectUserById } from '@entities/user'
+import { useRequestsApi } from '@features/requests'
+import { calculateAge, formatRelativeDate, getAgeSuffix } from '@shared/lib/date'
+import { getCategoryColorBySubcategoryId } from '@shared/lib/utils'
+import Button from '@shared/ui/button/Button'
+import { DropdownListUI } from '@shared/ui/dropdown-list'
+import { SkillTagUI } from '@shared/ui/skill-tag'
+import { useEffect, useMemo, useState } from 'react'
+import styles from './skill-request-card.module.scss'
 
 interface SkillRequestCardProps {
-  request: Request;
-  currentUserId: number;
+  request: Request
+  currentUserId: number
 }
 
 interface SkillDisplayData {
-  title: string;
-  color: string;
-  categoryName: string;
-  subcategoryName: string;
+  title: string
+  color: string
+  categoryName: string
+  subcategoryName: string
 }
 
 export default function SkillRequestCard({ request, currentUserId }: SkillRequestCardProps) {
-  const { acceptRequest, rejectRequest, cancelRequest } = useRequestsApi();
+  const { acceptRequest, rejectRequest, cancelRequest } = useRequestsApi()
 
-  const requestedSkill = useSelector((state) => selectSkillById(state, request.requestedSkill));
-  const isIncoming = requestedSkill?.userId === currentUserId;
-  const isOutgoing = request.fromUser === currentUserId;
+  const requestedSkill = useSelector((state) => selectSkillById(state, request.requestedSkill))
+  const isIncoming = requestedSkill?.userId === currentUserId
+  const isOutgoing = request.fromUser === currentUserId
 
-  const displayedUserId = isIncoming ? request.fromUser : requestedSkill?.userId;
+  const displayedUserId = isIncoming ? request.fromUser : requestedSkill?.userId
   const displayedUser = useSelector((state) =>
-    displayedUserId ? selectUserById(state, displayedUserId) : undefined
-  );
+    displayedUserId ? selectUserById(state, displayedUserId) : undefined,
+  )
 
   const displayedUserSkills = useSelector((state) =>
-    selectSkillsByUserId(state, displayedUserId ?? 1)
-  );
+    selectSkillsByUserId(state, displayedUserId ?? 1),
+  )
 
   // Get exchange data for accepted requests
-  const exchange = useSelector((state) => selectExchangeByRequestId(state, request.id));
-  const exchangedSkillId =
-    request.status === 'accepted' && exchange
+  const exchange = useSelector((state) => selectExchangeByRequestId(state, request.id))
+  const exchangedSkillId
+    = request.status === 'accepted' && exchange
       ? exchange.skills.find((id) => id !== request.requestedSkill)
-      : undefined;
+      : undefined
   const exchangedSkill = useSelector((state) =>
-    exchangedSkillId ? selectSkillById(state, exchangedSkillId) : undefined
-  );
+    exchangedSkillId ? selectSkillById(state, exchangedSkillId) : undefined,
+  )
 
-  const [cityName, setCityName] = useState<string>('');
+  const [cityName, setCityName] = useState<string>('')
   const [categoriesData, setCategoriesData] = useState<{
-    categories: Category[];
-    subcategories: Subcategory[];
-  } | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [selectedSkill, setSelectedSkill] = useState<OptionType[]>([]);
+    categories: Category[]
+    subcategories: Subcategory[]
+  } | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [selectedSkill, setSelectedSkill] = useState<OptionType[]>([])
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        setIsLoading(true);
+        setIsLoading(true)
 
         const [citiesData, catData] = await Promise.all([
           cityApi.getCities(),
           categoryApi.getAll(),
-        ]);
+        ])
 
-        setCategoriesData(catData);
+        setCategoriesData(catData)
 
         if (displayedUser?.cityId) {
-          const city = citiesData.find((c) => c.id === displayedUser.cityId);
-          if (city) setCityName(city.name);
+          const city = citiesData.find((c) => c.id === displayedUser.cityId)
+          if (city)
+            setCityName(city.name)
         }
       } catch {
         // Error loading data
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    loadData();
-  }, [displayedUser?.cityId]);
+    loadData()
+  }, [displayedUser?.cityId])
 
   // Helper to get skill display data
   const getSkillDisplayData = useMemo(() => {
     return (subcategoryId: number, title: string): SkillDisplayData => {
       if (!categoriesData) {
-        return { title, color: '#EEE7F7', categoryName: '', subcategoryName: '' };
+        return { title, color: '#EEE7F7', categoryName: '', subcategoryName: '' }
       }
 
-      const { categories, subcategories } = categoriesData;
-      const subcategory = subcategories.find((sub) => sub.id === subcategoryId);
+      const { categories, subcategories } = categoriesData
+      const subcategory = subcategories.find((sub) => sub.id === subcategoryId)
       const category = subcategory
         ? categories.find((cat) => cat.id === subcategory.categoryId)
-        : undefined;
-      const color = getCategoryColorBySubcategoryId(subcategoryId, categories, subcategories);
+        : undefined
+      const color = getCategoryColorBySubcategoryId(subcategoryId, categories, subcategories)
 
       return {
         title,
         color,
         categoryName: category?.name || '',
         subcategoryName: subcategory?.name || '',
-      };
-    };
-  }, [categoriesData]);
+      }
+    }
+  }, [categoriesData])
 
   const requestedSkillData = useMemo(() => {
-    if (!requestedSkill) return null;
-    return getSkillDisplayData(requestedSkill.subcategoryId, requestedSkill.title);
-  }, [requestedSkill, getSkillDisplayData]);
+    if (!requestedSkill)
+      return null
+    return getSkillDisplayData(requestedSkill.subcategoryId, requestedSkill.title)
+  }, [requestedSkill, getSkillDisplayData])
 
   const exchangedSkillData = useMemo(() => {
-    if (!exchangedSkill) return null;
-    return getSkillDisplayData(exchangedSkill.subcategoryId, exchangedSkill.title);
-  }, [exchangedSkill, getSkillDisplayData]);
+    if (!exchangedSkill)
+      return null
+    return getSkillDisplayData(exchangedSkill.subcategoryId, exchangedSkill.title)
+  }, [exchangedSkill, getSkillDisplayData])
 
   const dropdownOptions = useMemo(() => {
-    if (!isIncoming) return [];
+    if (!isIncoming)
+      return []
 
-    const senderInterests = displayedUser?.skillInterests || [];
+    const senderInterests = displayedUser?.skillInterests || []
 
     const sortedSkills = [...displayedUserSkills].sort((a, b) => {
-      const aMatches = senderInterests.includes(a.subcategoryId);
-      const bMatches = senderInterests.includes(b.subcategoryId);
-      if (aMatches && !bMatches) return -1;
-      if (!aMatches && bMatches) return 1;
-      return 0;
-    });
+      const aMatches = senderInterests.includes(a.subcategoryId)
+      const bMatches = senderInterests.includes(b.subcategoryId)
+      if (aMatches && !bMatches)
+        return -1
+      if (!aMatches && bMatches)
+        return 1
+      return 0
+    })
 
     return sortedSkills.map((skill) => ({
       title: skill.title,
       value: String(skill.id),
-    }));
-  }, [isIncoming, displayedUserSkills, displayedUser?.skillInterests]);
+    }))
+  }, [isIncoming, displayedUserSkills, displayedUser?.skillInterests])
 
   const handleAccept = () => {
-    if (selectedSkill.length === 0) return;
+    if (selectedSkill.length === 0)
+      return
 
     const success = acceptRequest({
       requestId: request.id,
       givenSkillId: Number(selectedSkill[0].value),
       receivedSkillId: request.requestedSkill,
-    });
+    })
 
     if (success) {
-      setSelectedSkill([]);
+      setSelectedSkill([])
     }
-  };
+  }
 
   const handleReject = () => {
-    rejectRequest(request.id);
-  };
+    rejectRequest(request.id)
+  }
 
   const handleCancel = () => {
-    cancelRequest(request.id);
-  };
+    cancelRequest(request.id)
+  }
 
   const handleDropdownChange = (selected: OptionType[]) => {
-    setSelectedSkill(selected);
-  };
+    setSelectedSkill(selected)
+  }
 
   if (isLoading || !displayedUser || !requestedSkill || !requestedSkillData) {
     return (
       <div className={styles.card} data-request-id={request.id}>
         <div className={styles.loading}>Загрузка...</div>
       </div>
-    );
+    )
   }
 
-  const userAge = calculateAge(displayedUser.dateOfBirth);
-  const userLocation = `${cityName}${userAge ? `, ${userAge} ${getAgeSuffix(userAge)}` : ''}`;
-  const relativeDate = formatRelativeDate(new Date(request.createdAt));
+  const userAge = calculateAge(displayedUser.dateOfBirth)
+  const userLocation = `${cityName}${userAge ? `, ${userAge} ${getAgeSuffix(userAge)}` : ''}`
+  const relativeDate = formatRelativeDate(new Date(request.createdAt))
 
   return (
     <div className={styles.card} data-request-id={request.id}>
       <section className={styles.userSection}>
         <div className={styles.avatarBlock}>
-          {displayedUser.avatarUrl ? (
-            <img src={displayedUser.avatarUrl} alt={displayedUser.name} className={styles.avatar} />
-          ) : (
-            <div className={styles.avatarPlaceholder}>
-              {displayedUser.name.charAt(0).toUpperCase()}
-            </div>
-          )}
+          {displayedUser.avatarUrl
+            ? (
+                <img src={displayedUser.avatarUrl} alt={displayedUser.name} className={styles.avatar} />
+              )
+            : (
+                <div className={styles.avatarPlaceholder}>
+                  {displayedUser.name.charAt(0).toUpperCase()}
+                </div>
+              )}
           <div className={styles.userInfo}>
             <h3 className={styles.userName}>{displayedUser.name}</h3>
             <p className={styles.userLocation}>{userLocation}</p>
           </div>
         </div>
         <p className={styles.dateBadge}>
-          Дата создания: <span>{relativeDate}</span>
+          Дата создания:
+          {' '}
+          <span>{relativeDate}</span>
         </p>
       </section>
 
@@ -206,7 +218,10 @@ export default function SkillRequestCard({ request, currentUserId }: SkillReques
             text={requestedSkillData.title}
           />
           <p className={styles.skillCategory}>
-            {requestedSkillData.categoryName} / {requestedSkillData.subcategoryName}
+            {requestedSkillData.categoryName}
+            {' '}
+            /
+            {requestedSkillData.subcategoryName}
           </p>
         </div>
 
@@ -219,7 +234,10 @@ export default function SkillRequestCard({ request, currentUserId }: SkillReques
               text={exchangedSkillData.title}
             />
             <p className={styles.skillCategory}>
-              {exchangedSkillData.categoryName} / {exchangedSkillData.subcategoryName}
+              {exchangedSkillData.categoryName}
+              {' '}
+              /
+              {exchangedSkillData.subcategoryName}
             </p>
           </div>
         )}
@@ -275,5 +293,5 @@ export default function SkillRequestCard({ request, currentUserId }: SkillReques
         </div>
       </section>
     </div>
-  );
+  )
 }

@@ -1,10 +1,11 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { ThemeMode, ThemeSource, ThemeState } from './types';
+import type { PayloadAction } from '@reduxjs/toolkit'
+import type { ThemeMode, ThemeSource, ThemeState } from './types'
+import { createSlice } from '@reduxjs/toolkit'
 
 interface InitializeThemePayload {
-  mode: ThemeMode;
-  source: ThemeSource;
-  systemPreference: ThemeMode | null;
+  mode: ThemeMode
+  source: ThemeSource
+  systemPreference: ThemeMode | null
 }
 
 const initialState: ThemeState = {
@@ -12,7 +13,7 @@ const initialState: ThemeState = {
   source: 'system',
   isInitialized: false,
   systemPreference: 'light',
-};
+}
 
 const themeSlice = createSlice({
   name: 'theme',
@@ -22,36 +23,36 @@ const themeSlice = createSlice({
      * User manually toggles theme between light and dark
      */
     toggleTheme(state) {
-      state.mode = state.mode === 'light' ? 'dark' : 'light';
-      state.source = 'user';
+      state.mode = state.mode === 'light' ? 'dark' : 'light'
+      state.source = 'user'
     },
 
     /**
      * User manually sets specific theme
      */
     setTheme(state, action: PayloadAction<ThemeMode>) {
-      state.mode = action.payload;
-      state.source = 'user';
+      state.mode = action.payload
+      state.source = 'user'
     },
 
     /**
      * Initialize theme from storage or system preference
      */
     initializeTheme(state, action: PayloadAction<InitializeThemePayload>) {
-      state.mode = action.payload.mode;
-      state.source = action.payload.source;
-      state.systemPreference = action.payload.systemPreference;
-      state.isInitialized = true;
+      state.mode = action.payload.mode
+      state.source = action.payload.source
+      state.systemPreference = action.payload.systemPreference
+      state.isInitialized = true
     },
 
     /**
      * Update system preference when it changes at OS/browser level
      */
     setSystemPreference(state, action: PayloadAction<ThemeMode>) {
-      state.systemPreference = action.payload;
+      state.systemPreference = action.payload
       // Only update mode if user hasn't manually set preference
       if (state.source === 'system') {
-        state.mode = action.payload;
+        state.mode = action.payload
       }
     },
 
@@ -59,11 +60,11 @@ const themeSlice = createSlice({
      * Reset to system preference
      */
     resetToSystemPreference(state) {
-      state.mode = state.systemPreference || 'light';
-      state.source = 'system';
+      state.mode = state.systemPreference || 'light'
+      state.source = 'system'
     },
   },
-});
+})
 
 export const {
   toggleTheme,
@@ -71,7 +72,7 @@ export const {
   initializeTheme,
   setSystemPreference,
   resetToSystemPreference,
-} = themeSlice.actions;
+} = themeSlice.actions
 
-export const themeReducer = themeSlice.reducer;
-export default themeReducer;
+export const themeReducer = themeSlice.reducer
+export default themeReducer

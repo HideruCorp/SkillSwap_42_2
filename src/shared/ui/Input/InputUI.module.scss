@@ -32,15 +32,15 @@
   transition: all 0.2s ease-in-out;
   box-sizing: border-box;
   font-family: $font-body;
-  
+
   // Важно: фон инпута должен быть прозрачным или соответствовать теме
-  background-color: transparent; 
+  background-color: transparent;
   color: $color-text;
 
   &:focus {
     // БЫЛО: border-color: #000;
     // СТАЛО: цвет акцента или текста
-    border-color: $color-text; 
+    border-color: $color-text;
   }
 }
 
@@ -98,7 +98,7 @@
     height: 24px;
     pointer-events: none;
   }
-  
+
   // Если внутри SVG используется currentColor
   svg {
     fill: $color-text;
@@ -126,7 +126,7 @@
     height: 2px;
     // БЫЛО: background-color: #000;
     // СТАЛО:
-    background-color: $color-text; 
+    background-color: $color-text;
     transform: rotate(45deg);
     transform-origin: center;
   }

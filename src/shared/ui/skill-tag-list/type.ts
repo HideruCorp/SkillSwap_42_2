@@ -1,9 +1,9 @@
-export type SkillTag = {
-  id: string;
-  text: string;
-  bgColor: string;
-};
+export interface SkillTag {
+  id: string
+  text: string
+  bgColor: string
+}
 
-export type SkillTagListUIProps = {
-  tags: SkillTag[];
-};
+export interface SkillTagListUIProps {
+  tags: SkillTag[]
+}

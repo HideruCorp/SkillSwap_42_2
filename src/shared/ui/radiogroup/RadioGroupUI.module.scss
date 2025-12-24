@@ -16,7 +16,7 @@
   @include text-body;
 
   cursor: pointer;
-  
+
   &.disabled {
     cursor: not-allowed;
     opacity: 0.6;
@@ -37,7 +37,7 @@
   height: 24px;
   color: $color-text-caption;
   transition: color 0.3s ease;
-  
+
   svg {
     width: 100%;
     height: 100%;

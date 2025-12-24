@@ -1,11 +1,11 @@
-import styles from './modal-overlay.module.scss';
+import styles from './modal-overlay.module.scss'
 
 interface ModalOverlayProp {
-  onClick: () => void;
+  onClick: () => void
 }
 
 function ModalOverlay({ onClick }: ModalOverlayProp) {
-  return <div role="dialog" className={styles.overlay} onClick={onClick} aria-hidden="true" />;
+  return <div role="dialog" className={styles.overlay} onClick={onClick} aria-hidden="true" />
 }
 
-export default ModalOverlay;
+export default ModalOverlay

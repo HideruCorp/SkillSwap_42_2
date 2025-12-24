@@ -1,2 +1,2 @@
-export { default as DatePickerUI } from './DatePickerUI';
-export type { DatePickerProps } from './type';
+export { default as DatePickerUI } from './DatePickerUI'
+export type { DatePickerProps } from './type'

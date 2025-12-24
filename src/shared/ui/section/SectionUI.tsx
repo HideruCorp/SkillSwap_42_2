@@ -1,6 +1,6 @@
-import SectionHeaderUI from '@shared/ui/section-header/SectionHeaderUI';
-import styles from './SectionUI.module.scss';
-import type { SectionUIProps } from './type';
+import type { SectionUIProps } from './type'
+import SectionHeaderUI from '@shared/ui/section-header/SectionHeaderUI'
+import styles from './SectionUI.module.scss'
 
 function SectionUI({
   title,
@@ -21,17 +21,19 @@ function SectionUI({
         extraAction={headerExtra}
       />
 
-      {children == null || (Array.isArray(children) && children.length === 0) ? (
-        <div className={styles.empty}>В этой секции пусто</div>
-      ) : (
-        <>
-          <div className={styles.cardsGrid}>{children}</div>
+      {children == null || (Array.isArray(children) && children.length === 0)
+        ? (
+            <div className={styles.empty}>В этой секции пусто</div>
+          )
+        : (
+            <>
+              <div className={styles.cardsGrid}>{children}</div>
 
-          {hasMore && <div ref={triggerRef} className={styles.trigger} />}
-        </>
-      )}
+              {hasMore && <div ref={triggerRef} className={styles.trigger} />}
+            </>
+          )}
     </section>
-  );
+  )
 }
 
-export default SectionUI;
+export default SectionUI

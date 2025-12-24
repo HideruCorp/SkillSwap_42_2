@@ -1,4 +1,4 @@
-import SkillRequestCard from './SkillRequestCard';
+import SkillRequestCard from './SkillRequestCard'
 
-export { SkillRequestCard };
-export default SkillRequestCard;
+export { SkillRequestCard }
+export default SkillRequestCard

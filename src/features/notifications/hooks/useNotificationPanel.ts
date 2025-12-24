@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import type { UseNotificationPanelReturn } from '../types';
-import useNotifications from './useNotifications';
+import type { UseNotificationPanelReturn } from '../types'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import useNotifications from './useNotifications'
 
 function useNotificationPanel(userId: number, onClose?: () => void): UseNotificationPanelReturn {
-  const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false)
+  const navigate = useNavigate()
 
   const {
     newNotifications,
@@ -14,25 +14,26 @@ function useNotificationPanel(userId: number, onClose?: () => void): UseNotifica
     readAll: readAllNotifications,
     clearViewed: clearViewedNotifications,
     markAsRead,
-  } = useNotifications(userId);
+  } = useNotifications(userId)
 
   const toggle = (open: boolean) => {
-    setIsOpen(open);
-    if (!open) onClose?.();
-  };
+    setIsOpen(open)
+    if (!open)
+      onClose?.()
+  }
 
   const readAll = () => {
-    readAllNotifications();
-  };
+    readAllNotifications()
+  }
 
   const clearViewed = () => {
-    clearViewedNotifications();
-  };
+    clearViewedNotifications()
+  }
 
   const onNotificationClick = (id: number) => {
-    markAsRead(id);
-    navigate(`/profile/requests?requestId=${id}`);
-  };
+    markAsRead(id)
+    navigate(`/profile/requests?requestId=${id}`)
+  }
 
   return {
     isOpen,
@@ -43,7 +44,7 @@ function useNotificationPanel(userId: number, onClose?: () => void): UseNotifica
     readAll,
     clearViewed,
     onNotificationClick,
-  };
+  }
 }
 
-export default useNotificationPanel;
+export default useNotificationPanel

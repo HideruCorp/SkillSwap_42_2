@@ -1,2 +1,2 @@
-export { SocialButton } from './SocialButton';
-export type { SocialProvider, SocialButtonProps } from './SocialButton';
+export { SocialButton } from './SocialButton'
+export type { SocialButtonProps, SocialProvider } from './SocialButton'

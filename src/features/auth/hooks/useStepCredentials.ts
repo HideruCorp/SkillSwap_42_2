@@ -1,105 +1,106 @@
-import { useCallback, useState, useEffect, useRef } from 'react';
-import { useDebouncedCallback } from '@shared/hooks/useDebounce';
-import { useDispatch, useSelector } from '@app/store';
-import type { StepCredentials } from '../model';
+import type { StepCredentials } from '../model'
+import { useDispatch, useSelector } from '@app/store'
+import { useDebouncedCallback } from '@shared/hooks/useDebounce'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
-  updateCredentials,
-  clearStepErrors,
   checkEmailAvailability,
-  submitStep,
+  clearStepErrors,
   selectCredentials,
-  selectStepCredentialErrors,
   selectIsCheckingEmail,
   selectIsSubmitting,
-} from '../model';
+  selectStepCredentialErrors,
+  submitStep,
+  updateCredentials,
+} from '../model'
 
-const EMAIL_DEBOUNCE_DELAY = 500;
+const EMAIL_DEBOUNCE_DELAY = 500
 
 /**
  * Хук для первого шага регистрации (credentials)
  */
-const useStepCredentials = () => {
-  const dispatch = useDispatch();
+function useStepCredentials() {
+  const dispatch = useDispatch()
 
   // ============ SELECTORS ============
-  const credentials = useSelector(selectCredentials);
-  const stepErrors = useSelector(selectStepCredentialErrors);
-  const isCheckingEmail = useSelector(selectIsCheckingEmail);
-  const isSubmitting = useSelector(selectIsSubmitting);
+  const credentials = useSelector(selectCredentials)
+  const stepErrors = useSelector(selectStepCredentialErrors)
+  const isCheckingEmail = useSelector(selectIsCheckingEmail)
+  const isSubmitting = useSelector(selectIsSubmitting)
 
   // ============ LOCAL STATE ============
-  const [isEmailAvailable, setIsEmailAvailable] = useState<boolean | null>(null);
-  const prevEmailRef = useRef<string>('');
-  const isInitializedRef = useRef(false);
+  const [isEmailAvailable, setIsEmailAvailable] = useState<boolean | null>(null)
+  const prevEmailRef = useRef<string>('')
+  const isInitializedRef = useRef(false)
 
   // ============ DEBOUNCED CHECK ============
   const checkEmail = useDebouncedCallback(async (email: string) => {
-    const result = await dispatch(checkEmailAvailability(email));
+    const result = await dispatch(checkEmailAvailability(email))
     if (checkEmailAvailability.fulfilled.match(result)) {
-      setIsEmailAvailable(result.payload);
+      setIsEmailAvailable(result.payload)
     }
-  }, EMAIL_DEBOUNCE_DELAY);
+  }, EMAIL_DEBOUNCE_DELAY)
 
   // ============ EFFECTS ============
 
   // Инициализация: если email уже есть в store (возврат на шаг) — проверяем его
   useEffect(() => {
-    if (isInitializedRef.current) return;
-    isInitializedRef.current = true;
+    if (isInitializedRef.current)
+      return
+    isInitializedRef.current = true
 
-    const { email } = credentials;
+    const { email } = credentials
     if (email) {
-      prevEmailRef.current = email;
+      prevEmailRef.current = email
       // Запускаем проверку немедленно (без debounce) для уже введённого email
       dispatch(checkEmailAvailability(email)).then((result) => {
         if (checkEmailAvailability.fulfilled.match(result)) {
-          setIsEmailAvailable(result.payload);
+          setIsEmailAvailable(result.payload)
         }
-      });
+      })
     }
-  }, [credentials, dispatch]);
+  }, [credentials, dispatch])
 
   // Отслеживание изменений email
   useEffect(() => {
-    const { email } = credentials;
+    const { email } = credentials
 
     // Не проверяем, если email не изменился
     if (email === prevEmailRef.current) {
-      return;
+      return
     }
 
-    prevEmailRef.current = email;
-    setIsEmailAvailable(null);
+    prevEmailRef.current = email
+    setIsEmailAvailable(null)
 
     if (!email) {
-      return;
+      return
     }
 
-    checkEmail(email);
-  }, [credentials, checkEmail]);
+    checkEmail(email)
+  }, [credentials, checkEmail])
 
   // ============ METHODS ============
   const handleUpdateCredentials = useCallback(
     (data: Partial<StepCredentials>) => {
-      dispatch(updateCredentials(data));
+      dispatch(updateCredentials(data))
     },
-    [dispatch]
-  );
+    [dispatch],
+  )
 
   const handleSubmitStep = useCallback(async () => {
-    const result = await dispatch(submitStep(1));
-    return submitStep.fulfilled.match(result);
-  }, [dispatch]);
+    const result = await dispatch(submitStep(1))
+    return submitStep.fulfilled.match(result)
+  }, [dispatch])
 
   const handleClearErrors = useCallback(() => {
-    dispatch(clearStepErrors(1));
-  }, [dispatch]);
+    dispatch(clearStepErrors(1))
+  }, [dispatch])
 
   const resetEmailAvailability = useCallback(() => {
-    setIsEmailAvailable(null);
-    prevEmailRef.current = '';
-    isInitializedRef.current = false;
-  }, []);
+    setIsEmailAvailable(null)
+    prevEmailRef.current = ''
+    isInitializedRef.current = false
+  }, [])
 
   return {
     credentials,
@@ -112,7 +113,7 @@ const useStepCredentials = () => {
     submitStep: handleSubmitStep,
     clearErrors: handleClearErrors,
     resetEmailAvailability,
-  };
-};
+  }
+}
 
-export default useStepCredentials;
+export default useStepCredentials

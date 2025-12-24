@@ -4,9 +4,9 @@
 .footer {
   background-color: $color-surface;
   position: relative;
-  width: 1440px; 
-  height: 232px; 
-  margin: 0 auto; 
+  width: 1440px;
+  height: 232px;
+  margin: 0 auto;
   box-sizing: border-box;
 }
 
@@ -15,7 +15,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 100%; 
+  height: 100%;
   box-sizing: border-box;
 }
 
@@ -24,7 +24,7 @@
   flex-direction: column;
   gap: 112px;
   height: 100%;
-  justify-content: space-between; 
+  justify-content: space-between;
 }
 
 .logoSection {
@@ -38,7 +38,7 @@
   display: flex;
   gap: 24px;
   position: relative;
-  top: 8px; 
+  top: 8px;
 }
 .column {
   display: flex;
@@ -46,8 +46,7 @@
   align-items: flex-start;
   gap: 12px;
   min-width: 324px;
-  
-  
+
   &:first-child {
     .link {
       margin-left: 15px;

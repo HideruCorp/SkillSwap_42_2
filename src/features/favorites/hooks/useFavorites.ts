@@ -1,54 +1,56 @@
-import { useCallback } from 'react';
-import { useDispatch, useSelector } from '@app/store';
-import { useAuthState } from '@features/auth';
+import { useDispatch, useSelector } from '@app/store'
 import {
   addFavoriteSkill,
   removeFavoriteSkill,
   selectFavoriteSkillIdsByUserId,
   selectIsSkillLikedByUser,
-} from '@entities/favorites';
+} from '@entities/favorites'
+import { useAuthState } from '@features/auth'
+import { useCallback } from 'react'
 
 // 1. Хук только для действий (вообще не вызывает ререндеров)
 export function useFavoritesActions() {
-  const dispatch = useDispatch();
-  const { currentUser } = useAuthState();
-  const userId = currentUser?.id;
+  const dispatch = useDispatch()
+  const { currentUser } = useAuthState()
+  const userId = currentUser?.id
 
   const toggleFavorite = useCallback(
     (skillId: number, isCurrentlyLiked: boolean) => {
-      if (!userId) return;
+      if (!userId)
+        return
 
       if (isCurrentlyLiked) {
-        dispatch(removeFavoriteSkill({ skillId, userId }));
+        dispatch(removeFavoriteSkill({ skillId, userId }))
       } else {
-        dispatch(addFavoriteSkill({ skillId, userId }));
+        dispatch(addFavoriteSkill({ skillId, userId }))
       }
     },
-    [dispatch, userId]
-  );
+    [dispatch, userId],
+  )
 
-  return { toggleFavorite };
+  return { toggleFavorite }
 }
 
 export function useIsFavorite(skillId: number) {
-  const { currentUser } = useAuthState();
-  const userId = currentUser?.id;
+  const { currentUser } = useAuthState()
+  const userId = currentUser?.id
 
   const isLiked = useSelector((state) =>
-    userId ? selectIsSkillLikedByUser(state, skillId, userId) : false
-  );
+    userId ? selectIsSkillLikedByUser(state, skillId, userId) : false,
+  )
 
-  return isLiked;
+  return isLiked
 }
 
 export function useFavoriteSkills() {
-  const { currentUser } = useAuthState();
-  const userId = currentUser?.id;
+  const { currentUser } = useAuthState()
+  const userId = currentUser?.id
 
   const favoriteSkillIds = useSelector((state) => {
-    if (!userId) return [];
-    return selectFavoriteSkillIdsByUserId(state, userId);
-  });
+    if (!userId)
+      return []
+    return selectFavoriteSkillIdsByUserId(state, userId)
+  })
 
-  return favoriteSkillIds;
+  return favoriteSkillIds
 }

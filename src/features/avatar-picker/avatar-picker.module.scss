@@ -31,10 +31,10 @@
   height: var(--avatar-size, 63px);
   flex-shrink: 0;
   display: block;
-  
+
   // Добавляем цвет, который будет наследоваться через currentColor
   color: var(--color-text-disabled); // Или var(--color-text-primary) по вкусу
-  
+
   // В темной теме можно сделать посветлее, если нужно
   [data-theme='dark'] & {
     color: var(--color-text-secondary);
@@ -52,7 +52,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
   box-sizing: border-box;
   z-index: 1;
 
@@ -87,7 +89,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
 
   &:hover {
     background: $color-text-caption;
@@ -113,4 +117,3 @@
   text-align: center;
   max-width: 200px;
 }
-

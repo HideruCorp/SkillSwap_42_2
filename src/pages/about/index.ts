@@ -1,4 +1,4 @@
-import AboutPage from './AboutPage';
+import AboutPage from './AboutPage'
 
-export { AboutPage };
-export default AboutPage;
+export { AboutPage }
+export default AboutPage

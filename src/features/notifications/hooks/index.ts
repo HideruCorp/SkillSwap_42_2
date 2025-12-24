@@ -1,4 +1,4 @@
-import useNotificationPanel from './useNotificationPanel';
-import useNotifications from './useNotifications';
+import useNotificationPanel from './useNotificationPanel'
+import useNotifications from './useNotifications'
 
-export { useNotificationPanel, useNotifications };
+export { useNotificationPanel, useNotifications }

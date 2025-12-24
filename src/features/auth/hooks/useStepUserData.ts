@@ -1,47 +1,47 @@
-import { useCallback } from 'react';
-import { useDispatch, useSelector } from '@app/store';
-import type { StepUserData } from '../model';
+import type { StepUserData } from '../model'
+import { useDispatch, useSelector } from '@app/store'
+import { useCallback } from 'react'
 import {
-  updateUserData,
-  prevStep,
   clearStepErrors,
-  submitStep,
-  selectUserData,
-  selectStepUserDataErrors,
+  prevStep,
   selectIsSubmitting,
-} from '../model';
+  selectStepUserDataErrors,
+  selectUserData,
+  submitStep,
+  updateUserData,
+} from '../model'
 
 /**
  * Хук для второго шага регистрации (user data)
  */
-const useStepUserData = () => {
-  const dispatch = useDispatch();
+function useStepUserData() {
+  const dispatch = useDispatch()
 
   // ============ SELECTORS ============
-  const userData = useSelector(selectUserData);
-  const errors = useSelector(selectStepUserDataErrors);
-  const isSubmitting = useSelector(selectIsSubmitting);
+  const userData = useSelector(selectUserData)
+  const errors = useSelector(selectStepUserDataErrors)
+  const isSubmitting = useSelector(selectIsSubmitting)
 
   // ============ METHODS ============
   const handleUpdateUserData = useCallback(
     (data: Partial<StepUserData>) => {
-      dispatch(updateUserData(data));
+      dispatch(updateUserData(data))
     },
-    [dispatch]
-  );
+    [dispatch],
+  )
 
   const handleSubmitStep = useCallback(async () => {
-    const result = await dispatch(submitStep(2));
-    return submitStep.fulfilled.match(result);
-  }, [dispatch]);
+    const result = await dispatch(submitStep(2))
+    return submitStep.fulfilled.match(result)
+  }, [dispatch])
 
   const handlePrevStep = useCallback(() => {
-    dispatch(prevStep());
-  }, [dispatch]);
+    dispatch(prevStep())
+  }, [dispatch])
 
   const handleClearErrors = useCallback(() => {
-    dispatch(clearStepErrors(2));
-  }, [dispatch]);
+    dispatch(clearStepErrors(2))
+  }, [dispatch])
 
   return {
     // State
@@ -54,7 +54,7 @@ const useStepUserData = () => {
     submitStep: handleSubmitStep,
     prevStep: handlePrevStep,
     clearErrors: handleClearErrors,
-  };
-};
+  }
+}
 
-export default useStepUserData;
+export default useStepUserData

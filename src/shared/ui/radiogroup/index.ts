@@ -1,2 +1,2 @@
-export { RadioGroupUI } from './RadioGroupUI';
-export type { RadioGroupProps, Option } from './type';
+export { RadioGroupUI } from './RadioGroupUI'
+export type { Option, RadioGroupProps } from './type'

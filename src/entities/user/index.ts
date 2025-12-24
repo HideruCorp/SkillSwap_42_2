@@ -1,19 +1,19 @@
-import usersReducer from './model/usersSlice';
+import usersReducer from './model/usersSlice'
 
 // Types
-export type { User, UserPreview, CreateUserDTO, UpdateUserDTO } from './model/types';
+export type { CreateUserDTO, UpdateUserDTO, User, UserPreview } from './model/types'
 
 // Slice
 export {
-  default as usersReducer,
-  setUsers,
   addUser,
-  updateUser,
   deleteUser,
   selectAllUsers,
   selectUserById,
-  selectUsersLoading,
   selectUsersError,
-} from './model/usersSlice';
+  selectUsersLoading,
+  setUsers,
+  updateUser,
+  default as usersReducer,
+} from './model/usersSlice'
 
-export default usersReducer;
+export default usersReducer

@@ -1,21 +1,29 @@
-import './progress-bar.scss';
+import './progress-bar.scss'
 
-type ProgressBarProps = {
-  currentStep: number;
-  totalSteps: number;
-};
+interface ProgressBarProps {
+  currentStep: number
+  totalSteps: number
+}
 
 export default function ProgressBar({ currentStep, totalSteps }: ProgressBarProps) {
   return (
     <div className="progress-bar">
       <h2 className="progress-bar__title">
-        {currentStep === 1 ? (
-          'Вход / Регистрация'
-        ) : (
-          <>
-            Шаг {currentStep} из {totalSteps}
-          </>
-        )}
+        {currentStep === 1
+          ? (
+              'Вход / Регистрация'
+            )
+          : (
+              <>
+                Шаг
+                {' '}
+                {currentStep}
+                {' '}
+                из
+                {' '}
+                {totalSteps}
+              </>
+            )}
       </h2>
 
       <div className="progress-bar__list">
@@ -27,5 +35,5 @@ export default function ProgressBar({ currentStep, totalSteps }: ProgressBarProp
         ))}
       </div>
     </div>
-  );
+  )
 }

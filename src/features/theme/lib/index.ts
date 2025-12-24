@@ -1,7 +1,7 @@
-export { saveTheme, loadTheme, removeTheme } from './themeStorage';
+export { applyTheme, preventThemeFlash } from './applyTheme'
 
-export { detectSystemTheme, isSystemThemeSupported } from './detectSystemTheme';
+export { detectSystemTheme, isSystemThemeSupported } from './detectSystemTheme'
 
-export { applyTheme, preventThemeFlash } from './applyTheme';
+export { default as createThemeListener } from './themeListener'
 
-export { default as createThemeListener } from './themeListener';
+export { loadTheme, removeTheme, saveTheme } from './themeStorage'

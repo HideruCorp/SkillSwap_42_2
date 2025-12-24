@@ -1,9 +1,9 @@
-import type { ReactElement } from 'react';
-import styles from './profile-page.module.scss';
-import SideBar from './sideBar/SideBar';
+import type { ReactElement } from 'react'
+import styles from './profile-page.module.scss'
+import SideBar from './sideBar/SideBar'
 
 interface ProfilePageProps {
-  children: ReactElement | string;
+  children: ReactElement | string
 }
 
 function ProfilePage({ children }: ProfilePageProps) {
@@ -13,7 +13,7 @@ function ProfilePage({ children }: ProfilePageProps) {
 
       {children}
     </section>
-  );
+  )
 }
 
-export default ProfilePage;
+export default ProfilePage

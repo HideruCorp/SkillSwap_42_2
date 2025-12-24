@@ -1,4 +1,4 @@
-import TermsPage from './TermsPage';
+import TermsPage from './TermsPage'
 
-export { TermsPage };
-export default TermsPage;
+export { TermsPage }
+export default TermsPage

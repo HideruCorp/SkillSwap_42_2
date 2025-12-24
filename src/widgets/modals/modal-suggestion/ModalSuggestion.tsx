@@ -1,41 +1,41 @@
-import Button from '@shared/ui/button/Button';
-import type { Category, Subcategory } from '@shared/types';
-import { selectSkillData } from '@features/auth/model/registrationSlice';
-import categoryApi from '@entities/category/api/categoriesApi';
-import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import SkillGallery from '../../skillGallery/SkillGallery';
-import editIcon from '../../../shared/assets/img/edit.svg';
-import styles from './ModalSuggestion.module.scss';
+import type { Category, Subcategory } from '@shared/types'
+import categoryApi from '@entities/category/api/categoriesApi'
+import { selectSkillData } from '@features/auth/model/registrationSlice'
+import Button from '@shared/ui/button/Button'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import editIcon from '../../../shared/assets/img/edit.svg'
+import SkillGallery from '../../skillGallery/SkillGallery'
+import styles from './ModalSuggestion.module.scss'
 
 interface ModalSuggestionProps {
-  onClose: () => void;
-  submit: () => void;
+  onClose: () => void
+  submit: () => void
 }
 
 function ModalSuggestion({ submit, onClose }: ModalSuggestionProps) {
-  const skill = useSelector(selectSkillData);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  const skill = useSelector(selectSkillData)
+  const [categories, setCategories] = useState<Category[]>([])
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await categoryApi.getAll();
-        setCategories(result.categories);
-        setSubcategories(result.subcategories);
+        const result = await categoryApi.getAll()
+        setCategories(result.categories)
+        setSubcategories(result.subcategories)
       } catch (error) {
-        console.error('Ошибка при загрузке категорий:', error);
+        console.error('Ошибка при загрузке категорий:', error)
       }
-    };
-    fetchData();
-  }, []);
+    }
+    fetchData()
+  }, [])
 
-  const { skillTitle, skillSubcategoryId, skillDescription, skillImages } = skill;
+  const { skillTitle, skillSubcategoryId, skillDescription, skillImages } = skill
   const subcategory = subcategories.filter(
-    (subcategory) => subcategory.id === skillSubcategoryId
-  )[0];
-  const category = categories.filter((category) => category.id === subcategory.categoryId)[0];
+    (subcategory) => subcategory.id === skillSubcategoryId,
+  )[0]
+  const category = categories.filter((category) => category.id === subcategory.categoryId)[0]
 
   return (
     <div className={styles.container}>
@@ -47,7 +47,10 @@ function ModalSuggestion({ submit, onClose }: ModalSuggestionProps) {
             <h1 className={styles.scilTitle}>{skillTitle}</h1>
             {subcategories.length !== 0 && (
               <p className={styles.categories}>
-                {category.name} / {subcategory.name}
+                {category.name}
+                {' '}
+                /
+                {subcategory.name}
               </p>
             )}
           </div>
@@ -58,7 +61,7 @@ function ModalSuggestion({ submit, onClose }: ModalSuggestionProps) {
               variant="tertiary"
               onClick={onClose}
               title="Редактировать"
-              iconRight={
+              iconRight={(
                 <img
                   src={editIcon}
                   alt="edit"
@@ -68,7 +71,7 @@ function ModalSuggestion({ submit, onClose }: ModalSuggestionProps) {
                     display: 'inline-block',
                   }}
                 />
-              }
+              )}
             />
             <Button className={styles.button} variant="primary" onClick={submit} title="Готово" />
           </div>
@@ -76,7 +79,7 @@ function ModalSuggestion({ submit, onClose }: ModalSuggestionProps) {
         <SkillGallery images={skillImages} />
       </div>
     </div>
-  );
+  )
 }
 
-export default ModalSuggestion;
+export default ModalSuggestion

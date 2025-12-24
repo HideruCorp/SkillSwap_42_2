@@ -1,4 +1,4 @@
-import ProfileExchangesPage from './ProfileExchangesPage';
+import ProfileExchangesPage from './ProfileExchangesPage'
 
-export { ProfileExchangesPage };
-export default ProfileExchangesPage;
+export { ProfileExchangesPage }
+export default ProfileExchangesPage

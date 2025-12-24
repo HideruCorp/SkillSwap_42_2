@@ -1,15 +1,15 @@
 export interface Notification {
-  id: number;
-  userId: number; // Кому уведомление (получатель)
-  fromUserId: number; // От кого уведомление (отправитель)
-  action: 'accept' | 'offer' | 'reject';
-  createdDate: string; // ISO date string from JSON
-  readed: boolean;
-  requestId?: number; // ID связанной заявки (для перехода при клике)
+  id: number
+  userId: number // Кому уведомление (получатель)
+  fromUserId: number // От кого уведомление (отправитель)
+  action: 'accept' | 'offer' | 'reject'
+  createdDate: string // ISO date string from JSON
+  readed: boolean
+  requestId?: number // ID связанной заявки (для перехода при клике)
 }
 
 export interface NotificationsState {
-  items: Notification[];
-  loading: boolean;
-  error: string | null;
+  items: Notification[]
+  loading: boolean
+  error: string | null
 }

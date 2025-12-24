@@ -1,42 +1,42 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { CheckboxUI } from '@shared/ui/checkbox/CheckboxUI';
-import ChevronUp from '@shared/assets/img/chevron-Up.svg?react';
-import ChevronDown from '@shared/assets/img/chevron-Down.svg?react';
-import cityApi from '@entities/city/api/citiesApi';
-import styles from './city-filter.module.scss';
-import type { ICity, CityFilterProps } from './type';
+import type { CityFilterProps, ICity } from './type'
+import cityApi from '@entities/city/api/citiesApi'
+import ChevronDown from '@shared/assets/img/chevron-Down.svg?react'
+import ChevronUp from '@shared/assets/img/chevron-Up.svg?react'
+import { CheckboxUI } from '@shared/ui/checkbox/CheckboxUI'
+import React, { useEffect, useMemo, useState } from 'react'
+import styles from './city-filter.module.scss'
 
 export function CityFilter({ selectedCities, onSelectionChange }: CityFilterProps) {
-  const [cities, setCities] = useState<ICity[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [expanded, setExpanded] = useState(false);
+  const [cities, setCities] = useState<ICity[]>([])
+  const [loading, setLoading] = useState(true)
+  const [expanded, setExpanded] = useState(false)
 
   // Загрузка данных при монтировании
   useEffect(() => {
     cityApi
       .getCities()
       .then((data) => {
-        setCities(data);
-        setLoading(false);
+        setCities(data)
+        setLoading(false)
       })
       .catch((err) => {
-        console.error('Ошибка загрузки городов:', err);
-        setLoading(false);
-      });
-  }, []);
+        console.error('Ошибка загрузки городов:', err)
+        setLoading(false)
+      })
+  }, [])
 
   const cityNames = useMemo(() => {
-    return cities.map((city) => city.name);
-  }, [cities]);
+    return cities.map((city) => city.name)
+  }, [cities])
 
-  const visibleCities = expanded ? cityNames : cityNames.slice(0, 5);
+  const visibleCities = expanded ? cityNames : cityNames.slice(0, 5)
 
   const toggleCitySelection = (cityName: string) => {
     const updatedSelection = selectedCities.includes(cityName)
       ? selectedCities.filter((name) => name !== cityName)
-      : [...selectedCities, cityName];
-    onSelectionChange(updatedSelection);
-  };
+      : [...selectedCities, cityName]
+    onSelectionChange(updatedSelection)
+  }
 
   // Показать loader пока данные загружаются
   if (loading) {
@@ -45,7 +45,7 @@ export function CityFilter({ selectedCities, onSelectionChange }: CityFilterProp
         <h2 className={styles.sectionTitle}>Город</h2>
         <p>Загрузка...</p>
       </section>
-    );
+    )
   }
 
   return (
@@ -70,14 +70,16 @@ export function CityFilter({ selectedCities, onSelectionChange }: CityFilterProp
         aria-expanded={expanded}
       >
         <span className={styles.buttonLabel}>{expanded ? 'Свернуть' : 'Все города'}</span>
-        {expanded ? (
-          <ChevronUp className={styles.arrowIcon} />
-        ) : (
-          <ChevronDown className={styles.arrowIcon} />
-        )}
+        {expanded
+          ? (
+              <ChevronUp className={styles.arrowIcon} />
+            )
+          : (
+              <ChevronDown className={styles.arrowIcon} />
+            )}
       </button>
     </section>
-  );
+  )
 }
 
-export default CityFilter;
+export default CityFilter

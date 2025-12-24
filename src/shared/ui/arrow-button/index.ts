@@ -1,4 +1,4 @@
-import ArrowButton from './ArrowButton';
+import ArrowButton from './ArrowButton'
 
-export { ArrowButton };
-export default ArrowButton;
+export { ArrowButton }
+export default ArrowButton
