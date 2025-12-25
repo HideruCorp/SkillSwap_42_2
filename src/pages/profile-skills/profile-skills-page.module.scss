@@ -1,3 +1,80 @@
-.profile-skills {
-  // Стили для страницы навыков
+// profile-skills-page.module.scss
+.container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 80px 24px;
+  background: #fafafa;
+  border-radius: 20px;
+  border: 2px dashed #e0e0e0;
+  margin-top: 40px;
+}
+
+.emptyIcon {
+  font-size: 80px;
+  color: #e0e0e0;
+  margin-bottom: 32px;
+  line-height: 1;
+}
+
+.emptyTitle {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  color: #666;
+}
+
+.emptyText {
+  font-size: 16px;
+  color: #888;
+  margin: 0;
+  max-width: 400px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.goToMainButton {
+  margin-top: 24px;
+  min-width: 200px;
+}
+
+.loader {
+  padding: 24px;
+  text-align: center;
+  color: #888;
+  background: #fff;
+  border-radius: 12px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .emptyState {
+    padding: 60px 16px;
+    margin-top: 20px;
+  }
+
+  .emptyIcon {
+    font-size: 60px;
+  }
+
+  .emptyTitle {
+    font-size: 20px;
+  }
+
+  .goToMainButton {
+    min-width: 180px;
+  }
 }
