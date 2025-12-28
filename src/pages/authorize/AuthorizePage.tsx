@@ -50,7 +50,7 @@ function AuthorizePage() {
   const handleRegistretionSubmitSuccess = useCallback(async () => {
     const result = await submitRegistration()
     if (result.success && result.skillId) {
-      navigate(`/skill/${result.skillId}?registerSuccess=true`)
+      navigate(`/skills/${result.skillId}?registerSuccess=true`)
     }
   }, [submitRegistration, navigate])
 

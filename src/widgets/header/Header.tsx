@@ -9,7 +9,7 @@ import Logo from '@shared/ui/logo/Logo'
 import { SearchInput } from '@shared/ui/search'
 import ProfileMenu from '@widgets/header/profile/profile-menu'
 import { useCallback, useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import AllSkillsDropdown from './all-skills-dropdown/AllSkillsDropdown'
 import Favorites from './favorites/Favorites'
 import styles from './header.module.scss'
@@ -125,9 +125,9 @@ function Header() {
     <header className={`${styles.header}`}>
       <Logo />
       <nav className={styles.navigation}>
-        <a href="#about" className={`${styles.about}`}>
+        <Link to="/about" className={`${styles.about}`}>
           О проекте
-        </a>
+        </Link>
         <AllSkillsDropdown />
       </nav>
       <SearchInput
