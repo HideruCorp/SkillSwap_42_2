@@ -1,4 +1,5 @@
 import Logo from '@shared/ui/logo/Logo'
+import { Link } from 'react-router-dom'
 import styles from './footer.module.scss'
 
 function Footer() {
@@ -19,9 +20,9 @@ function Footer() {
 
         <div className={styles.linksSection}>
           <div className={styles.column}>
-            <a href="#about" className={styles.link}>
+            <Link to="/about" className={styles.link}>
               • О проекте
-            </a>
+            </Link>
             <a href="#allskills" className={styles.link}>
               • Все навыки
             </a>
@@ -37,12 +38,12 @@ function Footer() {
           </div>
 
           <div className={styles.column}>
-            <a href="#privacy" className={styles.link}>
+            <Link to="/privacy" className={styles.link}>
               Политика конфиденциальности
-            </a>
-            <a href="#terms" className={styles.link}>
+            </Link>
+            <Link to="/terms" className={styles.link}>
               Пользовательское соглашение
-            </a>
+            </Link>
           </div>
         </div>
       </div>
